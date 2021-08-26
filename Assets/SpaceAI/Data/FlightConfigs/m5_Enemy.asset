@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc1e724cfb231664fad975133b629e7e, type: 3}
+  m_Name: m5_Enemy
+  m_EditorClassIdentifier: 
+  MainConfig:
+    Speed: 79
+    SpeedMax: 79
+    SpeedMin: -10
+    RotationSpeed: 0.35
+    PichSens: 4
+    YawSens: 8
+    ShipMass: 5194
+    HP: 1468
+    DurableForce: 25
+    CollisionDamage: 10
+    EnableShields: 1
+    patrolPoint: {x: 0, y: 0, z: 0}
+    flyDistance: 2500
+  AIConfig:
+    groupType: 0
+    groupTypesToAction: 01000000
+  Options:
+    useTurrets: 1
+    independentTurrets: 1
+  Items: {fileID: 11400000, guid: cca5f85614fb9434e9b04ec138918435, type: 2}
+  ItemDataPath: Items/ItemsStafCruiser
