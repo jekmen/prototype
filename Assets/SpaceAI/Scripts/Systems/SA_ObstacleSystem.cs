@@ -3,6 +3,7 @@ using SpaceAI.Ship;
 using SpaceAI.WeaponSystem;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SpaceAI.ShipSystems
@@ -47,7 +48,7 @@ namespace SpaceAI.ShipSystems
         {
             this.ship = ship;
             wingSpan = ship.meshObj.bounds.size.x;
-            //ship.SubscribeEvent(CollisionEvent);
+            ship.SubscribeEvent(CollisionEvent);
             m_event += OvoideObstacles;
         }
 
@@ -68,7 +69,7 @@ namespace SpaceAI.ShipSystems
 
                     case ObstacleState.GoToEscapeDirection:
 
-                        if (Vector3.Distance(ship.transform.position, newTargetPos) < ship.ShipSize * 5 ||Time.time > t + 5)
+                        if (Vector3.Distance(ship.transform.position, newTargetPos) < ship.ShipSize * 5 || Time.time > t + 5)
                         {
                             t = Time.time;
                             ship.SetTarget(storeTarget);
@@ -92,7 +93,7 @@ namespace SpaceAI.ShipSystems
         {
             RaycastHit hit = Rays(direction, offsetX);
 
-            if (!hit.transform || hit.transform.GetComponentInParent(typeof(IDamageSendler)))  return; 
+            if (!hit.transform || hit.transform.GetComponentInParent(typeof(IDamageSendler))) return;
 
             if (hit.transform.root.gameObject != ship.gameObject)
             {
@@ -214,15 +215,39 @@ namespace SpaceAI.ShipSystems
 
         public override void CollisionEvent(Collision collision)
         {
-            if (collision.gameObject.GetComponentInParent(typeof(IDamageSendler))) return;
+            var com = collision.gameObject.GetComponentsInParent(typeof(IDamageSendler));
 
-            t = Time.time;
-            ship.SetTarget(storeTarget);
-            savePos = false;
-            overrideTarget = false;
-            ship.FollowTarget = false;
-            escapeDirections.Clear();
-            M_ObstacleState = ObstacleState.Scan;
+            foreach (var item in com)
+            {
+                if ((IDamageSendler)item == null)
+                {
+                    t = Time.time;
+                    ship.SetTarget(storeTarget);
+                    savePos = false;
+                    overrideTarget = false;
+                    ship.FollowTarget = false;
+                    escapeDirections.Clear();
+                    M_ObstacleState = ObstacleState.Scan;
+                    Move();
+                }
+            }
+        }
+
+        float storedSpeed;
+
+        async void Move()
+        {
+            storedSpeed = ship.Configuration.MainConfig.Speed;
+
+            float timer = 0;
+            while (timer < 2)
+            {
+                ship.Configuration.MainConfig.Speed = -100;
+                timer += Time.deltaTime;
+                await Task.Yield();
+            }
+
+            ship.Configuration.MainConfig.Speed = storedSpeed;
         }
 
         #endregion

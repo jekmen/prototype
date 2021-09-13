@@ -10,9 +10,4 @@ namespace SpaceAI.Core
 
         bool IsDead();
     }
-
-    public interface IDamageSendler
-    {
-
-    }
 }

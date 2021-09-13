@@ -9975,7 +9975,7 @@ PrefabInstance:
     - target: {fileID: 3566391051409345944, guid: db58327fc7493ee47971d80e830a80f1,
         type: 3}
       propertyPath: settings.ReloadTime
-      value: 25
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3566391051998611444, guid: db58327fc7493ee47971d80e830a80f1,
         type: 3}
