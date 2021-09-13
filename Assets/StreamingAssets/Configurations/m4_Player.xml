@@ -3,12 +3,12 @@
   <name>m4_Player</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>192</Speed>
-    <SpeedMax>192</SpeedMax>
+    <Speed>96</Speed>
+    <SpeedMax>96</SpeedMax>
     <SpeedMin>-10</SpeedMin>
-    <RotationSpeed>2.6</RotationSpeed>
-    <PichSens>33</PichSens>
-    <YawSens>34</YawSens>
+    <RotationSpeed>1.6</RotationSpeed>
+    <PichSens>18</PichSens>
+    <YawSens>16</YawSens>
     <ShipMass>799</ShipMass>
     <HP>300</HP>
     <DurableForce>31</DurableForce>

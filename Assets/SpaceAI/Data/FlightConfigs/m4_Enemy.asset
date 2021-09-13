@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: m4_Enemy
   m_EditorClassIdentifier: 
   MainConfig:
-    Speed: 186
-    SpeedMax: 186
+    Speed: 93
+    SpeedMax: 93
     SpeedMin: -10
-    RotationSpeed: 2.8
-    PichSens: 30
-    YawSens: 26
+    RotationSpeed: 1.8
+    PichSens: 16
+    YawSens: 12
     ShipMass: 3293
     HP: 200
     DurableForce: 17

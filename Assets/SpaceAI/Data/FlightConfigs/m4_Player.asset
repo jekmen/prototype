@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: m4_Player
   m_EditorClassIdentifier: 
   MainConfig:
-    Speed: 192
-    SpeedMax: 192
+    Speed: 96
+    SpeedMax: 96
     SpeedMin: -10
-    RotationSpeed: 2.6
-    PichSens: 33
-    YawSens: 34
+    RotationSpeed: 1.6
+    PichSens: 18
+    YawSens: 16
     ShipMass: 799
     HP: 300
     DurableForce: 31

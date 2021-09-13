@@ -52,6 +52,7 @@ TrailRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -311,6 +312,6 @@ MonoBehaviour:
     missileType: 2
     detonationDistance: 2
     lifeTime: 20
-    velocity: 220
+    velocity: 110
     alignSpeed: 3
     RaycastAdvance: 1

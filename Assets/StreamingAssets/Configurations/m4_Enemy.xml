@@ -3,12 +3,12 @@
   <name>m4_Enemy</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>186</Speed>
-    <SpeedMax>186</SpeedMax>
+    <Speed>93</Speed>
+    <SpeedMax>93</SpeedMax>
     <SpeedMin>-10</SpeedMin>
-    <RotationSpeed>2.8</RotationSpeed>
-    <PichSens>30</PichSens>
-    <YawSens>26</YawSens>
+    <RotationSpeed>1.8</RotationSpeed>
+    <PichSens>16</PichSens>
+    <YawSens>12</YawSens>
     <ShipMass>3293</ShipMass>
     <HP>200</HP>
     <DurableForce>17</DurableForce>

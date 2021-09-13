@@ -62,15 +62,13 @@ namespace SpaceAI.ShipSystems
                 {
                     case ObstacleState.Scan:
 
-                        ObstacleOvoidanceDeteсtor(ship.transform.forward, 10);
                         ObstacleOvoidanceDeteсtor(ship.transform.forward, 0);
-                        ObstacleOvoidanceDeteсtor(ship.transform.forward, -10);
 
                         break;
 
                     case ObstacleState.GoToEscapeDirection:
 
-                        if (Time.time > t + pointTime || Vector3.Distance(ship.transform.position, newTargetPos) < ship.ShipSize * 2)
+                        if (Vector3.Distance(ship.transform.position, newTargetPos) < ship.ShipSize * 5 ||Time.time > t + 5)
                         {
                             t = Time.time;
                             ship.SetTarget(storeTarget);
@@ -207,7 +205,7 @@ namespace SpaceAI.ShipSystems
 
         private RaycastHit Rays(Vector3 direction, float offsetX)
         {
-            float LoockAhed = shipSpeed * 3;
+            float LoockAhed = ship.ShipSize > 50 ? shipSpeed * 10 : shipSpeed * 3;
             Ray ray = new Ray(ship.transform.position + new Vector3(offsetX, 0, 0), direction);
             //Debug.DrawRay(ship.transform.position + new Vector3(offsetX, 0, 0), direction * LoockAhed, Color.red);
             Physics.SphereCastNonAlloc(ray, 5, raycastHits, LoockAhed);
