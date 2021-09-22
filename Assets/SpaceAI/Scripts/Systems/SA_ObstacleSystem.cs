@@ -36,6 +36,7 @@ namespace SpaceAI.ShipSystems
         private bool overrideTarget;
         private readonly float wingSpan;
         private float shipSpeed;
+        private float savedSpeed;
         private float t;
         private int pointTime;
         private readonly List<EscapeDirections> escapeDirections = new List<EscapeDirections>();
@@ -47,6 +48,7 @@ namespace SpaceAI.ShipSystems
         public SA_ObstacleSystem(SA_BaseShip ship, bool enableLoop) : base(ship, enableLoop)
         {
             this.ship = ship;
+            savedSpeed = ship.Configuration.MainConfig.Speed;
             wingSpan = ship.meshObj.bounds.size.x;
             ship.SubscribeEvent(CollisionEvent);
             m_event += OvoideObstacles;
@@ -215,39 +217,6 @@ namespace SpaceAI.ShipSystems
 
         public override void CollisionEvent(Collision collision)
         {
-            var com = collision.gameObject.GetComponentsInParent(typeof(IDamageSendler));
-
-            foreach (var item in com)
-            {
-                if ((IDamageSendler)item == null)
-                {
-                    t = Time.time;
-                    ship.SetTarget(storeTarget);
-                    savePos = false;
-                    overrideTarget = false;
-                    ship.FollowTarget = false;
-                    escapeDirections.Clear();
-                    M_ObstacleState = ObstacleState.Scan;
-                    Move();
-                }
-            }
-        }
-
-        float storedSpeed;
-
-        async void Move()
-        {
-            storedSpeed = ship.Configuration.MainConfig.Speed;
-
-            float timer = 0;
-            while (timer < 2)
-            {
-                ship.Configuration.MainConfig.Speed = -100;
-                timer += Time.deltaTime;
-                await Task.Yield();
-            }
-
-            ship.Configuration.MainConfig.Speed = storedSpeed;
         }
 
         #endregion

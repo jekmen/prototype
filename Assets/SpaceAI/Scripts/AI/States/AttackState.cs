@@ -43,8 +43,6 @@ namespace SpaceAI.FSM
         {
             SA_ShipController ship = (SA_ShipController)player;
 
-            if (ship.ObstacleSystem.M_ObstacleState == SA_ObstacleSystem.ObstacleState.GoToEscapeDirection) return;
-
             if (ship.EnemyTarget)
             {
                 Vector3 targetPosForShot = ship.EnemyTarget.transform.position + ship.EnemyTarget.transform.forward * ship.EnemyTarget.GetComponent<SA_BaseShip>().Configuration.MainConfig.MoveSpeed;
