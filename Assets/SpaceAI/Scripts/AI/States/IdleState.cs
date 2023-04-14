@@ -1,61 +1,82 @@
+using SpaceAI.Events;
 using SpaceAI.ScaneTools;
 using SpaceAI.Ship;
 using SpaceAI.ShipSystems;
+using System;
 using UnityEngine;
 
 namespace SpaceAI.FSM
 {
     public class IdleState : FSMState
     {
-        private SA_ShipController shipController = null;
-        private readonly int scanRange = 800;
+        private int scanRange;
         private int rT;
         private float timeState;
+        private float requestTime;
+        private float requestFrequency;
 
-        public IdleState(SA_ShipController obj) : base(obj)
+        private ShipTargetRequesEvent targetSerchRequest;
+
+        public IdleState(IShip obj) : base(obj)
         {
             stateID = StateID.Idle;
-            shipController = obj;
+
+            scanRange = owner.ShipConfiguration.AIConfig.ShipTargetScanRange;
+            requestFrequency = owner.ShipConfiguration.AIConfig.TargetRequestFrequency;
+
+            targetSerchRequest = new ShipTargetRequesEvent(owner, scanRange);
         }
 
         public override void DoBeforeEntering()
         {
-            rT = UnityEngine.Random.Range(3, 7) * 2;
+            rT = UnityEngine.Random.Range(1, 3);
             timeState = Time.time;
-            shipController.FollowTarget = false;
+            requestTime = 0;
+            owner.CanFollowTarget(false);
         }
 
-        public override void Reason(Component player)
+        public override void Reason()
         {
-            SA_ShipController ship = (SA_ShipController)player;
-
-            if (SA_Manager.instance.GetTarget(shipController, scanRange))
+            if (owner.WayIsFree())
             {
-                ship.FSM.PerformTransition(Transition.Attack);
-            }
-        }
-
-        public override void Act(Component player)
-        {
-            SA_ShipController ship = (SA_ShipController)player;
-
-            if (ship.ObstacleSystem.M_ObstacleState == SA_ObstacleSystem.ObstacleState.GoToEscapeDirection) return;
-
-            if (Vector3.Distance(ship.transform.position, ship.Configuration.MainConfig.patrolPoint) > ship.Configuration.MainConfig.flyDistance)
-            {
-                ship.FollowTarget = true;
-                ship.SetTarget(ship.Configuration.MainConfig.patrolPoint);
-            }
-            else
-            {
-                if (Time.time > timeState + rT && ship.ObstacleSystem.M_ObstacleState == SA_ObstacleSystem.ObstacleState.Scan)
+                if (owner.CurrentEnemy)
                 {
-                    timeState = Time.time;
-                    ship.FollowTarget = false;
-
-                    if (ship.EnemyTarget)
+                    owner.CurrentAIProvider.FSM.PerformTransition(Transition.Attack);
+                }
+                else
+                {
+                    if (Time.time > requestTime + requestFrequency)
                     {
-                        ship.FSM.PerformTransition(Transition.Attack);
+                        EventsBus.Publish(targetSerchRequest);
+
+                        requestTime = Time.time;
+                    }
+                }
+            }
+        }
+
+        public override void Act()
+        {
+            if (owner.WayIsFree())
+            {
+                if (Vector3.Distance(owner.CurrentShipTransform.position, owner.ShipConfiguration.MainConfig.patrolPoint) > owner.ShipConfiguration.MainConfig.flyDistance)
+                {
+                    owner.CanFollowTarget(true);
+
+                    owner.SetTarget(owner.ShipConfiguration.MainConfig.patrolPoint);
+                }
+                else
+                {
+                    if (Time.time > timeState + rT)
+                    {
+                        owner.CanFollowTarget(false);
+
+                        timeState = Time.time;
+
+                        if (owner.CurrentEnemy)
+                        {
+                            owner.CurrentAIProvider.FSM.PerformTransition(Transition.Attack);
+                        }
                     }
                 }
             }
@@ -64,6 +85,7 @@ namespace SpaceAI.FSM
         public override void DoBeforeLeaving()
         {
             timeState = 0;
+            requestTime = 0;
         }
     }
 }

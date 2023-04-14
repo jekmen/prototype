@@ -1,4 +1,5 @@
-﻿using SpaceAI.Ship;
+﻿using SpaceAI.Core;
+using SpaceAI.Ship;
 using SpaceAI.ShipSystems;
 using UnityEngine;
 
@@ -6,106 +7,123 @@ namespace SpaceAI.FSM
 {
     public class AttackState : FSMState
     {
-        private SA_ShipController shipController = null;
+        private const float MinEnemyDistance = 30f;
+        private const float MaxEnemyDistance = 150f;
+        private const float CloseEnemyDistance = 50f;
 
         private int toClose;
         private float rangeAttackDirection;
-        private int on;
+        private int sitOnTale;
 
-        public AttackState(SA_ShipController obj) : base(obj)
+        public AttackState(IShip obj) : base(obj)
         {
             stateID = StateID.Attack;
-            shipController = obj.GetComponent<SA_ShipController>();
 
-            if (shipController.Configuration.Options.useTurrets)
+            if (owner.ShipConfiguration.Options.useTurrets)
             {
-                shipController.WeaponController.ResetTurrets();
+                owner.WeaponControll.ResetTurrets();
             }
         }
 
         public override void DoBeforeEntering()
         {
-            if (shipController.EnemyTarget)
+            if (owner.CurrentEnemy)
             {
-                if (shipController.EnemyTarget.GetComponent<MeshFilter>().mesh.bounds.size.z > 150)
-                    toClose = ((int)shipController.EnemyTarget.GetComponent<MeshFilter>().mesh.bounds.size.x + (int)shipController.EnemyTarget.GetComponent<MeshFilter>().mesh.bounds.size.z);
-                if (shipController.EnemyTarget.GetComponent<MeshFilter>().mesh.bounds.size.z > 50)
-                    toClose = ((int)shipController.EnemyTarget.GetComponent<MeshFilter>().mesh.bounds.size.x + (int)shipController.EnemyTarget.GetComponent<MeshFilter>().mesh.bounds.size.z) * 2;
+                var enemySizeZ = owner.CurrentEnemy.GetComponent<MeshFilter>().mesh.bounds.size.z;
+
+                if (enemySizeZ > CloseEnemyDistance)
+                {
+                    toClose = (int)(enemySizeZ + owner.CurrentEnemy.GetComponent<MeshFilter>().mesh.bounds.size.x);
+                }
                 else
-                    toClose = UnityEngine.Random.Range(30, 150) + (int)shipController.Configuration.MainConfig.MoveSpeed / 2;
+                {
+                    toClose = Mathf.RoundToInt(UnityEngine.Random.Range(MinEnemyDistance, MaxEnemyDistance) + (owner.ShipConfiguration.MainConfig.MoveSpeed / 2f));
+                }
             }
 
+            sitOnTale = UnityEngine.Random.Range(1, 3);
             rangeAttackDirection = UnityEngine.Random.Range(0.8F, 1.5F);
-            on = UnityEngine.Random.Range(-1, 3);
         }
 
-        public override void Act(Component player)
+        public override void Act()
         {
-            SA_ShipController ship = (SA_ShipController)player;
+            if (!owner.CurrentEnemy || !owner.WayIsFree()) return;
 
-            if (ship.EnemyTarget)
+            Vector3 targetFuturePos = CalculatePrediction(owner);
+
+            if (owner.WayIsFree())
             {
-                Vector3 targetPosForShot = ship.EnemyTarget.transform.position + ship.EnemyTarget.transform.forward * ship.EnemyTarget.GetComponent<SA_BaseShip>().Configuration.MainConfig.MoveSpeed;
-                ship.SetTarget(targetPosForShot);
-                ship.FollowTarget = true;
+                owner.SetTarget(targetFuturePos);
+                owner.CanFollowTarget(true);
 
-                Vector3 dir = (targetPosForShot - player.transform.position).normalized;
-                float dot = Mathf.Round(Vector3.Dot(dir, player.transform.forward * ship.Configuration.MainConfig.MoveSpeed));
-                float attackDirection = Mathf.Round(ship.Configuration.MainConfig.MoveSpeed) - rangeAttackDirection;
+                var dir = (targetFuturePos - owner.CurrentShipTransform.position).normalized;
+                var dot = Mathf.Round(Vector3.Dot(dir, owner.CurrentShipTransform.transform.forward * owner.ShipConfiguration.MainConfig.MoveSpeed));
+                var attackDirection = Mathf.Round(owner.ShipConfiguration.MainConfig.MoveSpeed) - rangeAttackDirection;
 
-                if (on >= 2) ship.Configuration.MainConfig.MoveSpeed = Mathf.Lerp(ship.Configuration.MainConfig.MoveSpeed, ship.Configuration.MainConfig.MoveSpeed / 2, Time.deltaTime * 5);
+                if (sitOnTale >= 2) owner.ShipConfiguration.MainConfig.MoveSpeed = Mathf.Lerp(owner.ShipConfiguration.MainConfig.MoveSpeed, owner.ShipConfiguration.MainConfig.MoveSpeed / 2, Time.deltaTime * 5);
 
                 if (dot >= attackDirection)
                 {
-                    if (!ship.Configuration.Options.useTurrets)
+                    if (!owner.ShipConfiguration.Options.useTurrets)
                     {
-                        ship.WeaponController.LaunchWeapon();
+                        owner.WeaponControll.LaunchWeapons();
                     }
 
-                    if (ship.Configuration.Options.useTurrets && !ship.Configuration.Options.independentTurrets)
+                    if (owner.ShipConfiguration.Options.useTurrets && !owner.ShipConfiguration.Options.independentTurrets)
                     {
-                        ship.WeaponController.TurretControl(targetPosForShot);
+                        owner.WeaponControll.TurretsControl(targetFuturePos);
                     }
                 }
+            }
 
-                if (ship.Configuration.Options.useTurrets && ship.Configuration.Options.independentTurrets)
-                {
-                    ship.WeaponController.TurretControl(ship.EnemyTarget.transform, targetPosForShot);
-                }
+            if (owner.ShipConfiguration.Options.useTurrets && owner.ShipConfiguration.Options.independentTurrets)
+            {
+                owner.WeaponControll.TurretsControl(owner.CurrentEnemy.transform, targetFuturePos);
             }
         }
 
-        public override void Reason(Component player)
+        private Vector3 CalculatePrediction(IShip ship)
         {
-            SA_ShipController ship = (SA_ShipController)player;
+            float bulletSpeed = owner.ShipConfiguration.MainConfig.Prediction;
+            float distanceToTarget = Vector3.Distance(ship.CurrentShipTransform.position, ship.CurrentEnemy.transform.position);
+            float timeToIntercept = distanceToTarget / bulletSpeed;
+            Vector3 targetVelocity = ship.CurrentEnemy.GetComponent<Rigidbody>().velocity;
+            Vector3 targetFuturePos = ship.CurrentEnemy.transform.position + targetVelocity * timeToIntercept;
+            return targetFuturePos;
+        }
 
-            if (ship.ObstacleSystem.M_ObstacleState == SA_ObstacleSystem.ObstacleState.GoToEscapeDirection)
+        public override void Reason()
+        {
+            var disToTarget = (owner.CurrentShipTransform.position - owner.CurrentEnemy.transform.position).magnitude;
+
+            if (!owner.WayIsFree())
             {
-                ship.FSM.PerformTransition(Transition.Patrol);
+                owner.CurrentAIProvider.FSM.PerformTransition(Transition.Patrol);
             }
 
-            if (ship.EnemyTarget && Vector3.Distance(ship.transform.position, ship.EnemyTarget.transform.position) < toClose)
+            if (owner.CurrentEnemy && disToTarget < toClose)
             {
-                ship.FSM.PerformTransition(Transition.Turn);
+                owner.CurrentAIProvider.FSM.PerformTransition(Transition.Turn);
             }
 
-            if (!ship.EnemyTarget)
+            if (!owner.CurrentEnemy)
             {
-                ship.FSM.PerformTransition(Transition.Patrol);
+                owner.CurrentAIProvider.FSM.PerformTransition(Transition.Patrol);
             }
 
-            if (ship.ToFar())
+            if (owner.ToFar())
             {
-                ship.SetTarget(ship.Configuration.MainConfig.patrolPoint);
-                ship.FSM.PerformTransition(Transition.Patrol);
+                owner.SetTarget(owner.ShipConfiguration.MainConfig.patrolPoint);
+
+                owner.CurrentAIProvider.FSM.PerformTransition(Transition.Patrol);
             }
         }
 
         public override void DoBeforeLeaving()
         {
-            if (shipController.Configuration.Options.useTurrets)
+            if (owner.ShipConfiguration.Options.useTurrets)
             {
-                shipController.WeaponController.ResetTurrets();
+                owner.WeaponControll.ResetTurrets();
             }
         }
     }

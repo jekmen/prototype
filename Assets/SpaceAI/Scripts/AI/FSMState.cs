@@ -9,18 +9,17 @@ namespace SpaceAI.FSM
     [Serializable]
     public abstract class FSMState
     {
-	    /// <summary>
-	    /// GameObject that has the FSMSystem attached. Npc must be set by FSMSystem.
-	    /// </summary>
-	    public Component npc;
-	
+        /// <summary>
+        /// GameObject that has the FSMSystem attached. Npc must be set by FSMSystem.
+        /// </summary>
+        protected IShip owner;
         protected Dictionary<Transition, StateID> map = new Dictionary<Transition, StateID>();
         protected StateID stateID;
         public StateID ID { get { return stateID; } }
 	
-	    protected FSMState(Component npc)
+	    protected FSMState(IShip npc)
 	    {
-		    this.npc = npc;	
+		    owner = npc;
 	    }
 
         public void AddTransition(Transition trans, StateID id)
@@ -105,13 +104,13 @@ namespace SpaceAI.FSM
         /// This method decides if the state should transition to another on its list
         /// NPC is a reference to the object that is controlled by this class
         /// </summary>
-        public abstract void Reason(Component player);
+        public abstract void Reason();
 
         /// <summary>
         /// This method controls the behavior of the NPC in the game World.
         /// Every action, movement or communication the NPC does should be placed here
         /// NPC is a reference to the object that is controlled by this class
         /// </summary>
-        public abstract void Act(Component player);
+        public abstract void Act();
     } 
 }

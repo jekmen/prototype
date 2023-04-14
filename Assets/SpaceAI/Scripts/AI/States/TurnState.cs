@@ -5,43 +5,51 @@ namespace SpaceAI.FSM
 {
     public class TurnState : FSMState
     {
-        private SA_ShipController shipController = null;
         private float timeStamp = 0;
         private int turnTime = 0;
+        private float rollFrequency;
+        private int makeManuver;
 
-        public TurnState(SA_ShipController obj) : base(obj)
+        public TurnState(IShip obj) : base(obj)
         {
             stateID = StateID.Turn;
-            shipController = obj;
         }
 
         public override void DoBeforeEntering()
         {
-            turnTime = UnityEngine.Random.Range(3, 6);
+            turnTime = UnityEngine.Random.Range(2, 4);
             timeStamp = Time.time;
-
-            shipController.SetTarget(shipController.transform.position - new Vector3(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100)) * 100);
+            rollFrequency = UnityEngine.Random.Range(0.5F, 2);
+            makeManuver = UnityEngine.Random.Range(1, 3);
+            owner.SetTarget(owner.CurrentShipTransform.position - new Vector3(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100)) * 100);
         }
 
-        public override void Act(Component player)
+        public override void Act()
         {
+            if (owner.CurrentShipSize > 50) return;
+
+            if (makeManuver < 3)
+            {
+                float rollAmplitude = 10f; // adjust as needed
+                float rollOffset = Time.time * rollFrequency;
+                float roll = Mathf.Sin(rollOffset) * rollAmplitude;
+                owner.CurrentShipTransform.localEulerAngles += Vector3.Lerp(owner.CurrentShipTransform.localEulerAngles, new Vector3(0, 0, roll), 10);
+            }
         }
 
-        public override void Reason(Component player)
+        public override void Reason()
         {
-            SA_ShipController ship = (SA_ShipController)player;
-
             if (Time.time > timeStamp + turnTime)
             {
-                if (ship.EnemyTarget)
+                if (owner.CurrentEnemy)
                 {
                     timeStamp = Time.time;
-                    ship.FSM.PerformTransition(Transition.Attack);
+                    owner.CurrentAIProvider.FSM.PerformTransition(Transition.Attack);
                 }
                 else
                 {
                     timeStamp = Time.time;
-                    ship.FSM.PerformTransition(Transition.Patrol);
+                    owner.CurrentAIProvider.FSM.PerformTransition(Transition.Patrol);
                 }
             }
         }

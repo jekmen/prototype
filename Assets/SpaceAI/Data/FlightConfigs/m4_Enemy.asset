@@ -13,24 +13,41 @@ MonoBehaviour:
   m_Name: m4_Enemy
   m_EditorClassIdentifier: 
   MainConfig:
-    Speed: 93
-    SpeedMax: 93
+    Speed: 187
+    SpeedMax: 187
     SpeedMin: -10
-    RotationSpeed: 1.8
-    PichSens: 16
-    YawSens: 12
+    MoveSpeedIncrease: 7
+    RotationSpeed: 2
+    PichSens: 34
+    YawSens: 167
     ShipMass: 3293
     HP: 200
+    Prediction: 880
     DurableForce: 17
     CollisionDamage: 3
-    EnableShields: 1
     patrolPoint: {x: 0, y: 0, z: 0}
     flyDistance: 1200
   AIConfig:
-    groupType: 0
-    groupTypesToAction: 01000000
+    GroupType: 0
+    GroupTypesToAction: 01000000
+    ShipTargetScanRange: 850
+    TargetRequestFrequency: 1.5
+  ShieldsConfiguration:
+    EnableShields: 0
+    CollisionEnter: 0
+    DecaySpeed: 2
+    ReactSpeed: 0.1
+    FixNonUniformScale: 1
+    ShieldPower: 0
   Options:
     useTurrets: 1
     independentTurrets: 0
+  ShipSystems:
+    shipSystems:
+    - {fileID: 11500000, guid: 3ebc3ae6332d6b447bebb4d42dadb155, type: 3}
+    - {fileID: 11500000, guid: 491d790369ca21d4b990819b087f5e75, type: 3}
+    shipSystemsScripts:
+    - SpaceAI.ShipSystems.SA_ObstacleSystem
+    - SpaceAI.WeaponSystem.SA_WeaponController
   Items: {fileID: 11400000, guid: f955c479492286848ae3a38cb44dbf9a, type: 2}
   ItemDataPath: Items/ItemsStafFighter

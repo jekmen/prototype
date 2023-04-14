@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.146, z: 1.823}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7204986850080288043}
   m_RootOrder: 0
@@ -40,7 +41,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2776457707294091947}
   - component: {fileID: 2776457707294091945}
-  - component: {fileID: 2776457707294091944}
   - component: {fileID: 7569671443901002346}
   m_Layer: 0
   m_Name: Gun (1)
@@ -59,6 +59,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.41, z: 5.685}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2776457707616077176}
   m_Father: {fileID: 8412308530568377797}
@@ -76,9 +77,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bde1c76098e13c647abdb1e57a8fc0e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Owner: {fileID: 0}
+  Target: {fileID: 0}
+  settings:
+    InfinityAmmo: 0
+    shellOuter:
+    - {fileID: 2776457707077933842}
+    ShellPrefab: {fileID: 865237326849596402, guid: 69deb6cfbbcc8374eb22fbc7f0908d9e,
+      type: 3}
+    Muzzle: {fileID: 0}
+    FireRate: 0.1
+    Spread: 1
+    ForceShoot: 6
+    ReloadTime: 1
+    MuzzleLifeTime: 2
+    NumBullet: 1
+    Ammo: 15
+    AmmoMax: 15
+    SoundGun:
+    - {fileID: 8300000, guid: 7a52bf5ea53d85f4daa398fc0c20a2dc, type: 3}
+    SoundReloading: {fileID: 0}
+    SoundReloaded: {fileID: 0}
   runRotationsInFixed: 0
-  turretBase: {fileID: 2776457707616077176}
-  turretBarrels: {fileID: 2776457707527888811}
+  turretBase:
+  - {fileID: 2776457707616077176}
+  turretBarrels:
+  - {fileID: 2776457707527888811}
   turnRate: 30
   limitTraverse: 1
   leftTraverse: 25
@@ -90,42 +114,6 @@ MonoBehaviour:
   independent: 0
   shellOut: []
   aimPoint: {x: 0, y: 0, z: 0}
---- !u!114 &2776457707294091944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2776457707294091946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 099fdd64a4b5b78449141752fa6185b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Owner: {fileID: 0}
-  Target: {fileID: 0}
-  TorqueSpeedAxis: {x: 0, y: 0, z: 0}
-  TorqueObject: {fileID: 0}
-  settings:
-    OnActive: 0
-    InfinityAmmo: 0
-    shellOuter:
-    - {fileID: 2776457707077933842}
-    ShellPrefab: {fileID: 5143387585540230430, guid: 69deb6cfbbcc8374eb22fbc7f0908d9e,
-      type: 3}
-    Muzzle: {fileID: 0}
-    FireRate: 0.1
-    Spread: 1
-    ForceShoot: 4
-    ReloadTime: 1
-    MuzzleLifeTime: 2
-    NumBullet: 1
-    Ammo: 15
-    AmmoMax: 15
-    SoundGun:
-    - {fileID: 8300000, guid: 7a52bf5ea53d85f4daa398fc0c20a2dc, type: 3}
-    SoundReloading: {fileID: 0}
-    SoundReloaded: {fileID: 0}
 --- !u!82 &7569671443901002346
 AudioSource:
   m_ObjectHideFlags: 0
@@ -249,6 +237,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7204986850080288043}
   m_Father: {fileID: 2776457707616077176}
@@ -280,6 +269,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2776457707527888811}
   m_Father: {fileID: 2776457707294091947}
@@ -313,6 +303,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.59, y: 0.391, z: -6.992}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8412308530568377797}
   m_RootOrder: 0
@@ -324,19 +315,19 @@ ParticleSystem:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3044283526646855281}
-  serializedVersion: 7
+  serializedVersion: 8
   lengthInSec: 5
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
+  emitterVelocityMode: 0
   looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
-  useRigidbodyForVelocity: 1
   startDelay:
     serializedVersion: 2
     minMaxState: 0
@@ -886,6 +877,7 @@ ParticleSystem:
         m_RotationOrder: 4
     randomizeRotationDirection: 0
     maxNumParticles: 1000
+    customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -5047,6 +5039,7 @@ ParticleSystemRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -5078,6 +5071,7 @@ ParticleSystemRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_RenderMode: 0
+  m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
   m_MaxParticleSize: 0.5
@@ -5101,6 +5095,10 @@ ParticleSystemRenderer:
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
+  m_MeshWeighting: 1
+  m_MeshWeighting1: 1
+  m_MeshWeighting2: 1
+  m_MeshWeighting3: 1
   m_MaskInteraction: 0
 --- !u!1 &7372666666090020913
 GameObject:
@@ -5131,9 +5129,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7372666666090020913}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 981, y: 0, z: -1521}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5798800548700357649}
   - {fileID: 8705665449092423064}
@@ -5160,6 +5159,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -5197,7 +5197,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7372666666090020913}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7a852098980fecc4c81886ea3f1f1d40, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -5329,7 +5329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5341ef5cb3b79114c9c25f1502561f31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currFile: D:/UnityProj/MyProjects/Prototype/prototype/Assets/StreamingAssets\Configurations\m4_Enemy.xml
+  currFile: F:/UnityProj/MyProj/prototype/Assets/StreamingAssets\Configurations\m4_Enemy.xml
   configFileName: m4_Enemy
 --- !u!1 &7384421573447194452
 GameObject:
@@ -5359,6 +5359,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.578, y: 0.391, z: -6.992}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8412308530568377797}
   m_RootOrder: 1
@@ -5370,19 +5371,19 @@ ParticleSystem:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7384421573447194452}
-  serializedVersion: 7
+  serializedVersion: 8
   lengthInSec: 5
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
+  emitterVelocityMode: 0
   looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
-  useRigidbodyForVelocity: 1
   startDelay:
     serializedVersion: 2
     minMaxState: 0
@@ -5932,6 +5933,7 @@ ParticleSystem:
         m_RotationOrder: 4
     randomizeRotationDirection: 0
     maxNumParticles: 1000
+    customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -10093,6 +10095,7 @@ ParticleSystemRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -10124,6 +10127,7 @@ ParticleSystemRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_RenderMode: 0
+  m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
   m_MaxParticleSize: 0.5
@@ -10147,6 +10151,10 @@ ParticleSystemRenderer:
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
+  m_MeshWeighting: 1
+  m_MeshWeighting1: 1
+  m_MeshWeighting2: 1
+  m_MeshWeighting3: 1
   m_MaskInteraction: 0
 --- !u!1001 &2776457708415272497
 PrefabInstance:

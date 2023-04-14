@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 using UnityEngine;
 
@@ -65,7 +66,7 @@ namespace SpaceAI.DataManagment
             }
         }
 
-        public static void SaveXmlConfig<T>(T obj, string fileName)
+        public static void SaveXmlConfigUnityOnly<T>(T obj, string fileName)
         {
             string path = Path.Combine(Application.streamingAssetsPath, "Configurations");
             string file = Path.Combine(path, fileName + ".xml");
@@ -87,7 +88,30 @@ namespace SpaceAI.DataManagment
             }
         }
 
-        public static T LoadXmlConfig<T>(string fileName)
+        public static async Task<T> LoadXmlConfigUnityOnlyAsync<T>(string fileName)
+        {
+            T result;
+            string path = Path.Combine(Application.streamingAssetsPath, "Configurations");
+            string file = Path.Combine(path, fileName + ".xml");
+
+            if (Directory.Exists(path) && File.Exists(file))
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(T));
+                using (FileStream fileStream = new FileStream(file, FileMode.Open))
+                {
+                    result = (T)await Task.Run(() => ser.Deserialize(fileStream));
+                }
+
+                return result;
+            }
+            else
+            {
+                Debug.LogError("Xml file doesn't exist in: " + file);
+                return default;
+            }
+        }
+
+        public static T LoadXmlConfigUnityOnly<T>(string fileName)
         {
             T result;
             string path = Path.Combine(Application.streamingAssetsPath, "Configurations");

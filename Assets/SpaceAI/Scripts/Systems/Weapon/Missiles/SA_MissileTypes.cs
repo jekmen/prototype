@@ -4,11 +4,7 @@ using UnityEngine;
 
 namespace SpaceAI.Weapons
 {
-    [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(CapsuleCollider))]
-    [RequireComponent(typeof(SA_DamageSandler))]
-    [RequireComponent(typeof(AudioSource))]
-    public class SA_MissileTypes : SA_WeaponBase
+    public class SA_MissileTypes : SA_DamageSandler
     {
         [Serializable]
         public class MissileSettings

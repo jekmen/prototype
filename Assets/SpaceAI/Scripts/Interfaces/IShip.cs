@@ -1,4 +1,10 @@
-﻿namespace SpaceAI.Ship
+﻿using SpaceAI.DataManagment;
+using SpaceAI.FSM;
+using SpaceAI.WeaponSystem;
+using System;
+using UnityEngine;
+
+namespace SpaceAI.Ship
 {
     /// <summary>
     /// Target identifier
@@ -12,10 +18,36 @@
 
     public interface IShip
     {
-        /// <summary>
-        /// returns target identifier
-        /// </summary>
-        /// <returns GroupType value></returns>
         GroupType Ship();
+
+        SA_ShipConfigurationManager ShipConfiguration { get; }
+
+        SA_WeaponController WeaponControll { get; }
+
+        SA_AIProvider CurrentAIProvider { get; }
+
+        GameObject CurrentEnemy { get; set; }
+
+        Transform CurrentShipTransform { get; }
+
+        Vector3 GetCurrentTargetPosition { get; }
+
+        float CurrentShipSize { get; }
+
+        bool WayIsFree();
+
+        void SubscribeEvent(Action<Collision> collisionEvent);
+
+        void SetTarget(Vector3 target);
+
+        void SetTarget(Transform target);
+
+        void SetTarget(GameObject target);
+
+        bool CanFollowTarget(bool followTarget);
+
+        bool ToFar();
+
+        void SetCurrentEnemy(GameObject newTarget);
     }
 }

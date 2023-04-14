@@ -1,47 +1,40 @@
+using SpaceAI.Ship;
+using SpaceAI.ShipSystems;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SpaceAI.WeaponSystem
 {
     [Serializable]
-    public class SA_WeaponController
+    public class SA_WeaponController : IShipSystem
     {
         private int CurrentWeapon = 0;
 
-        public SA_WeaponController(Component ownerShip)
+        public IReadOnlyList<IWeapon> WeaponLists { get; }
+
+        public SA_WeaponController() { }
+
+        public SA_WeaponController(IShip ownerShip)
         {
-            // find all attached weapons.
-            if (ownerShip.transform.GetComponentsInChildren(typeof(SA_WeaponLunchManager)).Length > 0)
+            WeaponLists = ownerShip.CurrentShipTransform.GetComponentsInChildren<IWeapon>(true).ToList();
+
+            foreach (var weapon in WeaponLists)
             {
-                var weas = ownerShip.transform.GetComponentsInChildren(typeof(SA_WeaponLunchManager));
-
-                WeaponLists = new SA_WeaponLunchManager[weas.Length];
-
-                for (int i = 0; i < weas.Length; i++)
-                {
-                    WeaponLists[i] = weas[i].GetComponent<SA_WeaponLunchManager>();
-                }
-            }
-
-            if (ownerShip.transform.GetComponentsInChildren(typeof(SA_TurretRotation)).Length > 0)
-            {
-                var tur = ownerShip.transform.GetComponentsInChildren(typeof(SA_TurretRotation));
-
-                turretList = new SA_TurretRotation[tur.Length];
-
-                for (int i = 0; i < tur.Length; i++)
-                {
-                    turretList[i] = tur[i].GetComponent<SA_TurretRotation>();
-                }
+                weapon.SetOwner(ownerShip);
             }
         }
 
-        public SA_TurretRotation[] turretList { get; set; }
-        public SA_WeaponLunchManager[] WeaponLists { get; set; }
-
-        public SA_WeaponLunchManager GetCurrentWeapon()
+        public IShipSystem Init(IShip ship, GameObject gameObject)
         {
-            if (CurrentWeapon < WeaponLists.Length && WeaponLists[CurrentWeapon] != null)
+            return new SA_WeaponController(ship);
+        }
+
+        public IWeapon GetCurrentWeapon()
+        {
+            if (CurrentWeapon < WeaponLists.Count && WeaponLists[CurrentWeapon] != null)
             {
                 return WeaponLists[CurrentWeapon];
             }
@@ -49,27 +42,11 @@ namespace SpaceAI.WeaponSystem
             return null;
         }
 
-        private void UpdateComponent()
-        {
-            for (int i = 0; i < WeaponLists.Length; i++)
-            {
-                if (WeaponLists[i] != null)
-                {
-                    WeaponLists[i].settings.OnActive = false;
-                }
-            }
-            if (CurrentWeapon < WeaponLists.Length && WeaponLists[CurrentWeapon] != null)
-            {
-                WeaponLists[CurrentWeapon].settings.OnActive = true;
-            }
-        }
-
         public void LaunchWeapon(int index)
         {
-            UpdateComponent();
-
             CurrentWeapon = index;
-            if (CurrentWeapon < WeaponLists.Length && WeaponLists[index] != null)
+
+            if (CurrentWeapon < WeaponLists.Count && WeaponLists[index] != null)
             {
                 WeaponLists[index].Shoot();
             }
@@ -77,85 +54,82 @@ namespace SpaceAI.WeaponSystem
 
         public void SwitchWeapon()
         {
-            CurrentWeapon += 1;
-            if (CurrentWeapon >= WeaponLists.Length)
+            CurrentWeapon++;
+
+            if (CurrentWeapon >= WeaponLists.Count)
             {
                 CurrentWeapon = 0;
             }
         }
 
-        public void LaunchWeapon()
+        public void LaunchWeapons()
         {
-            UpdateComponent();
-
             if (WeaponLists == null) { return; }
 
-            if (WeaponLists[CurrentWeapon] != null && CurrentWeapon < WeaponLists.Length)
+            foreach (var wpn in WeaponLists)
             {
-                WeaponLists[CurrentWeapon].Shoot();
+                wpn.Shoot();
             }
         }
 
-        public void LaunchWeapon(Transform[] outShell)
+        public void LaunchWeapons(Transform[] outShell)
         {
-            UpdateComponent();
-
             if (WeaponLists == null) { return; }
 
-            if (WeaponLists[CurrentWeapon] != null && CurrentWeapon < WeaponLists.Length)
+            foreach (var wpn in WeaponLists)
             {
-                WeaponLists[CurrentWeapon].Shoot(outShell);
-            }
-        }
-
-        public void LaunchTuretsWeapon()
-        {
-            UpdateComponent();
-
-            for (int i = 0; i < WeaponLists.Length; i++)
-            {
-                if (WeaponLists[i] != null)
-                {
-                    WeaponLists[i].settings.OnActive = true;
-                    WeaponLists[i].Shoot();
-                }
+                wpn.Shoot(outShell);
             }
         }
 
         public void ResetTurrets()
         {
-            if (turretList != null && turretList.Length > 0)
+            if (WeaponLists != null && WeaponLists.Count > 0)
             {
-                foreach (SA_TurretRotation tur in turretList)
+                foreach (var weapon in WeaponLists)
                 {
-                    tur.SetIdle(true);
+                    if (weapon is SA_TurretRotation turret)
+                    {
+                        turret.SetIdle(true);
+                    }
                 }
             }
         }
 
-        public void TurretControl(Vector3 target)
+        public void TurretsControl(Vector3 target)
         {
-            if (turretList != null && turretList.Length > 0)
+            if (WeaponLists != null && WeaponLists.Count > 0)
             {
-                foreach (SA_TurretRotation tur in turretList)
+                foreach (var weapon in WeaponLists)
                 {
-                    tur.SetAimpoint(target);
-                    LaunchTuretsWeapon();
+                    if (weapon is SA_TurretRotation turret)
+                    {
+                        turret.SetAimpoint(target);
+                    }
+                }
+
+                LaunchWeapons();
+            }
+        }
+
+        public void TurretsControl(Transform target, Vector3 aimPoint)
+        {
+            if (WeaponLists != null && WeaponLists.Count > 0)
+            {
+                foreach (var weapon in WeaponLists)
+                {
+                    if (weapon is SA_TurretRotation turret)
+                    {
+                        turret.Target = target.gameObject;
+                        turret.independent = true;
+                        turret.SetAimpoint(aimPoint);
+                    }
                 }
             }
         }
 
-        public void TurretControl(Transform target, Vector3 aimPoint)
+        public void ShipSystemEvent(Collision collision)
         {
-            if (turretList != null && turretList.Length > 0)
-            {
-                foreach (SA_TurretRotation tur in turretList)
-                {
-                    tur.target = target;
-                    tur.independent = true;
-                    tur.aimPoint = aimPoint;
-                }
-            }
         }
     }
 }

@@ -1,22 +1,19 @@
 ﻿using SpaceAI.DataManagment;
 using SpaceAI.Ship;
+using System;
 using UnityEngine;
 
 namespace SpaceAI.ShipSystems
 {
-    [CreateAssetMenu(fileName = "ForceShield")]
+    [Serializable]
     public class SA_Shield : SA_ShipSystem
     {
-        public GameObject Field;
-        [Header("Collision events:")]
-        public bool CollisionEnter;
-        [Header("Shield settings:")]
-        public float DecaySpeed = 2.0f;
-        public float ReactSpeed = 0.1f;
-        // Non-uniform scale correction
-        public bool FixNonUniformScale;
-        public float shieldPower;
-
+        private GameObject field;
+        private bool collisionEnter;
+        private float decaySpeed = 2.0f;
+        private float reactSpeed = 0.1f;
+        private bool fixNonUniformScale;
+        private float shieldPower;
         private Transform rootTransform;
         private Material mat;
         private MeshFilter mesh;
@@ -27,35 +24,36 @@ namespace SpaceAI.ShipSystems
         private float curTime = 0;
         private SA_ShipConfigurationManager Configuration;
 
-        public SA_Shield(SA_BaseShip ship, bool enableLoop) : base(ship, enableLoop)
-        {
-            ship.CollisionEvent += CollisionEvent;
-            Configuration = ship.Configuration;
-            rootTransform = ship.transform;
-            ship.SubscribeEvent(CollisionEvent);
+        public float ShieldPower { get { return shieldPower; } set { shieldPower = value; } }
 
-            foreach (var item in Configuration.Items.ShipSystems)
-            {
-                if (item.GetType() == GetType())
-                {
-                    SA_Shield shield = (SA_Shield)item;
-                    Field = shield.Field;
-                    DecaySpeed = shield.DecaySpeed;
-                    ReactSpeed = shield.ReactSpeed;
-                    CollisionEnter = shield.CollisionEnter;
-                    FixNonUniformScale = shield.FixNonUniformScale;
-                    shieldPower = shield.shieldPower;
-                }
-            }
+        public SA_Shield() { }        
 
-            Init();
+        public SA_Shield(IShip ship, GameObject shieldField) : base(ship)
+        {          
+            Configuration = ship.ShipConfiguration;
+            var com = ship as SA_BaseShip;
+            rootTransform = com.transform;
+            ship.SubscribeEvent(ShipSystemEvent);
+            field = shieldField;
+            decaySpeed = Configuration.ShieldsConfiguration.DecaySpeed;
+            reactSpeed = Configuration.ShieldsConfiguration.ReactSpeed;
+            collisionEnter = Configuration.ShieldsConfiguration.CollisionEnter;
+            fixNonUniformScale = Configuration.ShieldsConfiguration.FixNonUniformScale;
+            shieldPower = Configuration.ShieldsConfiguration.ShieldPower;
+
+            InitShield();
         }
 
-        private void Init()
+        public override IShipSystem Init(IShip ship, GameObject gameObject)
         {
-            Field = Instantiate(Field, rootTransform);
-            mat = Field.GetComponent<Renderer>().material;
-            mesh = Field.GetComponent<MeshFilter>();
+            return new SA_Shield(ship, gameObject);
+        }
+
+        private void InitShield()
+        {
+            field = UnityEngine.Object.Instantiate(field, rootTransform);
+            mat = field.GetComponent<Renderer>().material;
+            mesh = field.GetComponent<MeshFilter>();
 
             // Generate unique IDs for optimised performance
             // since script has to access them each frame
@@ -70,17 +68,15 @@ namespace SpaceAI.ShipSystems
 
             // Initialize data array
             shaderPos = new Vector4[interpolators];
-
-            m_event += UpdateFade;
         }
 
-        public override void CollisionEvent(Collision collisionInfo)
+        public override void ShipSystemEvent(Collision obj)
         {
-            if (shieldPower <= 0) return;
+            field.SetActive(shieldPower > 0);
 
-            if (CollisionEnter)
+            if (collisionEnter)
             {
-                foreach (ContactPoint contact in collisionInfo.contacts)
+                foreach (ContactPoint contact in obj.contacts)
                 {
                     OnHit(contact.point);
                 }
@@ -96,9 +92,9 @@ namespace SpaceAI.ShipSystems
         /// <param name="hitPower">Hit strength</param>
         /// <param name="hitAlpha">hit alpha</param>
         public void OnHit(Vector3 hitPoint, float hitPower = 0.0f, float hitAlpha = 1.0f)
-        {            
+        {
             // Check reaction interval
-            if (curTime >= ReactSpeed)
+            if (curTime >= reactSpeed)
             {
                 // Hit point coordinates are transformed into local space
                 Vector4 newHitPoint = mesh.transform.InverseTransformPoint(hitPoint);
@@ -110,7 +106,7 @@ namespace SpaceAI.ShipSystems
                 shaderPos[curProp] = newHitPoint;
 
                 // Fix non-uniform scale
-                if (FixNonUniformScale)
+                if (fixNonUniformScale)
                 {
                     if (!Mathf.Approximately(rootTransform.lossyScale.x, rootTransform.lossyScale.y) || !Mathf.Approximately(rootTransform.lossyScale.y, rootTransform.lossyScale.z) || !Mathf.Approximately(rootTransform.lossyScale.y, rootTransform.lossyScale.z))
                     {
@@ -133,12 +129,14 @@ namespace SpaceAI.ShipSystems
         // Called each frame to pass values into a shader
         private void FadeMask()
         {
+            if (shaderPos == null) return;
+
             for (int i = 0; i < interpolators; i++)
             {
                 if (shaderPos[i].w > 0f)
                 {
                     // Lerp alpha value for current interpolator
-                    shaderPos[i].w = Mathf.Lerp(shaderPos[i].w, -0.0001f, Time.deltaTime * DecaySpeed);
+                    shaderPos[i].w = Mathf.Lerp(shaderPos[i].w, -0.0001f, Time.deltaTime * decaySpeed);
                     shaderPos[i].w = Mathf.Clamp(shaderPos[i].w, 0f, 1f);
                     // Assign new value to a shader variable
                     mat.SetVector(shaderPosID[i], shaderPos[i]);
@@ -146,7 +144,7 @@ namespace SpaceAI.ShipSystems
             }
         }
 
-        private void UpdateFade()
+        public void UpdateFade()
         {
             // Advance response timer
             curTime += Time.deltaTime;

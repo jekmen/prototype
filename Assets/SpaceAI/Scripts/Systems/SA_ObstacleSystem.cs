@@ -2,25 +2,24 @@
 using SpaceAI.Ship;
 using SpaceAI.WeaponSystem;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SpaceAI.ShipSystems
 {
-    [CreateAssetMenu(fileName = "ObstacleSystem")]
+    [Serializable]
     public class SA_ObstacleSystem : SA_ShipSystem
     {
         [Serializable]
-        public class EscapeDirections
+        public struct EscapeDirections
         {
             public Vector3 dir;
-            public string key;
 
-            public EscapeDirections(Vector3 vector, string key)
+            public EscapeDirections(Vector3 vector)
             {
                 dir = vector;
-                this.key = key;
             }
         }
 
@@ -34,61 +33,72 @@ namespace SpaceAI.ShipSystems
         private Vector3 newTargetPos;
         private bool savePos;
         private bool overrideTarget;
-        private readonly float wingSpan;
         private float shipSpeed;
-        private float savedSpeed;
-        private float t;
-        private int pointTime;
+        private float wingSpan;
         private readonly List<EscapeDirections> escapeDirections = new List<EscapeDirections>();
 
         public ObstacleState M_ObstacleState { get; private set; }
 
-        public bool BlockScan { get; set; }
+        public SA_ObstacleSystem() { }
 
-        public SA_ObstacleSystem(SA_BaseShip ship, bool enableLoop) : base(ship, enableLoop)
+        public SA_ObstacleSystem(IShip ship) : base(ship)
         {
             this.ship = ship;
-            savedSpeed = ship.Configuration.MainConfig.Speed;
-            wingSpan = ship.meshObj.bounds.size.x;
-            ship.SubscribeEvent(CollisionEvent);
-            m_event += OvoideObstacles;
+            var com = ship as SA_BaseShip;
+            wingSpan = com.GetComponent<MeshFilter>().mesh.bounds.size.x;
+        }
+
+        public override IShipSystem Init(IShip ship, GameObject gameObject)
+        {
+            return new SA_ObstacleSystem(ship);
         }
 
         #region Obstacles Functions
         public void OvoideObstacles()
         {
-            if (!BlockScan)
+            shipSpeed = ship.ShipConfiguration.MainConfig.MoveSpeed;
+
+            switch (M_ObstacleState)
             {
-                shipSpeed = ship.Configuration.MainConfig.MoveSpeed;
+                case ObstacleState.Scan:
 
-                switch (M_ObstacleState)
-                {
-                    case ObstacleState.Scan:
+                    ship.ShipConfiguration.MainConfig.Speed = ship.ShipConfiguration.MainConfig.SpeedMax;
 
-                        ObstacleOvoidanceDeteсtor(ship.transform.forward, 0);
+                    ObstacleOvoidanceDeteсtor(ship.CurrentShipTransform.forward, 0);
 
-                        break;
+                    break;
 
-                    case ObstacleState.GoToEscapeDirection:
+                case ObstacleState.GoToEscapeDirection:
 
-                        if (Vector3.Distance(ship.transform.position, newTargetPos) < ship.ShipSize * 5 || Time.time > t + 5)
-                        {
-                            t = Time.time;
-                            ship.SetTarget(storeTarget);
-                            savePos = false;
-                            overrideTarget = false;
-                            ship.FollowTarget = false;
-                            escapeDirections.Clear();
-                            M_ObstacleState = ObstacleState.Scan;
-                        }
-                        else
-                        {
-                            ship.SetTarget(newTargetPos);
-                        }
+                    float distanceToTarget = Vector3.Distance(ship.CurrentShipTransform.position, newTargetPos);
+                    float timeForTarget = distanceToTarget / ship.ShipConfiguration.MainConfig.MoveSpeed;
+                    ship.SetTarget(newTargetPos);
+                    ship.CanFollowTarget(true);                    
 
-                        break;
-                }
+                    if (ship.CurrentShipSize < 50 && timeForTarget < 1F)
+                    {
+                        ReturnToTarget();
+                    }
+
+                    if(ship.CurrentShipSize > 50 && timeForTarget < 2F)
+                    {
+                        ReturnToTarget();
+                    }
+
+                    break;
             }
+        }
+
+        private async void ReturnToTarget()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(0.5F));
+
+            ship.SetTarget(storeTarget);
+            savePos = false;
+            overrideTarget = false;
+            ship.CanFollowTarget(false);
+            escapeDirections.Clear();
+            M_ObstacleState = ObstacleState.Scan;
         }
 
         private void ObstacleOvoidanceDeteсtor(Vector3 direction, float offsetX)
@@ -97,11 +107,11 @@ namespace SpaceAI.ShipSystems
 
             if (!hit.transform || hit.transform.GetComponentInParent(typeof(IDamageSendler))) return;
 
-            if (hit.transform.root.gameObject != ship.gameObject)
+            if (hit.transform.root.gameObject != ship.CurrentShipTransform.gameObject)
             {
                 if (!savePos)
                 {
-                    storeTarget = ship.GetTarget();
+                    storeTarget = ship.GetCurrentTargetPosition;
                     savePos = true;
                 }
 
@@ -112,10 +122,9 @@ namespace SpaceAI.ShipSystems
             {
                 if (!overrideTarget)
                 {
-                    pointTime = UnityEngine.Random.Range(1, 3);
                     newTargetPos = GetClosest();
                     ship.SetTarget(newTargetPos);
-                    ship.FollowTarget = true;
+                    ship.CanFollowTarget(true);
                     overrideTarget = true;
                     M_ObstacleState = ObstacleState.GoToEscapeDirection;
                 }
@@ -126,14 +135,14 @@ namespace SpaceAI.ShipSystems
         {
             if (Physics.Raycast(col.transform.position, col.transform.up, out RaycastHit hitUp, col.bounds.extents.y * 2 + wingSpan))
             {
-                // Calculate heigth of obj to create a new Transform.position                
+                // Calculate heigth of obj to create a new Transform.position
             }
             else
             {
                 // Write calculeted heigth to transform and add it to list           
                 Vector3 dir = col.transform.position + new Vector3(0, col.bounds.extents.y * 2 + wingSpan, 0);
 
-                EscapeDirections d = new EscapeDirections(dir, "Up");
+                EscapeDirections d = new EscapeDirections(dir);
 
                 if (!escapeDirections.Contains(d))
                 {
@@ -148,7 +157,7 @@ namespace SpaceAI.ShipSystems
             {
                 Vector3 dir = col.transform.position + new Vector3(0, -col.bounds.extents.y * 2 - wingSpan, 0);
 
-                EscapeDirections d = new EscapeDirections(dir, "Down");
+                EscapeDirections d = new EscapeDirections(dir);
 
                 if (!escapeDirections.Contains(d))
                 {
@@ -162,7 +171,8 @@ namespace SpaceAI.ShipSystems
             else
             {
                 Vector3 dir = col.transform.position + new Vector3(col.bounds.extents.x * 2 + wingSpan, 0, 0);
-                EscapeDirections d = new EscapeDirections(dir, "Right");
+
+                EscapeDirections d = new EscapeDirections(dir);
 
                 if (!escapeDirections.Contains(d))
                 {
@@ -176,7 +186,8 @@ namespace SpaceAI.ShipSystems
             else
             {
                 Vector3 dir = col.transform.position + new Vector3(-col.bounds.extents.x * 2 - wingSpan, 0, 0);
-                EscapeDirections d = new EscapeDirections(dir, "Left");
+
+                EscapeDirections d = new EscapeDirections(dir);
 
                 if (!escapeDirections.Contains(d))
                 {
@@ -188,15 +199,17 @@ namespace SpaceAI.ShipSystems
         private Vector3 GetClosest()
         {
             Vector3 clos = escapeDirections[0].dir;
-            float distanse = Vector3.Distance(ship.transform.position, escapeDirections[0].dir);
+
+            float distanse = Vector3.Distance(ship.CurrentShipTransform.position, escapeDirections[0].dir);
 
             foreach (var dir in escapeDirections)
             {
-                float tempDistance = Vector3.Distance(ship.transform.position, dir.dir);
+                float tempDistance = Vector3.Distance(ship.CurrentShipTransform.position, dir.dir);
 
                 if (tempDistance < distanse)
                 {
                     distanse = tempDistance;
+
                     clos = dir.dir;
                 }
             }
@@ -208,17 +221,16 @@ namespace SpaceAI.ShipSystems
 
         private RaycastHit Rays(Vector3 direction, float offsetX)
         {
-            float LoockAhed = ship.ShipSize > 50 ? shipSpeed * 10 : shipSpeed * 3;
-            Ray ray = new Ray(ship.transform.position + new Vector3(offsetX, 0, 0), direction);
-            //Debug.DrawRay(ship.transform.position + new Vector3(offsetX, 0, 0), direction * LoockAhed, Color.red);
-            Physics.SphereCastNonAlloc(ray, 5, raycastHits, LoockAhed);
+            float LoockAhed = ship.CurrentShipSize > 50 ? shipSpeed * 2 : shipSpeed * 3;
+            Ray ray = new Ray(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction);
+            //Debug.DrawRay(ship.CurrentShipTransform().position + new Vector3(offsetX, 0, 0), direction * LoockAhed, Color.red);
+            Physics.SphereCastNonAlloc(ray, ship.CurrentShipSize, raycastHits, LoockAhed);
             return raycastHits[0];
         }
 
-        public override void CollisionEvent(Collision collision)
+        public override void ShipSystemEvent(Collision obj)
         {
         }
-
         #endregion
     }
 }

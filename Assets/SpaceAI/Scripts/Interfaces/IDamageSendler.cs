@@ -6,5 +6,7 @@ namespace SpaceAI.Core
 {
     public interface IDamageSendler
     {
+        GameObject Owner { get; }
+        GameObject Target { get; }
     }
 }

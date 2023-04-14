@@ -5,66 +5,55 @@ namespace SpaceAI.Ship
 {
     public class SA_ShipController : SA_BaseShip
     {
-        public FSMSystem FSM { get; private set; }
-        public GameObject EnemyTarget { get; set; }
-        public Vector3 SetVelocityTarget(Vector3 vector) { VelocityTarget = vector; return VelocityTarget; }
-        public Vector3 VelocityTarget { get; set; } = Vector3.zero;
+        private GameObject enemyTarget;
 
         protected override void Start()
         {
             base.Start();
 
-            CreateBaseFSM();
-        }
+            aIProvider = new SA_AIProvider(this);
 
-        private void CreateBaseFSM()
-        {
-            FSM = new FSMSystem(this);
-
-            IdleState idleState = new IdleState(this);
-            idleState.AddTransition(Transition.Patrol, StateID.Idle);
-            idleState.AddTransition(Transition.Attack, StateID.Attack);
-            idleState.AddTransition(Transition.Turn, StateID.Turn);
-
-            AttackState attackState = new AttackState(this);
-            attackState.AddTransition(Transition.Patrol, StateID.Idle);
-            attackState.AddTransition(Transition.Turn, StateID.Turn);
-
-            TurnState turnState = new TurnState(this);
-            turnState.AddTransition(Transition.Turn, StateID.Turn);
-            turnState.AddTransition(Transition.Attack, StateID.Attack);
-            turnState.AddTransition(Transition.Patrol, StateID.Idle);
-
-            FSM.AddState(idleState);
-            FSM.AddState(attackState);
-            FSM.AddState(turnState);
+            aIProvider.CreateBaseModelFSM();
         }
 
         private void FixedUpdate()
         {
-            FSM.CurrentState.Act(this);
-            FSM.CurrentState.Reason(this);
+            aIProvider.LoopStates();
 
             Move();
         }
 
+        private void LateUpdate()
+        {
+            obstacleSystem.OvoideObstacles();
+        }
+
         protected override void Move()
         {
-            if (FollowTarget)
+            if (followTarget)
             {
-                Vector3 relativePoint = transform.InverseTransformPoint(GetTarget()).normalized;
+                Vector3 relativePoint = transform.InverseTransformPoint(GetCurrentTargetPosition).normalized;
 
-                if (ShipSize < 50)
+                if (CurrentShipSize < 50)
                 {
-                    Configuration.MainConfig.MainRot = Quaternion.LookRotation(GetTarget() - transform.position);
+                    ShipConfiguration.MainConfig.MainRot = Quaternion.LookRotation(GetCurrentTargetPosition - transform.position);
                 }
                 else
                 {
-                    Configuration.MainConfig.MainRot = Quaternion.LookRotation((GetTarget() + Vector3.left * Configuration.MainConfig.MoveSpeed) * 2 - transform.position);
+                    if (WayIsFree())
+                    {
+                        ShipConfiguration.MainConfig.MainRot = Quaternion.LookRotation((GetCurrentTargetPosition + Vector3.left * ShipConfiguration.MainConfig.MoveSpeed) * 2 - transform.position);
+                    }
+                    else
+                    {
+                        ShipConfiguration.MainConfig.MainRot = Quaternion.LookRotation(GetCurrentTargetPosition - transform.position);
+                    }
                 }
 
-                Rb.rotation = Quaternion.Lerp(Rb.rotation, Configuration.MainConfig.MainRot, Time.deltaTime * Configuration.MainConfig.RotationSpeed);
-                Rb.rotation *= Quaternion.Euler(-relativePoint.y * (Time.deltaTime * Configuration.MainConfig.PichSens) * 10, 0, -relativePoint.x * (Time.deltaTime * Configuration.MainConfig.YawSens) * 10);
+                var shipRotation = Quaternion.LerpUnclamped(rb.rotation, ShipConfiguration.MainConfig.MainRot, Time.deltaTime * ShipConfiguration.MainConfig.RotationSpeed) *
+                                   Quaternion.Euler(-relativePoint.y * (Time.deltaTime * ShipConfiguration.MainConfig.PichSens), 0, -relativePoint.x * (Time.deltaTime * ShipConfiguration.MainConfig.YawSens));
+
+                rb.rotation = shipRotation;
             }
 
             MovmentCalculation();
@@ -72,14 +61,14 @@ namespace SpaceAI.Ship
 
         private void MovmentCalculation()
         {
-            Configuration.MainConfig.MoveSpeed = Mathf.Lerp(Configuration.MainConfig.MoveSpeed, Configuration.MainConfig.Speed, Time.deltaTime / 10);
-            Rb.velocity = Vector3.Lerp(Rb.velocity, VelocityTarget, Time.deltaTime * 2);
-            SetVelocityTarget((Rb.rotation * Vector3.forward) * (Configuration.MainConfig.Speed + Configuration.MainConfig.MoveSpeed));
+            ShipConfiguration.MainConfig.MoveSpeed = Mathf.Lerp(ShipConfiguration.MainConfig.MoveSpeed, ShipConfiguration.MainConfig.Speed, Time.deltaTime / ShipConfiguration.MainConfig.MoveSpeedIncrease);
+            rb.velocity = Vector3.Lerp(rb.velocity, velocityTarget, Time.deltaTime * 2);
+            SetVelocityTarget(rb.rotation * Vector3.forward * (ShipConfiguration.MainConfig.Speed + ShipConfiguration.MainConfig.MoveSpeed));
         }
 
-        public bool ToFar()
+        public override bool ToFar()
         {
-            if (Vector3.Distance(transform.position, Configuration.MainConfig.patrolPoint) > Configuration.MainConfig.flyDistance)
+            if (Vector3.Distance(transform.position, ShipConfiguration.MainConfig.patrolPoint) > ShipConfiguration.MainConfig.flyDistance)
             {
                 return true;
             }
@@ -87,6 +76,11 @@ namespace SpaceAI.Ship
             {
                 return false;
             }
+        }
+
+        public override void SetCurrentEnemy(GameObject newTarget)
+        {
+            CurrentEnemy = newTarget;
         }
     }
 }

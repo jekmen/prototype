@@ -14,7 +14,7 @@ namespace SpaceAI.DataManagment
     {
         SA_ShipConfigurationManager script;
         SerializedProperty property;
-        SerializedObject serializedObject;
+        SerializedObject configObject;
 
         public const string PATH_PREFIX = "Configurations";
         public string DATA_PATH;
@@ -23,7 +23,7 @@ namespace SpaceAI.DataManagment
         void OnEnable()
         {
             script = (SA_ShipConfigurationManager)target;
-            serializedObject = new SerializedObject(script);
+            configObject = new SerializedObject(script);
             DATA_PATH = Path.Combine(Application.streamingAssetsPath + "/" + PATH_PREFIX, script.name + ".xml");
         }
 
@@ -32,12 +32,20 @@ namespace SpaceAI.DataManagment
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Flight Configuration");
             EditorGUILayout.Space();
-            serializedObject.Update();
+            configObject.Update();
 
             foreach (var item in script.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
             {
-                var property = serializedObject.FindProperty(item.Name);
+                var property = configObject.FindProperty(item.Name);
                 EditorGUILayout.PropertyField(property, true);
+            }
+
+            bool validate = script.ShipSystems.shipSystems != null && script.ShipSystems.shipSystemsScripts != null 
+                            && script.ShipSystems.shipSystems.Count != script.ShipSystems.shipSystemsScripts.Count;
+
+            if (validate)
+            {
+                script.ShipSystems.OnValidate();
             }
 
             if (File.Exists(DATA_PATH))
@@ -52,12 +60,12 @@ namespace SpaceAI.DataManagment
             #region Buttons
             if (GUILayout.Button("Set Default Settings"))
             {
-                GenereteData(serializedObject, property);
+                GenereteData(configObject, property);
             }
 
             if (GUILayout.Button(bntText))
             {
-                SaveData(serializedObject, property);
+                SaveData(configObject, property);
             }
 
             if (File.Exists(DATA_PATH))
@@ -65,16 +73,16 @@ namespace SpaceAI.DataManagment
                 if (GUILayout.Button("Load"))
                 {
                     script = script.Load(script.name);
-                    serializedObject = new SerializedObject(script);
+                    configObject = new SerializedObject(script);
                     foreach (var item in script.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        var property = serializedObject.FindProperty(item.Name);
+                        var property = configObject.FindProperty(item.Name);
                         EditorGUILayout.PropertyField(property, true);
                     }
                 }
             }
 
-            serializedObject.ApplyModifiedProperties();
+            configObject.ApplyModifiedProperties();
             #endregion
         }
 

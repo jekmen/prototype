@@ -12,16 +12,16 @@ namespace SpaceAI.DataManagment
         public float Speed;
         [HideInInspector] public float SpeedMax;
         [HideInInspector] public float SpeedMin;
+        public float MoveSpeedIncrease;
         public float RotationSpeed;
         public float PichSens;
         public float YawSens;
         public float ShipMass;
         [Header("Damage Settings")]
         public float HP;
+        public float Prediction;
         public float DurableForce;
-        public float CollisionDamage;
-        [Header("Shield Settings")]
-        public bool EnableShields;
+        public float CollisionDamage;                
         [Header("Fly Settings")]
         public Vector3 patrolPoint;
         public float flyDistance;
@@ -29,7 +29,7 @@ namespace SpaceAI.DataManagment
 
         public SA_MainConfigs() { }
 
-        public SA_MainConfigs(float Speed, float RotationSpeed, float PichSens, float YawSens, float ShipMass, float HP, float DurableForce, float CollisionDamage, float flyDistance, bool EnableShields = false)
+        public SA_MainConfigs(float Speed, float RotationSpeed, float PichSens, float YawSens, float ShipMass, float HP, float DurableForce, float CollisionDamage, float flyDistance)
         {
             this.Speed = Speed;
             this.RotationSpeed = RotationSpeed;
@@ -39,7 +39,6 @@ namespace SpaceAI.DataManagment
             this.HP = HP;
             this.DurableForce = DurableForce;
             this.CollisionDamage = CollisionDamage;
-            this.EnableShields = EnableShields;
             this.flyDistance = flyDistance;
         }
 

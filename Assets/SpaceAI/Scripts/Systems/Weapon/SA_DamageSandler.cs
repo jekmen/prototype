@@ -1,10 +1,11 @@
 ﻿using SpaceAI.Core;
+using SpaceAI.Ship;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SpaceAI.WeaponSystem
 {
-    public class SA_DamageSandler : SA_DamageBase, IDamageSendler
+    public class SA_DamageSandler : SA_DamageBase
     {
         public bool Explosive;
         public float ExplosionRadius = 20;
@@ -12,11 +13,11 @@ namespace SpaceAI.WeaponSystem
         public float TimeActive = 0;
         public bool RandomTimeActive;
         public float DestryAfterDuration = 10;
-        public AudioSource explosion;
 
         private GameObject storedEffect;
         private Collider[] colliders;
         private float timetemp = 0;
+
 
         private void OnEnable()
         {
@@ -62,12 +63,12 @@ namespace SpaceAI.WeaponSystem
         }
 
         public void Active()
-        {            
-            if (Effect)
+        {
+            if (_explousionEffectPrefab)
             {
                 if (!storedEffect)
                 {
-                    storedEffect = Instantiate(Effect, transform.position, transform.rotation);
+                    storedEffect = Instantiate(_explousionEffectPrefab, transform.position, transform.rotation);
                 }
                 else
                 {
@@ -76,7 +77,7 @@ namespace SpaceAI.WeaponSystem
                     storedEffect.SetActive(true);
                 }
 
-                Deactivate(storedEffect, LifeTimeEffect);
+                Deactivate(storedEffect, _lifeTimeEffect);
             }
 
             if (Explosive)
@@ -84,12 +85,12 @@ namespace SpaceAI.WeaponSystem
                 ExplosionDamage();
             }
 
-            if (explosion && !explosion.isPlaying)
+            if (_explosionSound && !_explosionSound.isPlaying)
             {
-                explosion.Play();
+                _explosionSound.Play();
                 GetComponent<Renderer>().enabled = false;
                 GetComponent<Collider>().enabled = false;
-                Deactivate(gameObject, Random.Range(1, explosion.clip.length));
+                Deactivate(gameObject, Random.Range(1, _explosionSound.clip.length));
             }
             else
             {
@@ -125,9 +126,9 @@ namespace SpaceAI.WeaponSystem
                 if (!hit)
                     continue;
 
-                if (hit.gameObject.GetComponent(typeof(IDamage)) is IDamage damagebleComponent)
+                if (hit.gameObject.GetComponent<IDamage>() is IDamage damagebleComponent)
                 {
-                    damagebleComponent.ApplyDamage(Damage, Owner);
+                    damagebleComponent.ApplyDamage(_damage, Owner);
                 }
 
                 if (hit.GetComponent<Rigidbody>())
@@ -141,28 +142,31 @@ namespace SpaceAI.WeaponSystem
         /// <param name="collision"></param>
         private void OnCollisionEnter(Collision collision)
         {
-            if (Owner && collision.gameObject == Owner.transform.root.gameObject)
+            if (collision.gameObject.GetComponent<IDamageSendler>() is IDamageSendler dms)
             {
-                foreach (Collider col in Owner.GetComponentsInChildren<Collider>())
+                if (dms.Owner == Owner)
                 {
-                    Physics.IgnoreCollision(collision.gameObject.GetComponent<Collider>(), col);
+                    foreach (Collider col in Owner.GetComponentsInChildren<Collider>())
+                    {
+                        Physics.IgnoreCollision(collision.gameObject.GetComponent<Collider>(), col, true);
+
+                        return;
+                    }
                 }
+            }
+
+            if (collision.gameObject.GetComponent<IDamage>() is IDamage damagebleComponent)
+            {
+                if (!Explosive)
+                {
+                    damagebleComponent.ApplyDamage(_damage, Owner);
+                }
+
+                Active();
             }
             else
             {
-                if (collision.gameObject.GetComponentInParent(typeof(IDamage)) is IDamage damagebleComponent)
-                {
-                    if (!Explosive)
-                    {
-                        damagebleComponent.ApplyDamage(Damage, Owner);
-                    }
-
-                    Active();
-                }
-                else
-                {
-                    Active();
-                }
+                Active();
             }
         }
 

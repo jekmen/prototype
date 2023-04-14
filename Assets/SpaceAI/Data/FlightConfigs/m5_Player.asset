@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainConfig:
     Speed: 79
-    SpeedMax: 0
-    RotationSpeed: 0.3
-    PichSens: 2
-    YawSens: 3
+    SpeedMax: 79
+    SpeedMin: -10
+    RotationSpeed: 27
+    PichSens: 14
+    YawSens: 18
     ShipMass: 5194
     HP: 1468
     DurableForce: 25

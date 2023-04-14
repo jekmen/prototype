@@ -7,6 +7,8 @@ namespace SpaceAI.ScaneTools
     /// </summary>
     public class SA_Camera : MonoBehaviour
     {
+        [SerializeField] private SA_Manager manager;
+
         public enum FollowMode { CHASE, SPECTATOR }
         public FollowMode followMode = FollowMode.SPECTATOR;
         public Transform target;
@@ -17,8 +19,8 @@ namespace SpaceAI.ScaneTools
         public KeyCode freezeKey = KeyCode.None;
         public bool swichTargets = false;
 
+        private int index = 0;
         private float t;
-        private int index;
         private float camZoomSpeed = 15f;
         private Transform _cacheTransform;
 
@@ -34,25 +36,30 @@ namespace SpaceAI.ScaneTools
             DoCamera();
         }
 
-        void DoCamera()
+        private void Update()
         {
             if (Input.GetKeyDown(KeyCode.N))
             {
-                index = (index + 1) % SA_Manager.instance.SharedTargets.Count;
-                target = SA_Manager.instance.SharedTargets[index].transform;
+                var Iship = manager.SharedTargets[index++ % manager.SharedTargets.Count];
+                var ship = Iship as Component;
+                target = ship.transform;
             }
+        }
 
+        void DoCamera()
+        {
             if (swichTargets && Time.time > t + Random.Range(15, 30))
             {
                 t = Time.time;
 
-                if (SA_Manager.instance)
+                if (manager)
                 {
-                    Transform newTarget = SA_Manager.instance.SharedTargets[Random.Range(0, SA_Manager.instance.SharedTargets.Count)].transform;
+                    var Iship = manager.SharedTargets[Random.Range(0, manager.SharedTargets.Count)];
+                    var ship = Iship as Component;
 
-                    if (newTarget && newTarget.gameObject.activeSelf)
+                    if (ship && ship.gameObject.activeSelf)
                     {
-                        target = newTarget;
+                        target = ship.transform;
                     }
                 }
             }
@@ -60,7 +67,6 @@ namespace SpaceAI.ScaneTools
             if (target == null) return;
 
             Quaternion _lookAt;
-
 
             switch (followMode)
             {

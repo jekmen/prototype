@@ -3,23 +3,24 @@
   <name>m5_Enemy</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>79</Speed>
-    <SpeedMax>79</SpeedMax>
+    <Speed>39.5</Speed>
+    <SpeedMax>39.5</SpeedMax>
     <SpeedMin>-10</SpeedMin>
-    <RotationSpeed>0.35</RotationSpeed>
-    <PichSens>4</PichSens>
-    <YawSens>8</YawSens>
+    <MoveSpeedIncrease>2</MoveSpeedIncrease>
+    <RotationSpeed>0.5</RotationSpeed>
+    <PichSens>0.3</PichSens>
+    <YawSens>0.6</YawSens>
     <ShipMass>5194</ShipMass>
     <HP>1468</HP>
+    <Prediction>900</Prediction>
     <DurableForce>25</DurableForce>
     <CollisionDamage>10</CollisionDamage>
-    <EnableShields>true</EnableShields>
     <patrolPoint>
       <x>0</x>
       <y>0</y>
       <z>0</z>
     </patrolPoint>
-    <flyDistance>2500</flyDistance>
+    <flyDistance>1000</flyDistance>
     <MainRot>
       <x>0</x>
       <y>0</y>
@@ -40,9 +41,24 @@
       <GroupType>Player</GroupType>
     </groupTypesToAction>
   </AIConfig>
+  <ShieldsConfiguration>
+    <EnableShields>false</EnableShields>
+    <CollisionEnter>false</CollisionEnter>
+    <DecaySpeed>2</DecaySpeed>
+    <ReactSpeed>0.1</ReactSpeed>
+    <FixNonUniformScale>false</FixNonUniformScale>
+    <ShieldPower>0</ShieldPower>
+  </ShieldsConfiguration>
   <Options>
     <useTurrets>true</useTurrets>
     <independentTurrets>true</independentTurrets>
   </Options>
+  <ShipSystems>
+    <shipSystemsScripts>
+      <string>SpaceAI.WeaponSystem.SA_WeaponController</string>
+      <string>SpaceAI.ShipSystems.SA_ObstacleSystem</string>
+      <string>SpaceAI.ShipSystems.SA_Shield</string>
+    </shipSystemsScripts>
+  </ShipSystems>
   <ItemDataPath>Items/ItemsStafCruiser</ItemDataPath>
 </SA_ShipConfigurationManager>

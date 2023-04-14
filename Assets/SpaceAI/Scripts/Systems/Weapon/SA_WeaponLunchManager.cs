@@ -1,20 +1,25 @@
-﻿using SpaceAI.ScaneTools;
+﻿using SpaceAI.Core;
+using SpaceAI.Events;
+using SpaceAI.ScaneTools;
 using SpaceAI.Ship;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpaceAI.WeaponSystem
 {
     [RequireComponent(typeof(AudioSource))]
-    public class SA_WeaponLunchManager : SA_WeaponBase
+    public class SA_WeaponLunchManager : SA_WeaponBase, IWeapon
     {
+        private readonly string _poolName = "BulletPool";
+
         [Serializable]
         public class Settings
         {
-            public bool OnActive;
             public bool InfinityAmmo = false;
             public Transform[] shellOuter;
-            public GameObject ShellPrefab;
+            public SA_DamageSandler ShellPrefab;
             public GameObject Muzzle;
             public float FireRate = 0.1f;
             public float Spread = 1;
@@ -29,10 +34,9 @@ namespace SpaceAI.WeaponSystem
             public AudioClip SoundReloaded;
         }
 
-        public Settings settings;
+        [SerializeField] private Settings settings;
 
         private AudioSource m_audio;
-        private Vector3 torqueTemp;
         private int currentOuter = 0;
         private float nextFireTime = 0;
         private float reloadTimeTemp;
@@ -40,6 +44,9 @@ namespace SpaceAI.WeaponSystem
         private GameObject muzzle;
 
         private int poolID;
+        private IShip owner;
+
+        Settings IWeapon.Settings => settings;
 
         private void Start()
         {
@@ -53,323 +60,142 @@ namespace SpaceAI.WeaponSystem
                 m_audio = gameObject.AddComponent<AudioSource>();
             }
 
-            SA_Manager.Pool pool = new SA_Manager.Pool
+            SA_Manager.Pool pool = new()
             {
                 id = poolID = UnityEngine.Random.Range(1000, 10000)
             };
 
+            GameObject scenePool = new(_poolName);
+
             for (int i = 0; i < settings.AmmoMax; i++)
             {
-                GameObject bullet = Instantiate(settings.ShellPrefab);
-                bullet.SetActive(false);
+                SA_DamageSandler bullet = Instantiate(settings.ShellPrefab, scenePool.transform);
+                bullet.gameObject.SetActive(false);
                 pool.bullet.Add(bullet);
             }
 
-            SA_Manager.instance.BulletPool.Add(pool);
+            SA_Manager.BulletPool.Add(pool);
         }
 
-        private void Update()
+        IEnumerator Reload()
         {
-            if (!Target && GetComponentInParent<SA_ShipController>())
+            if (!Reloading && settings.Ammo <= 0)
             {
-                Target = GetComponentInParent<SA_ShipController>().EnemyTarget;
-            }
+                Reloading = true;
+                reloadTimeTemp = Time.time;
 
-            if (settings.OnActive)
-            {
-                if (TorqueObject)
+                if (settings.SoundReloading && m_audio)
                 {
-                    TorqueObject.transform.Rotate(torqueTemp * Time.deltaTime);
-                    torqueTemp = Vector3.Lerp(torqueTemp, Vector3.zero, Time.deltaTime);
+                    m_audio.PlayOneShot(settings.SoundReloading);
                 }
+            }
+            else if (Reloading)
+            {
+                yield return new WaitForSeconds(settings.ReloadTime);
 
-                if (Reloading)
+                if (settings.SoundReloaded && m_audio)
                 {
-                    if (Time.time >= reloadTimeTemp + settings.ReloadTime)
-                    {
-                        Reloading = false;
-
-                        if (settings.SoundReloaded)
-                        {
-                            if (m_audio)
-                            {
-                                m_audio.PlayOneShot(settings.SoundReloaded);
-                                settings.Ammo = settings.AmmoMax;
-                            }
-                        }
-                        else
-                        {
-                            settings.Ammo = settings.AmmoMax;
-                        }
-                    }
+                    m_audio.PlayOneShot(settings.SoundReloaded);
+                    settings.Ammo = settings.AmmoMax;
                 }
                 else
                 {
-                    if (settings.Ammo <= 0)
-                    {
-                        Reloading = true;
-                        reloadTimeTemp = Time.time;
-
-                        if (settings.SoundReloading)
-                        {
-                            if (m_audio)
-                            {
-                                m_audio.PlayOneShot(settings.SoundReloading);
-                            }
-                        }
-                    }
+                    settings.Ammo = settings.AmmoMax;
                 }
+
+                Reloading = false;
             }
         }
 
-        /// <summary>
-        /// Main shot function
-        /// </summary>
-        public void Shoot()
+        public virtual void Shoot(Transform[] outShell)
         {
-            //if true it will shot always 
+            if (outShell == null || outShell.Length == 0)
+            {
+                outShell = settings.shellOuter;
+            }
+
+            Target = owner.CurrentEnemy;
+
             if (settings.InfinityAmmo)
             {
                 settings.Ammo = 1;
             }
 
-            if (settings.Ammo > 0)
+            if (settings.Ammo > 0 && Time.time > nextFireTime + settings.FireRate)
             {
-                //set next shot
-                if (Time.time > nextFireTime + settings.FireRate)
+                Vector3 spread = UnityEngine.Random.insideUnitSphere * settings.Spread / 100;
+                nextFireTime = Time.time;
+                settings.Ammo--;
+                Vector3 direction;
+
+                //set bullets at transform of out shell
+                Vector3 shellPosition = transform.position;
+                Quaternion shellRotate = transform.rotation;
+
+                if (outShell != null && outShell.Length > 0)
+                {                    
+                    Transform shell = outShell[currentOuter++ % outShell.Length];
+                    direction = shell.forward + spread;
+                    shellPosition = shell.position;
+                    shellRotate = shell.rotation;
+                }
+                else
                 {
-                    Vector3 spread = new Vector3(UnityEngine.Random.Range(-settings.Spread, settings.Spread), UnityEngine.Random.Range(-settings.Spread, settings.Spread), UnityEngine.Random.Range(-settings.Spread, settings.Spread)) / 100;
-                    nextFireTime = Time.time;
-                    torqueTemp = TorqueSpeedAxis;
-                    Vector3 direction;
-                    settings.Ammo -= 1;
+                    direction = transform.forward + spread;
+                    shellPosition = transform.position;
+                    shellRotate = transform.rotation;
+                }
 
-                    //set bullets at transform of out shell
-                    Vector3 shellPosition = transform.position;
-                    Quaternion shellRotate = transform.rotation;
+                //bullet shot effekt
+                if (settings.Muzzle)
+                {
+                    muzzle = muzzle ?? Instantiate(settings.Muzzle, shellPosition, shellRotate, transform);
+                    muzzle.transform.parent = outShell != null && outShell.Length > 0 ? outShell[currentOuter - 1].transform : transform;
+                    muzzle.SetActive(true);
+                }
 
-                    if (settings.shellOuter.Length > 0)
+                for (int i = 0; i < settings.NumBullet; i++)
+                {
+                    if (settings.ShellPrefab)
                     {
-                        direction = settings.shellOuter[currentOuter].transform.forward + spread;
-                        shellRotate = settings.shellOuter[currentOuter].transform.rotation;
-                        shellPosition = settings.shellOuter[currentOuter].transform.position;
-                    }
-                    else
-                    {
-                        direction = transform.forward + spread;
-                    }
+                        SA_DamageSandler bullet = SA_Manager.BulletPool.Find(p => p.id == poolID).bullet.Find(b => !b.gameObject.activeSelf);
 
-                    if (settings.shellOuter.Length > 0)
-                    {
-                        currentOuter = (currentOuter + 1) % settings.shellOuter.Length;
-                    }
-
-                    //bullet shot effekt
-                    if (settings.Muzzle)
-                    {
-                        if (!muzzle)
+                        if (bullet)
                         {
-                            muzzle = Instantiate(settings.Muzzle, shellPosition, shellRotate);
-                        }
+                            bullet.SetOwner(Owner);
+                            bullet.SetTarget(Target);
+                            bullet.transform.SetPositionAndRotation(shellPosition, shellRotate);
+                            bullet.gameObject.SetActive(true);
 
-                        muzzle.transform.parent = transform;
-                        muzzle.SetActive(true);
-
-                        if (settings.shellOuter.Length > 0)
-                        {
-                            muzzle.transform.parent = settings.shellOuter[currentOuter].transform;
-                        }
-                    }
-
-                    for (int i = 0; i < settings.NumBullet; i++)
-                    {
-                        if (settings.ShellPrefab)
-                        {
-                            GameObject bullet = null;
-
-                            if (!bullet)
+                            if (bullet.Rb)
                             {
-                                for (int b = 0; b < SA_Manager.instance.BulletPool.Count; b++)
+                                bullet.Rb.velocity = Vector3.zero;
+                                if (Owner?.GetComponent<Rigidbody>() is Rigidbody rb)
                                 {
-                                    if (SA_Manager.instance.BulletPool[b].id == poolID)
-                                    {
-                                        bullet = SA_Manager.instance.BulletPool[b].bullet.Find(x => x == !x.activeSelf);
-
-                                        if (!bullet) return;
-
-                                        SA_DamageBase damangeBase = bullet.GetComponent<SA_DamageBase>();
-
-                                        if (damangeBase)
-                                        {
-                                            damangeBase.Owner = Owner;
-                                        }
-
-                                        SA_WeaponBase weaponBase = bullet.GetComponent<SA_WeaponBase>();
-
-                                        if (weaponBase)
-                                        {
-                                            weaponBase.Owner = Owner;
-                                            weaponBase.Target = Target;
-                                        }
-
-                                        bullet.transform.position = shellPosition;
-                                        bullet.transform.rotation = shellRotate;
-                                        bullet.transform.forward = direction;
-
-                                        bullet.SetActive(true);
-
-                                        if (bullet.GetComponent<Rigidbody>())
-                                        {
-                                            bullet.GetComponent<Rigidbody>().velocity = Vector3.zero;
-
-                                            if (Owner != null && Owner.GetComponent<Rigidbody>())
-                                            {
-                                                bullet.GetComponent<Rigidbody>().velocity = Owner.GetComponent<Rigidbody>().velocity;
-                                            }
-
-                                            bullet.GetComponent<Rigidbody>().AddForce(direction * settings.ForceShoot);
-                                        }
-                                    }
+                                    bullet.Rb.velocity = rb.velocity;
                                 }
+                                bullet.Rb.AddForce(direction * settings.ForceShoot);
                             }
                         }
                     }
-
-                    if (settings.SoundGun.Length > 0)
-                    {
-                        if (m_audio)
-                        {
-                            m_audio.PlayOneShot(settings.SoundGun[UnityEngine.Random.Range(0, settings.SoundGun.Length)]);
-                        }
-                    }
-
-                    nextFireTime += settings.FireRate;
                 }
+
+                if (settings.SoundGun.Length > 0 && m_audio)
+                {
+                    m_audio.PlayOneShot(settings.SoundGun[UnityEngine.Random.Range(0, settings.SoundGun.Length)]);
+                }
+
+                nextFireTime += settings.FireRate;
+            }
+            else
+            {
+                StartCoroutine(Reload());
             }
         }
 
-        public void Shoot(Transform[] outShell)
+        public void SetOwner(IShip ownerShip)
         {
-            //if true it will shot always 
-            if (settings.InfinityAmmo)
-            {
-                settings.Ammo = 1;
-            }
-
-            if (settings.Ammo > 0)
-            {
-                //set next shot
-                if (Time.time > nextFireTime + settings.FireRate)
-                {
-                    Vector3 spread = new Vector3(UnityEngine.Random.Range(-settings.Spread, settings.Spread), UnityEngine.Random.Range(-settings.Spread, settings.Spread), UnityEngine.Random.Range(-settings.Spread, settings.Spread)) / 100;
-                    nextFireTime = Time.time;
-                    torqueTemp = TorqueSpeedAxis;
-                    Vector3 direction;
-                    settings.Ammo -= 1;
-
-                    //set bullets at transform of out shell
-                    Vector3 shellPosition = transform.position;
-                    Quaternion shellRotate = transform.rotation;
-
-                    if (outShell.Length > 0)
-                    {
-                        direction = outShell[currentOuter].transform.forward + spread;
-                        shellRotate = outShell[currentOuter].transform.rotation;
-                        shellPosition = outShell[currentOuter].transform.position;
-                    }
-                    else
-                    {
-                        direction = transform.forward + spread;
-                    }
-
-                    if (outShell.Length > 0)
-                    {
-                        currentOuter = (currentOuter + 1) % outShell.Length;
-                    }
-
-                    //bullet shot effekt
-                    if (settings.Muzzle)
-                    {
-                        if (!muzzle)
-                        {
-                            muzzle = Instantiate(settings.Muzzle, shellPosition, shellRotate);
-                        }
-
-                        muzzle.transform.parent = transform;
-                        muzzle.SetActive(true);
-
-                        if (outShell.Length > 0)
-                        {
-                            muzzle.transform.parent = outShell[currentOuter].transform;
-                        }
-                    }
-
-                    for (int i = 0; i < settings.NumBullet; i++)
-                    {
-                        if (settings.ShellPrefab)
-                        {
-                            GameObject bullet = null;
-
-                            if (!bullet)
-                            {
-                                for (int b = 0; b < SA_Manager.instance.BulletPool.Count; b++)
-                                {
-                                    if (SA_Manager.instance.BulletPool[b].id == poolID)
-                                    {
-                                        bullet = SA_Manager.instance.BulletPool[b].bullet.Find(x => x == !x.activeSelf);
-
-                                        if (!bullet)
-                                            return;
-
-                                        SA_DamageBase damangeBase = bullet.GetComponent<SA_DamageBase>();
-
-                                        if (damangeBase)
-                                        {
-                                            damangeBase.Owner = Owner;
-                                        }
-
-                                        SA_WeaponBase weaponBase = bullet.GetComponent<SA_WeaponBase>();
-
-                                        if (weaponBase)
-                                        {
-                                            weaponBase.Owner = Owner;
-                                            weaponBase.Target = Target;
-                                        }
-
-                                        bullet.transform.position = shellPosition;
-                                        bullet.transform.rotation = shellRotate;
-                                        bullet.transform.forward = direction;
-
-                                        bullet.SetActive(true);
-
-                                        if (bullet.GetComponent<Rigidbody>())
-                                        {
-                                            bullet.GetComponent<Rigidbody>().velocity = Vector3.zero;
-
-                                            if (Owner != null && Owner.GetComponent<Rigidbody>())
-                                            {
-                                                bullet.GetComponent<Rigidbody>().velocity = Owner.GetComponent<Rigidbody>().velocity;
-                                            }
-
-                                            bullet.GetComponent<Rigidbody>().AddForce(direction * settings.ForceShoot);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (settings.SoundGun.Length > 0)
-                    {
-                        if (m_audio)
-                        {
-                            m_audio.PlayOneShot(settings.SoundGun[UnityEngine.Random.Range(0, settings.SoundGun.Length)]);
-                        }
-                    }
-
-                    nextFireTime += settings.FireRate;
-                }
-            }
+            owner = ownerShip;
         }
     }
 }

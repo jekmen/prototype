@@ -42,23 +42,28 @@ namespace SpaceAI.WeaponSystem
                 {
                     // Traverse
                     Handles.color = new Color(1.0f, 0.5f, 0.5f, 0.1f);
-                    if (turret.limitTraverse)
+
+                    foreach (var turrBarrel in turret.turretBarrels)
                     {
-                        Handles.DrawSolidArc(turret.turretBarrels.position, turret.turretBarrels.up, turret.turretBarrels.forward, turret.rightTraverse, ArcSize);
-                        Handles.DrawSolidArc(turret.turretBarrels.position, turret.turretBarrels.up, turret.turretBarrels.forward, -turret.leftTraverse, ArcSize);
-                    }
-                    else
-                    {
-                        Handles.DrawSolidArc(turret.turretBarrels.position, turret.turretBarrels.up, turret.turretBarrels.forward, 360.0f, ArcSize);
+                        if (turret.limitTraverse)
+                        {
+                            Handles.DrawSolidArc(turrBarrel.position, turrBarrel.up, turrBarrel.forward, turret.rightTraverse, ArcSize);
+                            Handles.DrawSolidArc(turrBarrel.position, turrBarrel.up, turrBarrel.forward, -turret.leftTraverse, ArcSize);
+                        }
+                        else
+                        {
+                            Handles.DrawSolidArc(turrBarrel.position, turrBarrel.up, turrBarrel.forward, 360.0f, ArcSize);
+                        }
+
+                        // Elevation
+                        Handles.color = new Color(0.5f, 1.0f, 0.5f, 0.1f);
+                        Handles.DrawSolidArc(turrBarrel.position, turrBarrel.right, turrBarrel.forward, -turret.elevation, ArcSize);
+
+                        // Depression
+                        Handles.color = new Color(0.5f, 0.5f, 1.0f, 0.1f);
+                        Handles.DrawSolidArc(turrBarrel.position, turrBarrel.right, turrBarrel.forward, turret.depression, ArcSize);
                     }
 
-                    // Elevation
-                    Handles.color = new Color(0.5f, 1.0f, 0.5f, 0.1f);
-                    Handles.DrawSolidArc(turret.turretBarrels.position, turret.turretBarrels.right, turret.turretBarrels.forward, -turret.elevation, ArcSize);
-
-                    // Depression
-                    Handles.color = new Color(0.5f, 0.5f, 1.0f, 0.1f);
-                    Handles.DrawSolidArc(turret.turretBarrels.position, turret.turretBarrels.right, turret.turretBarrels.forward, turret.depression, ArcSize);
                 }
                 else
                 {

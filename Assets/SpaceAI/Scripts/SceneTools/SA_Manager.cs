@@ -1,4 +1,6 @@
-﻿using SpaceAI.Ship;
+﻿using SpaceAI.Events;
+using SpaceAI.Ship;
+using SpaceAI.WeaponSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,35 +10,61 @@ namespace SpaceAI.ScaneTools
 {
     public class SA_Manager : MonoBehaviour
     {
-        public static SA_Manager instance;
-
         [Serializable]
         public class Pool
         {
             public int id;
-            public List<GameObject> bullet = new List<GameObject>();
+            public List<SA_DamageSandler> bullet = new();
         }
 
         public GameObject[] shipPrefabs;
-        private List<GameObject> storedObjs = new List<GameObject>();
+        private List<GameObject> storedObjs = new();
         public int shipCount;
         public float initTime;
         private int m_count;
         private float t;
         private int i = 0;
 
-        public List<GameObject> SharedTargets { get; set; } = new List<GameObject>();
-        public List<Pool> BulletPool { get; set; } = new List<Pool>();
+        public List<IShip> SharedTargets { get; set; } = new List<IShip>();
+        public static List<Pool> BulletPool { get; set; } = new List<Pool>();
 
         private void Awake()
         {
             m_count = shipCount;
-            instance = this;
         }
 
         private void Start()
         {
             t = Time.time;
+        }
+
+        private void OnEnable()
+        {
+            EventsBus.AddEventListener<ShipRegistryEvent>(OnShipRegistryUpdate);
+            EventsBus.AddEventListener<ShipUnRegisterEvent>(OnShipUnRegisterUpdate);
+            EventsBus.AddEventListener<ShipTargetRequesEvent>(OnShipTargetUpdate);
+        }
+
+        private void OnDisable()
+        {
+            EventsBus.RemoveEventListener<ShipRegistryEvent>(OnShipRegistryUpdate);
+            EventsBus.RemoveEventListener<ShipUnRegisterEvent>(OnShipUnRegisterUpdate);
+            EventsBus.RemoveEventListener<ShipTargetRequesEvent>(OnShipTargetUpdate);
+        }
+
+        private void OnShipTargetUpdate(ShipTargetRequesEvent e)
+        {
+            GetTarget(e.Ship, e.ScanRange);
+        }
+
+        private void OnShipUnRegisterUpdate(ShipUnRegisterEvent e)
+        {
+            UnSubscribe(e.Ship);
+        }
+
+        private void OnShipRegistryUpdate(ShipRegistryEvent e)
+        {
+            Subscribe(e.Ship);
         }
 
         private void Update()
@@ -69,7 +97,7 @@ namespace SpaceAI.ScaneTools
         /// </summary>
         /// <param name="shipObj"></param>
         /// <param name="deactivate"></param>
-        public void UnSubscribe(GameObject shipObj, bool deactivate = false)
+        public void UnSubscribe(IShip shipObj, bool deactivate = false)
         {
             if (deactivate)
             {
@@ -79,7 +107,8 @@ namespace SpaceAI.ScaneTools
             {
                 SharedTargets.Remove(shipObj);
                 SharedTargets = SharedTargets.Where(x => x != null).Distinct().ToList();
-                Destroy(shipObj);
+                var ship = shipObj as Component;
+                Destroy(ship.gameObject);
             }
         }
 
@@ -87,7 +116,7 @@ namespace SpaceAI.ScaneTools
         /// Subscribe object
         /// </summary>
         /// <param name="shipObj"></param>
-        public void Subscribe(GameObject shipObj)
+        public void Subscribe(IShip shipObj)
         {
             if (!SharedTargets.Contains(shipObj))
             {
@@ -101,34 +130,31 @@ namespace SpaceAI.ScaneTools
         /// <param name="shipController"></param>
         /// <param name="scanRange"></param>
         /// <returns></returns>
-        public bool GetTarget(SA_ShipController shipController, float scanRange)
+        public bool GetTarget(IShip shipController, float scanRange)
         {
-            if (!shipController.EnemyTarget && SharedTargets != null)
+            if (!shipController.CurrentEnemy && SharedTargets != null)
             {
                 for (int i = 0; i < SharedTargets.Count; i++)
                 {
-                    for (int EnumMemberCount = 0; EnumMemberCount < shipController.Configuration.AIConfig.groupTypesToAction.Length; EnumMemberCount++)
+                    for (int EnumMemberCount = 0; EnumMemberCount < shipController.ShipConfiguration.AIConfig.GroupTypesToAction.Length; EnumMemberCount++)
                     {
-                        if (SharedTargets[i] && SharedTargets[i].GetComponent(typeof(IShip)))
+                        IShip tar = SharedTargets[UnityEngine.Random.Range(0, SharedTargets.Count)];
+
+                        if (tar.Ship() == shipController.ShipConfiguration.AIConfig.GroupTypesToAction[EnumMemberCount])
                         {
-                            IShip tar = SharedTargets[UnityEngine.Random.Range(0, SharedTargets.Count)].GetComponent(typeof(IShip)) as IShip;
+                            Component targetObject = tar as Component;
 
-                            if (tar.Ship() == shipController.Configuration.AIConfig.groupTypesToAction[EnumMemberCount])
+                            if (Vector3.Distance(shipController.CurrentShipTransform.position, targetObject.transform.position) < scanRange)
                             {
-                                Component targetObject = tar as Component;
-
-                                if (Vector3.Distance(shipController.transform.position, targetObject.transform.position) < scanRange)
-                                {
-                                    shipController.EnemyTarget = targetObject.gameObject;
-                                    shipController.SetTarget(targetObject.gameObject);
-                                    shipController.FollowTarget = true;
-                                    return true;
-                                }
+                                shipController.SetCurrentEnemy(targetObject.gameObject);
+                                shipController.SetTarget(targetObject.gameObject);
+                                shipController.CanFollowTarget(true);
+                                return true;
                             }
-                            else
-                            {
-                                return false;
-                            }
+                        }
+                        else
+                        {
+                            return false;
                         }
                     }
                 }

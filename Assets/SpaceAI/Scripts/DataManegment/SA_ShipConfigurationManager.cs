@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using UnityEngine;
 
@@ -10,8 +11,9 @@ namespace SpaceAI.DataManagment
     {
         public SA_MainConfigs MainConfig;
         public SA_AIConfifuration AIConfig;
+        public SA_ShieldsConfiguration ShieldsConfiguration;
         public SA_Options Options;
-
+        public SA_ShipSystems ShipSystems;
         [XmlIgnore] public SA_ItemsStaf Items;
 
         public string ItemDataPath;
@@ -33,12 +35,12 @@ namespace SpaceAI.DataManagment
             MainConfig.SpeedMax = MainConfig.Speed;
             MainConfig.SpeedMin = -10;
 
-            SA_FileManager.SaveXmlConfig(this, fileName);
+            SA_FileManager.SaveXmlConfigUnityOnly(this, fileName);
         }
 
         public SA_ShipConfigurationManager Load(string fileName)
         {
-            return SA_FileManager.LoadXmlConfig<SA_ShipConfigurationManager>(fileName);
+            return SA_FileManager.LoadXmlConfigUnityOnly<SA_ShipConfigurationManager>(fileName);
         }
 
         public void SetAsDefault()

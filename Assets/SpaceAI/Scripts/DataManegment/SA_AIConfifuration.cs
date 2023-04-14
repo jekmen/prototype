@@ -8,15 +8,19 @@ namespace SpaceAI.DataManagment
     [XmlRoot]
     public class SA_AIConfifuration
     {
-        public GroupType groupType;
-        public GroupType[] groupTypesToAction;
+        public GroupType GroupType;
+        public GroupType[] GroupTypesToAction;
+        public int ShipTargetScanRange;
+        public float TargetRequestFrequency;
 
         public SA_AIConfifuration() { }
 
-        public SA_AIConfifuration(GroupType groupType, GroupType[] groupTypesToAction = null)
+        public SA_AIConfifuration(GroupType groupType, GroupType[] groupTypesToAction, int shipTargetScanRange, float targetRequestFrequency)
         {
-            this.groupType = groupType;
-            this.groupTypesToAction = groupTypesToAction;
+            GroupType = groupType;
+            GroupTypesToAction = groupTypesToAction;
+            ShipTargetScanRange = shipTargetScanRange;
+            TargetRequestFrequency = targetRequestFrequency;
         }
     }
 }

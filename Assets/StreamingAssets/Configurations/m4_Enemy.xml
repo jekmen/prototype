@@ -3,17 +3,18 @@
   <name>m4_Enemy</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>93</Speed>
-    <SpeedMax>93</SpeedMax>
+    <Speed>187</Speed>
+    <SpeedMax>187</SpeedMax>
     <SpeedMin>-10</SpeedMin>
-    <RotationSpeed>1.8</RotationSpeed>
-    <PichSens>16</PichSens>
-    <YawSens>12</YawSens>
+    <MoveSpeedIncrease>7</MoveSpeedIncrease>
+    <RotationSpeed>2</RotationSpeed>
+    <PichSens>34</PichSens>
+    <YawSens>167</YawSens>
     <ShipMass>3293</ShipMass>
     <HP>200</HP>
+    <Prediction>880</Prediction>
     <DurableForce>17</DurableForce>
     <CollisionDamage>3</CollisionDamage>
-    <EnableShields>true</EnableShields>
     <patrolPoint>
       <x>0</x>
       <y>0</y>
@@ -35,14 +36,30 @@
     <MoveSpeed>0</MoveSpeed>
   </MainConfig>
   <AIConfig>
-    <groupType>Enemy</groupType>
-    <groupTypesToAction>
+    <GroupType>Enemy</GroupType>
+    <GroupTypesToAction>
       <GroupType>Player</GroupType>
-    </groupTypesToAction>
+    </GroupTypesToAction>
+    <ShipTargetScanRange>850</ShipTargetScanRange>
+    <TargetRequestFrequency>1.5</TargetRequestFrequency>
   </AIConfig>
+  <ShieldsConfiguration>
+    <EnableShields>false</EnableShields>
+    <CollisionEnter>false</CollisionEnter>
+    <DecaySpeed>2</DecaySpeed>
+    <ReactSpeed>0.1</ReactSpeed>
+    <FixNonUniformScale>true</FixNonUniformScale>
+    <ShieldPower>0</ShieldPower>
+  </ShieldsConfiguration>
   <Options>
     <useTurrets>true</useTurrets>
     <independentTurrets>false</independentTurrets>
   </Options>
+  <ShipSystems>
+    <shipSystemsScripts>
+      <string>SpaceAI.ShipSystems.SA_ObstacleSystem</string>
+      <string>SpaceAI.WeaponSystem.SA_WeaponController</string>
+    </shipSystemsScripts>
+  </ShipSystems>
   <ItemDataPath>Items/ItemsStafFighter</ItemDataPath>
 </SA_ShipConfigurationManager>

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: ItemsStafFighter
   m_EditorClassIdentifier: 
   HitSounds: []
-  ShipSystems:
-  - {fileID: 11400000, guid: 55f06be2f193ac241a05ba0ef732162e, type: 2}
   ExplousionEffect: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
     type: 3}
   OnFireParticle: {fileID: 3177043057931044737, guid: fcead70fdad582142b7137a40e9afd68,
+    type: 3}
+  ShieldPrefab: {fileID: 6600946848997053795, guid: d8220222587858d40a5ec548f8e5ac09,
     type: 3}

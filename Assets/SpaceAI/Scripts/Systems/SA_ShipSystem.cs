@@ -1,27 +1,28 @@
 ﻿using SpaceAI.Ship;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class SA_ShipSystem : ScriptableObject
+namespace SpaceAI.ShipSystems
 {
-    protected SA_BaseShip ship;
-    protected Action m_event;
-
-    public SA_ShipSystem(SA_BaseShip ship, bool enableLoop = false)
+    [Serializable]
+    public abstract class SA_ShipSystem : IShipSystem
     {
-        this.ship = ship;
-        if(enableLoop) RunTime();
-    }
+        protected IShip ship;
 
-    public abstract void CollisionEvent(Collision collision);
-
-    private async void RunTime()
-    {
-        while (Application.isPlaying && ship)
+        public SA_ShipSystem(IShip ship)
         {
-            m_event?.Invoke();
-            await Task.Yield();
+            this.ship = ship;
+        }
+
+        public SA_ShipSystem() { }
+
+        ~SA_ShipSystem() { }
+
+        public abstract IShipSystem Init(IShip ship, GameObject gameObject);
+
+        public virtual void ShipSystemEvent(Collision obj)
+        {
+            
         }
     }
 }
