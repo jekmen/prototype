@@ -17,9 +17,8 @@ namespace SpaceAI.WeaponSystem
         [Serializable]
         public class Settings
         {
-            public bool InfinityAmmo = false;
+            public ShellType ShellType;
             public Transform[] shellOuter;
-            public SA_DamageSandler ShellPrefab;
             public GameObject Muzzle;
             public float FireRate = 0.1f;
             public float Spread = 1;
@@ -29,17 +28,19 @@ namespace SpaceAI.WeaponSystem
             public int NumBullet = 1;
             public int Ammo = 10;
             public int AmmoMax = 10;
+            public bool InfinityAmmo = false;
             public AudioClip[] SoundGun;
             public AudioClip SoundReloading;
             public AudioClip SoundReloaded;
+
         }
 
         [SerializeField] private Settings settings;
 
+        private SA_DamageSandler shellPrefab;
         private AudioSource m_audio;
         private int currentOuter = 0;
         private float nextFireTime = 0;
-        private float reloadTimeTemp;
         private bool Reloading;
         private GameObject muzzle;
 
@@ -48,7 +49,7 @@ namespace SpaceAI.WeaponSystem
 
         Settings IWeapon.Settings => settings;
 
-        private void Start()
+        private void InitGuns()
         {
             if (!Owner)
                 Owner = transform.root.gameObject;
@@ -69,7 +70,7 @@ namespace SpaceAI.WeaponSystem
 
             for (int i = 0; i < settings.AmmoMax; i++)
             {
-                SA_DamageSandler bullet = Instantiate(settings.ShellPrefab, scenePool.transform);
+                SA_DamageSandler bullet = Instantiate(shellPrefab, scenePool.transform);
                 bullet.gameObject.SetActive(false);
                 pool.bullet.Add(bullet);
             }
@@ -82,7 +83,6 @@ namespace SpaceAI.WeaponSystem
             if (!Reloading && settings.Ammo <= 0)
             {
                 Reloading = true;
-                reloadTimeTemp = Time.time;
 
                 if (settings.SoundReloading && m_audio)
                 {
@@ -156,7 +156,7 @@ namespace SpaceAI.WeaponSystem
 
                 for (int i = 0; i < settings.NumBullet; i++)
                 {
-                    if (settings.ShellPrefab)
+                    if (shellPrefab)
                     {
                         SA_DamageSandler bullet = SA_Manager.BulletPool.Find(p => p.id == poolID).bullet.Find(b => !b.gameObject.activeSelf);
 
@@ -170,10 +170,12 @@ namespace SpaceAI.WeaponSystem
                             if (bullet.Rb)
                             {
                                 bullet.Rb.velocity = Vector3.zero;
+
                                 if (Owner?.GetComponent<Rigidbody>() is Rigidbody rb)
                                 {
                                     bullet.Rb.velocity = rb.velocity;
                                 }
+
                                 bullet.Rb.AddForce(direction * settings.ForceShoot);
                             }
                         }
@@ -196,6 +198,19 @@ namespace SpaceAI.WeaponSystem
         public void SetOwner(IShip ownerShip)
         {
             owner = ownerShip;
+        }
+
+        public void SetFireShells(SA_DamageSandler[] shellPrefab)
+        {
+            foreach (var shell in shellPrefab)
+            {
+                if (shell.ShellType == settings.ShellType)
+                {
+                    this.shellPrefab = shell;
+
+                    InitGuns();
+                }
+            }
         }
     }
 }

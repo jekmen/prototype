@@ -9888,6 +9888,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2626935600060740504}
     m_Modifications:
+    - target: {fileID: 3566391051409345944, guid: db58327fc7493ee47971d80e830a80f1,
+        type: 3}
+      propertyPath: settings.ShellType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3566391051998611444, guid: db58327fc7493ee47971d80e830a80f1,
         type: 3}
       propertyPath: m_Name

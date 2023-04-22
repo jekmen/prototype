@@ -17,28 +17,20 @@ namespace SpaceAI.Weapons
             }
 
             public MissileType missileType;
-            public float detonationDistance;
-            public float lifeTime; // Missile life time
-            public float velocity; // Missile velocity
+            public float velocity;
             public float alignSpeed;
-            public float RaycastAdvance; // Raycast advance multiplier
 
-            public MissileSettings(MissileType type, float detonationDis, float lifeTime, float velocity, float alignSpeed, float RaycastAdvance)
+            public MissileSettings(MissileType type, float velocity, float alignSpeed)
             {
                 missileType = type;
-                detonationDistance = detonationDis;
-                this.lifeTime = lifeTime;
                 this.velocity = velocity;
                 this.alignSpeed = alignSpeed;
-                this.RaycastAdvance = RaycastAdvance;
             }
         }
 
         public MissileSettings missaleSettings;
 
-        private Transform m_transform; // Cached transform
-        private bool isHit = false; // Missile hit flag
-        private float timer = 0f; // Missile timer
+        private Transform m_transform;
         private Vector3 targetLastPos;
         private Vector3 step;
 
@@ -47,61 +39,34 @@ namespace SpaceAI.Weapons
             m_transform = transform;
         }
 
-        void OnHit()
-        {
-        }
-
         void FixedUpdate()
         {
-            // If something was hit
-            if (!isHit)
+            if (Target)
             {
-                // Navigate
-                if (Target)
+                if (missaleSettings.missileType == MissileSettings.MissileType.Predictive)
                 {
-                    if (missaleSettings.missileType == MissileSettings.MissileType.Predictive)
-                    {
-                        Vector3 hitPos = Predict(m_transform.position, Target.transform.position, targetLastPos, missaleSettings.velocity);
-                        targetLastPos = Target.transform.position;
+                    Vector3 hitPos = Predict(m_transform.position, Target.transform.position, targetLastPos, missaleSettings.velocity);
+                    targetLastPos = Target.transform.position;
 
-                        m_transform.rotation = Quaternion.Lerp(m_transform.rotation,
-                            Quaternion.LookRotation(hitPos - m_transform.position), Time.deltaTime * missaleSettings.alignSpeed);
-                    }
-                    else if (missaleSettings.missileType == MissileSettings.MissileType.Guided)
-                    {
-                        m_transform.rotation = Quaternion.Lerp(m_transform.rotation,
-                            Quaternion.LookRotation(Target.transform.position - m_transform.position), Time.deltaTime * missaleSettings.alignSpeed);
-                    }
+                    m_transform.rotation = Quaternion.Lerp(m_transform.rotation,
+                        Quaternion.LookRotation(hitPos - m_transform.position), Time.deltaTime * missaleSettings.alignSpeed);
                 }
-                // Missile step per frame based on velocity and time
-                step = m_transform.forward * Time.deltaTime * missaleSettings.velocity;
-
-                if (Target != null && missaleSettings.missileType != MissileSettings.MissileType.Unguided &&
-                    Vector3.SqrMagnitude(m_transform.position - Target.transform.position) <= missaleSettings.detonationDistance)
+                else if (missaleSettings.missileType == MissileSettings.MissileType.Guided)
                 {
-                    OnHit();
+                    m_transform.rotation = Quaternion.Lerp(m_transform.rotation,
+                        Quaternion.LookRotation(Target.transform.position - m_transform.position), Time.deltaTime * missaleSettings.alignSpeed);
                 }
-                else
-                {
-                    // Despawn missile at the end of life cycle
-                    if (timer >= missaleSettings.lifeTime)
-                    {
-                        OnHit();
-                    }
-                }
-                // Advances missile forward
-                m_transform.position += step;
             }
-            // Updates missile timer
-            timer += Time.deltaTime;
+
+            step = m_transform.forward * Time.deltaTime * missaleSettings.velocity;
+
+            m_transform.position += step;
         }
 
         public static Vector3 Predict(Vector3 sPos, Vector3 tPos, Vector3 tLastPos, float pSpeed)
         {
-            // Target velocity
             Vector3 tVel = (tPos - tLastPos) / Time.deltaTime;
 
-            // Time to reach the target
             float flyTime = GetProjFlightTime(tPos - sPos, tVel, pSpeed);
 
             if (flyTime > 0)

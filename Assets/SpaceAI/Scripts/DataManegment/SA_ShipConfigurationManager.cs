@@ -45,7 +45,23 @@ namespace SpaceAI.DataManagment
 
         public void SetAsDefault()
         {
-            MainConfig = new SA_MainConfigs(UnityEngine.Random.Range(78, 146), UnityEngine.Random.Range(0.6F, 1), UnityEngine.Random.Range(10, 20), UnityEngine.Random.Range(15, 30), UnityEngine.Random.Range(780, 3460), UnityEngine.Random.Range(100, 1000), UnityEngine.Random.Range(15, 50), UnityEngine.Random.Range(2, 15), UnityEngine.Random.Range(1000, 1800));
+            MainConfig = new SA_MainConfigs
+            {
+                Speed = 187,
+                RotationSpeed = 1.2F,
+                MinPitchSens = 90,
+                MinYawSens = 180,
+                MaxYawSens = 180,
+                MaxPitchSens = 180,
+                MaxPitchAngle = 180,
+                MaxYawAngle = 180,
+                ShipMass = 3987,
+                HP = 200,
+                Prediction = 800,
+                DurableForce = 17,
+                CollisionDamage = 3,
+                flyDistance = 1200
+            };
         }
     }
 }

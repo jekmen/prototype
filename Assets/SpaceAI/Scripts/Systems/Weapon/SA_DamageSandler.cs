@@ -1,5 +1,6 @@
 ﻿using SpaceAI.Core;
 using SpaceAI.Ship;
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -7,17 +8,14 @@ namespace SpaceAI.WeaponSystem
 {
     public class SA_DamageSandler : SA_DamageBase
     {
+        public ShellType ShellType;
         public bool Explosive;
         public float ExplosionRadius = 20;
         public float ExplosionForce = 1000;
-        public float TimeActive = 0;
-        public bool RandomTimeActive;
         public float DestryAfterDuration = 10;
 
         private GameObject storedEffect;
         private Collider[] colliders;
-        private float timetemp = 0;
-
 
         private void OnEnable()
         {
@@ -38,11 +36,6 @@ namespace SpaceAI.WeaponSystem
 
             Deactivate(gameObject, DestryAfterDuration);
 
-            timetemp = Time.time;
-
-            if (RandomTimeActive)
-                TimeActive = Random.Range(TimeActive / 2f, TimeActive);
-
             Physics.IgnoreCollision(GetComponent<Collider>(), Owner.GetComponent<Collider>());
 
             foreach (Collider col in colliders)
@@ -51,33 +44,21 @@ namespace SpaceAI.WeaponSystem
             }
         }
 
-        private void Update()
-        {
-            if (TimeActive > 0)
-            {
-                if (Time.time >= (timetemp + TimeActive))
-                {
-                    Active();
-                }
-            }
-        }
-
         public void Active()
         {
-            if (_explousionEffectPrefab)
+            if (explousionEffectPrefab)
             {
                 if (!storedEffect)
                 {
-                    storedEffect = Instantiate(_explousionEffectPrefab, transform.position, transform.rotation);
+                    storedEffect = Instantiate(explousionEffectPrefab, transform.position, transform.rotation);
                 }
                 else
                 {
-                    storedEffect.transform.position = transform.position;
-                    storedEffect.transform.rotation = transform.rotation;
+                    storedEffect.transform.SetPositionAndRotation(transform.position, transform.rotation);
                     storedEffect.SetActive(true);
                 }
 
-                Deactivate(storedEffect, _lifeTimeEffect);
+                Deactivate(storedEffect, lifeTimeEffect);
             }
 
             if (Explosive)
@@ -85,12 +66,12 @@ namespace SpaceAI.WeaponSystem
                 ExplosionDamage();
             }
 
-            if (_explosionSound && !_explosionSound.isPlaying)
+            if (explosionSound && !explosionSound.isPlaying)
             {
-                _explosionSound.Play();
+                explosionSound.Play();
                 GetComponent<Renderer>().enabled = false;
                 GetComponent<Collider>().enabled = false;
-                Deactivate(gameObject, Random.Range(1, _explosionSound.clip.length));
+                Deactivate(gameObject, UnityEngine.Random.Range(1, explosionSound.clip.length));
             }
             else
             {
@@ -108,10 +89,11 @@ namespace SpaceAI.WeaponSystem
             if (!Application.isPlaying)
                 return;
 
-            await Task.Delay((int)time * 1000);
+            await Task.Delay(TimeSpan.FromSeconds(time));
 
             if (!Application.isPlaying)
                 return;
+
             gameObject.SetActive(false);
         }
 
@@ -128,7 +110,7 @@ namespace SpaceAI.WeaponSystem
 
                 if (hit.gameObject.GetComponent<IDamage>() is IDamage damagebleComponent)
                 {
-                    damagebleComponent.ApplyDamage(_damage, Owner);
+                    damagebleComponent.ApplyDamage(damage, Owner);
                 }
 
                 if (hit.GetComponent<Rigidbody>())
@@ -159,7 +141,7 @@ namespace SpaceAI.WeaponSystem
             {
                 if (!Explosive)
                 {
-                    damagebleComponent.ApplyDamage(_damage, Owner);
+                    damagebleComponent.ApplyDamage(damage, Owner);
                 }
 
                 Active();

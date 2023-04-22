@@ -5,27 +5,27 @@ namespace SpaceAI.WeaponSystem
 {
     public class SA_DamageBase : MonoBehaviour, IDamageSendler
     {
-        [SerializeField] protected Rigidbody _rb;
-        [SerializeField] protected GameObject _explousionEffectPrefab;
-        [SerializeField] protected AudioSource _explosionSound;
-        [SerializeField] protected float _lifeTimeEffect = 3;
-        [SerializeField] protected int _damage = 20;
+        [SerializeField] protected Rigidbody rb;
+        [SerializeField] protected GameObject explousionEffectPrefab;
+        [SerializeField] protected AudioSource explosionSound;
+        [SerializeField] protected float lifeTimeEffect = 3;
+        [SerializeField] protected int damage = 20;
 
-        private GameObject _owner;
-        private GameObject _target;
+        private GameObject owner;
+        private GameObject target;
 
-        public Rigidbody Rb => _rb;
-        public GameObject Owner => _owner;
-        public GameObject Target => _target;
+        public Rigidbody Rb => rb;
+        public GameObject Owner => owner;
+        public GameObject Target => target;
 
         public void SetOwner(GameObject owner)
         {
-            _owner = owner;
+            this.owner = owner;
         }
 
         public void SetTarget(GameObject target)
         {
-            _target = target;
+            this.target = target;
         }
     }
 

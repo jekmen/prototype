@@ -17,9 +17,15 @@ MonoBehaviour:
     SpeedMax: 167
     SpeedMin: -10
     MoveSpeedIncrease: 2
-    RotationSpeed: 2.8
+    RotationSpeed: 1.2
     PichSens: 47
-    YawSens: 160
+    YawSens: 67
+    MinPitchSens: 90
+    MinYawSens: 90
+    MaxYawSens: 180
+    MaxPitchSens: 180
+    MaxPitchAngle: 180
+    MaxYawAngle: 180
     ShipMass: 3456
     HP: 300
     Prediction: 850
@@ -52,4 +58,4 @@ MonoBehaviour:
     - SpaceAI.ShipSystems.SA_Shield
     - SpaceAI.WeaponSystem.SA_WeaponController
   Items: {fileID: 11400000, guid: f955c479492286848ae3a38cb44dbf9a, type: 2}
-  ItemDataPath: Items/ItemsStafFighter
+  ItemDataPath: Items/ItemsStafFighter_green

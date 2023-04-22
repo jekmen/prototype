@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SpaceAI.WeaponSystem;
+using UnityEngine;
 
 namespace SpaceAI.DataManagment
 {
@@ -8,5 +9,6 @@ namespace SpaceAI.DataManagment
         public GameObject ExplousionEffect;
         public ParticleSystem OnFireParticle;
         public GameObject ShieldPrefab;
+        public SA_DamageSandler[] ShellPrefab;
     }
 }

@@ -17,9 +17,15 @@ MonoBehaviour:
     SpeedMax: 187
     SpeedMin: -10
     MoveSpeedIncrease: 7
-    RotationSpeed: 2
-    PichSens: 34
-    YawSens: 167
+    RotationSpeed: 1.5
+    PichSens: 30
+    YawSens: 86
+    MinPitchSens: 90
+    MinYawSens: 280
+    MaxYawSens: 180
+    MaxPitchSens: 180
+    MaxPitchAngle: 180
+    MaxYawAngle: 180
     ShipMass: 3293
     HP: 200
     Prediction: 880
@@ -33,12 +39,12 @@ MonoBehaviour:
     ShipTargetScanRange: 850
     TargetRequestFrequency: 1.5
   ShieldsConfiguration:
-    EnableShields: 0
-    CollisionEnter: 0
+    EnableShields: 1
+    CollisionEnter: 1
     DecaySpeed: 2
     ReactSpeed: 0.1
     FixNonUniformScale: 1
-    ShieldPower: 0
+    ShieldPower: 100
   Options:
     useTurrets: 1
     independentTurrets: 0
@@ -46,8 +52,10 @@ MonoBehaviour:
     shipSystems:
     - {fileID: 11500000, guid: 3ebc3ae6332d6b447bebb4d42dadb155, type: 3}
     - {fileID: 11500000, guid: 491d790369ca21d4b990819b087f5e75, type: 3}
+    - {fileID: 11500000, guid: 1f4705e0a5d65df48883a8b7fee08f35, type: 3}
     shipSystemsScripts:
     - SpaceAI.ShipSystems.SA_ObstacleSystem
     - SpaceAI.WeaponSystem.SA_WeaponController
-  Items: {fileID: 11400000, guid: f955c479492286848ae3a38cb44dbf9a, type: 2}
-  ItemDataPath: Items/ItemsStafFighter
+    - SpaceAI.ShipSystems.SA_Shield
+  Items: {fileID: 11400000, guid: 218bb3bcafb915a4ab06cce0ddb74caf, type: 2}
+  ItemDataPath: Items/ItemsStafFighter_red

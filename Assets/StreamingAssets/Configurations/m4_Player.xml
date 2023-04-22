@@ -7,9 +7,15 @@
     <SpeedMax>167</SpeedMax>
     <SpeedMin>-10</SpeedMin>
     <MoveSpeedIncrease>2</MoveSpeedIncrease>
-    <RotationSpeed>2.8</RotationSpeed>
+    <RotationSpeed>1.2</RotationSpeed>
     <PichSens>47</PichSens>
-    <YawSens>160</YawSens>
+    <YawSens>67</YawSens>
+    <MinPitchSens>90</MinPitchSens>
+    <MinYawSens>90</MinYawSens>
+    <MaxYawSens>180</MaxYawSens>
+    <MaxPitchSens>180</MaxPitchSens>
+    <MaxPitchAngle>180</MaxPitchAngle>
+    <MaxYawAngle>180</MaxYawAngle>
     <ShipMass>3456</ShipMass>
     <HP>300</HP>
     <Prediction>850</Prediction>
@@ -62,5 +68,5 @@
       <string>SpaceAI.WeaponSystem.SA_WeaponController</string>
     </shipSystemsScripts>
   </ShipSystems>
-  <ItemDataPath>Items/ItemsStafFighter</ItemDataPath>
+  <ItemDataPath>Items/ItemsStafFighter_green</ItemDataPath>
 </SA_ShipConfigurationManager>

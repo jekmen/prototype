@@ -1,39 +1,43 @@
-﻿using SpaceAI.FSM;
+﻿using SpaceAI.Events;
+using SpaceAI.FSM;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpaceAI.Ship
 {
     public class SA_ShipController : SA_BaseShip
     {
-        private GameObject enemyTarget;
+        private bool isReady = false;
 
-        protected override void Start()
+        protected override void OnSystemsReady(ShipSystemsInitedEvent e)
         {
-            base.Start();
+            isReady = ShipConfiguration;
 
-            aIProvider = new SA_AIProvider(this);
+            if (isReady)
+            {
+                aIProvider = new SA_AIProvider(this);
 
-            aIProvider.CreateBaseModelFSM();
+                aIProvider.CreateBaseModelFSM();
+            }
         }
 
         private void FixedUpdate()
         {
+            if (!isReady) return;
+
             aIProvider.LoopStates();
 
             Move();
         }
 
-        private void LateUpdate()
-        {
-            obstacleSystem.OvoideObstacles();
-        }
-
         protected override void Move()
         {
+            Vector3 relativePoint = transform.InverseTransformPoint(GetCurrentTargetPosition).normalized;
+
             if (followTarget)
             {
-                Vector3 relativePoint = transform.InverseTransformPoint(GetCurrentTargetPosition).normalized;
-
                 if (CurrentShipSize < 50)
                 {
                     ShipConfiguration.MainConfig.MainRot = Quaternion.LookRotation(GetCurrentTargetPosition - transform.position);
@@ -49,12 +53,18 @@ namespace SpaceAI.Ship
                         ShipConfiguration.MainConfig.MainRot = Quaternion.LookRotation(GetCurrentTargetPosition - transform.position);
                     }
                 }
-
-                var shipRotation = Quaternion.LerpUnclamped(rb.rotation, ShipConfiguration.MainConfig.MainRot, Time.deltaTime * ShipConfiguration.MainConfig.RotationSpeed) *
-                                   Quaternion.Euler(-relativePoint.y * (Time.deltaTime * ShipConfiguration.MainConfig.PichSens), 0, -relativePoint.x * (Time.deltaTime * ShipConfiguration.MainConfig.YawSens));
-
-                rb.rotation = shipRotation;
             }
+
+            float pitchAngle = Vector3.SignedAngle(transform.forward, Vector3.ProjectOnPlane(rb.velocity, transform.right), transform.right);
+            float yawAngle = Vector3.SignedAngle(transform.forward, Vector3.ProjectOnPlane(rb.velocity, transform.up), transform.up);
+
+            float pitchSens = Mathf.Lerp(ShipConfiguration.MainConfig.MinPitchSens, ShipConfiguration.MainConfig.MaxPitchSens, Mathf.InverseLerp(0f, ShipConfiguration.MainConfig.MaxPitchAngle, Mathf.Abs(pitchAngle)));
+            float yawSens = Mathf.Lerp(ShipConfiguration.MainConfig.MinYawSens, ShipConfiguration.MainConfig.MaxYawSens, Mathf.InverseLerp(0f, ShipConfiguration.MainConfig.MaxYawAngle, Mathf.Abs(yawAngle)));
+
+            var shipRotation = Quaternion.Lerp(rb.rotation, ShipConfiguration.MainConfig.MainRot, Time.deltaTime * ShipConfiguration.MainConfig.RotationSpeed) *
+                               Quaternion.Euler(-relativePoint.y * (Time.deltaTime * pitchSens), 0, -relativePoint.x * (Time.deltaTime * yawSens));
+
+            rb.rotation = shipRotation;
 
             MovmentCalculation();
         }

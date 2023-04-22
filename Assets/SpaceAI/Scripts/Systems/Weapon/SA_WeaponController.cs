@@ -24,6 +24,7 @@ namespace SpaceAI.WeaponSystem
             foreach (var weapon in WeaponLists)
             {
                 weapon.SetOwner(ownerShip);
+                weapon.SetFireShells(ownerShip.ShipConfiguration.Items.ShellPrefab);
             }
         }
 
@@ -54,12 +55,7 @@ namespace SpaceAI.WeaponSystem
 
         public void SwitchWeapon()
         {
-            CurrentWeapon++;
-
-            if (CurrentWeapon >= WeaponLists.Count)
-            {
-                CurrentWeapon = 0;
-            }
+            CurrentWeapon = CurrentWeapon++ % WeaponLists.Count;
         }
 
         public void LaunchWeapons()

@@ -14,8 +14,12 @@ namespace SpaceAI.DataManagment
         [HideInInspector] public float SpeedMin;
         public float MoveSpeedIncrease;
         public float RotationSpeed;
-        public float PichSens;
-        public float YawSens;
+        public float MinPitchSens;
+        public float MinYawSens;
+        public float MaxYawSens;
+        public float MaxPitchSens;
+        public float MaxPitchAngle;
+        public float MaxYawAngle;
         public float ShipMass;
         [Header("Damage Settings")]
         public float HP;
@@ -26,19 +30,24 @@ namespace SpaceAI.DataManagment
         public Vector3 patrolPoint;
         public float flyDistance;
 
-
         public SA_MainConfigs() { }
 
-        public SA_MainConfigs(float Speed, float RotationSpeed, float PichSens, float YawSens, float ShipMass, float HP, float DurableForce, float CollisionDamage, float flyDistance)
+        public SA_MainConfigs(float speed, float moveSpeedIncrease, float rotationSpeed, float minPitchSens, float minYawSens, float maxYawSens, float maxPitchSens, float maxPitchAngle, float maxYawAngle, float shipMass, float hP, float prediction, float durableForce, float collisionDamage, float flyDistance)
         {
-            this.Speed = Speed;
-            this.RotationSpeed = RotationSpeed;
-            this.PichSens = PichSens;
-            this.YawSens = YawSens;
-            this.ShipMass = ShipMass;
-            this.HP = HP;
-            this.DurableForce = DurableForce;
-            this.CollisionDamage = CollisionDamage;
+            Speed = speed;
+            MoveSpeedIncrease = moveSpeedIncrease;
+            RotationSpeed = rotationSpeed;
+            MinPitchSens = minPitchSens;
+            MinYawSens = minYawSens;
+            MaxYawSens = maxYawSens;
+            MaxPitchSens = maxPitchSens;
+            MaxPitchAngle = maxPitchAngle;
+            MaxYawAngle = maxYawAngle;
+            ShipMass = shipMass;
+            HP = hP;
+            Prediction = prediction;
+            DurableForce = durableForce;
+            CollisionDamage = collisionDamage;
             this.flyDistance = flyDistance;
         }
 

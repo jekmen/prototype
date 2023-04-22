@@ -91,7 +91,7 @@ namespace SpaceAI.ShipSystems
 
         private async void ReturnToTarget()
         {
-            await Task.Delay(TimeSpan.FromSeconds(0.5F));
+            await Task.Delay(TimeSpan.FromSeconds(0.3F));
 
             ship.SetTarget(storeTarget);
             savePos = false;

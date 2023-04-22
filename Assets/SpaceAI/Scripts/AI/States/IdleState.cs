@@ -19,7 +19,7 @@ namespace SpaceAI.FSM
 
         public IdleState(IShip obj) : base(obj)
         {
-            stateID = StateID.Idle;
+            stateID = StateID.Idle;            
 
             scanRange = owner.ShipConfiguration.AIConfig.ShipTargetScanRange;
             requestFrequency = owner.ShipConfiguration.AIConfig.TargetRequestFrequency;

@@ -94,19 +94,23 @@ namespace SpaceAI.FSM
 
         public override void Reason()
         {
-            var disToTarget = (owner.CurrentShipTransform.position - owner.CurrentEnemy.transform.position).magnitude;
-
             if (!owner.WayIsFree())
             {
                 owner.CurrentAIProvider.FSM.PerformTransition(Transition.Patrol);
+
+                return;
             }
 
-            if (owner.CurrentEnemy && disToTarget < toClose)
+            if (owner.CurrentEnemy)
             {
-                owner.CurrentAIProvider.FSM.PerformTransition(Transition.Turn);
-            }
+                var disToTarget = (owner.CurrentShipTransform.position - owner.CurrentEnemy.transform.position).magnitude;
 
-            if (!owner.CurrentEnemy)
+                if (disToTarget < toClose)
+                {
+                    owner.CurrentAIProvider.FSM.PerformTransition(Transition.Turn);
+                }
+            }
+            else
             {
                 owner.CurrentAIProvider.FSM.PerformTransition(Transition.Patrol);
             }

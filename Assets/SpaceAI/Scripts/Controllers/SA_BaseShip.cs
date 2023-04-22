@@ -6,6 +6,7 @@ using SpaceAI.ScaneTools;
 using SpaceAI.ShipSystems;
 using SpaceAI.WeaponSystem;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -19,13 +20,13 @@ namespace SpaceAI.Ship
         [HideInInspector] public string configFileName;
 
         protected SA_AIProvider aIProvider;
-        protected SA_ObstacleSystem obstacleSystem;
         protected Vector3 velocityTarget = Vector3.zero;
         protected bool followTarget;
         protected Rigidbody rb;
 
         protected Vector3 SetVelocityTarget(Vector3 vector) { velocityTarget = vector; return velocityTarget; }
 
+        private SA_ObstacleSystem obstacleSystem;
         private ShipSystemFactory shipSystemFactory;
         private SA_ShipConfigurationManager shipConfiguration;
         private SA_WeaponController weaponController;
@@ -35,6 +36,9 @@ namespace SpaceAI.Ship
         private Mesh meshObj;
         private SA_Shield shield = null;
         private ParticleSystem onFire;
+
+        private ShipRegistryEvent shipRegistryEvent;
+        private ShipSystemsInitedEvent shipSystemsInitedEvent;
 
         private readonly HashSet<IShipSystem> shipSystems = new();
 
@@ -54,9 +58,14 @@ namespace SpaceAI.Ship
 
         public event Action<Collision> CollisionEvent;
 
-        protected virtual void Start()
-        {            
-            InitShipComponents();
+        protected virtual IEnumerator Start()
+        {
+            yield return StartCoroutine(InitShipComponents());
+
+            while (true)
+            {
+                yield return StartCoroutine(RunBuildInSystems());
+            }
         }
 
         private void Update()
@@ -66,11 +75,18 @@ namespace SpaceAI.Ship
                 shield = null;//TODO: fix it in next update
             }
 
-            if (shield != null) shield.UpdateFade();            
+            if (shield != null) shield.UpdateFade();
+        }
+
+        protected virtual void OnEnable()
+        {
+            EventsBus.AddEventListener<ShipSystemsInitedEvent>(OnSystemsReady);
         }
 
         protected virtual void OnDisable()
         {
+            EventsBus.RemoveEventListener<ShipSystemsInitedEvent>(OnSystemsReady);
+
             foreach (var system in shipSystems)
             {
                 if (system != null)
@@ -85,15 +101,31 @@ namespace SpaceAI.Ship
             CollisionEvent?.Invoke(collision);
         }
 
-        private void InitShipComponents()
+        private IEnumerator RunBuildInSystems()
         {
-            LoadShipDataUnityOnly();
+            yield return new WaitForEndOfFrame();
 
+            obstacleSystem.OvoideObstacles();
+        }
+
+        private IEnumerator InitShipComponents()
+        {
+            shipRegistryEvent = new ShipRegistryEvent(this);
+
+            yield return null;
+
+#if UNITY_EDITOR
+            LoadShipDataUnityOnly();
+#else
+            yield return StartCoroutine(LoadShipData());
+#endif
             GetComponents();
-            
+
             InitBuildInSystems();
 
-            EventsBus.Publish(new ShipRegistryEvent(this));
+            EventsBus.Publish(shipRegistryEvent);
+
+            EventsBus.Publish(shipSystemsInitedEvent);
         }
 
         private void GetComponents()
@@ -112,6 +144,20 @@ namespace SpaceAI.Ship
             }
         }
 
+        /// <summary>
+        /// Method for builds
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator LoadShipData()
+        {
+            yield return StartCoroutine(SA_FileManager.CopyShipTemplateFile(configFileName));
+            shipConfiguration = SA_FileManager.LoadXml<SA_ShipConfigurationManager>(configFileName);
+            shipConfiguration.Items = Resources.Load<SA_ItemsStaf>(shipConfiguration.ItemDataPath);
+        }
+
+        /// <summary>
+        /// Editor only method
+        /// </summary>
         private void LoadShipDataUnityOnly()
         {
             shipConfiguration = SA_FileManager.LoadXmlConfigUnityOnly<SA_ShipConfigurationManager>(configFileName);
@@ -135,6 +181,7 @@ namespace SpaceAI.Ship
             }
         }
 
+#if UNITY_EDITOR
         public void Validate()
         {
             rb = GetComponent<Rigidbody>();
@@ -142,8 +189,11 @@ namespace SpaceAI.Ship
             rb.drag = 0.8F;
             rb.angularDrag = 0.5F;
         }
+#endif
 
         protected abstract void Move();
+
+        protected abstract void OnSystemsReady(ShipSystemsInitedEvent e);
 
         private void OnDeathCome()
         {
@@ -178,12 +228,12 @@ namespace SpaceAI.Ship
 
         public bool WayIsFree()
         {
-            switch (obstacleSystem.M_ObstacleState)
+            return obstacleSystem.M_ObstacleState switch
             {
-                case SA_ObstacleSystem.ObstacleState.Scan: return true;
-                case SA_ObstacleSystem.ObstacleState.GoToEscapeDirection: return false;
-                default: return false;
-            }
+                SA_ObstacleSystem.ObstacleState.Scan => true,
+                SA_ObstacleSystem.ObstacleState.GoToEscapeDirection => false,
+                _ => false,
+            };
         }
 
         public bool CanFollowTarget(bool followTarget)
@@ -207,5 +257,6 @@ namespace SpaceAI.Ship
         }
 
         #endregion
+
     }
 }
