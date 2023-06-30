@@ -49,12 +49,6 @@ namespace SpaceAI.DataManagment
             {
                 Speed = 187,
                 RotationSpeed = 1.2F,
-                MinPitchSens = 90,
-                MinYawSens = 180,
-                MaxYawSens = 180,
-                MaxPitchSens = 180,
-                MaxPitchAngle = 180,
-                MaxYawAngle = 180,
                 ShipMass = 3987,
                 HP = 200,
                 Prediction = 800,

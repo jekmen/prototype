@@ -56,6 +56,8 @@ namespace SpaceAI.Ship
 
         public Transform CurrentShipTransform => transform;
 
+        public Mesh CurrentMesh => meshObj;
+
         public event Action<Collision> CollisionEvent;
 
         protected virtual IEnumerator Start()
@@ -66,16 +68,6 @@ namespace SpaceAI.Ship
             {
                 yield return StartCoroutine(RunBuildInSystems());
             }
-        }
-
-        private void Update()
-        {
-            if (shield != null && !ShipConfiguration.ShieldsConfiguration.EnableShields)
-            {
-                shield = null;//TODO: fix it in next update
-            }
-
-            if (shield != null) shield.UpdateFade();
         }
 
         protected virtual void OnEnable()
@@ -106,6 +98,13 @@ namespace SpaceAI.Ship
             yield return new WaitForEndOfFrame();
 
             obstacleSystem.OvoideObstacles();
+
+            if (shield != null && !ShipConfiguration.ShieldsConfiguration.EnableShields)
+            {
+                shield = null;//TODO: fix it in next update
+            }
+
+            if (shield != null) shield.UpdateFade();
         }
 
         private IEnumerator InitShipComponents()
@@ -130,8 +129,19 @@ namespace SpaceAI.Ship
 
         private void GetComponents()
         {
+            var mfilter = GetComponent<MeshFilter>();
+
+            if (!mfilter)
+            {
+                meshObj = GetComponentInChildren<MeshFilter>().mesh;
+                
+            }
+            else
+            {
+                meshObj = GetComponent<MeshFilter>().mesh;
+            }
+
             rb = GetComponent<Rigidbody>();
-            meshObj = GetComponent<MeshFilter>().mesh;
             rb.mass = shipConfiguration.MainConfig.ShipMass;
             shipSize = meshObj.bounds.size.x + meshObj.bounds.size.y + meshObj.bounds.size.z;
 

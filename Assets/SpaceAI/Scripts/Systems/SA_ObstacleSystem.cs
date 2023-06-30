@@ -31,10 +31,13 @@ namespace SpaceAI.ShipSystems
 
         private Vector3 storeTarget;
         private Vector3 newTargetPos;
+        private Vector3 oldTargetPos;
         private bool savePos;
         private bool overrideTarget;
         private float shipSpeed;
         private float wingSpan;
+        private float executeTime = 3;
+        private float maxStateTime = 3;
         private readonly List<EscapeDirections> escapeDirections = new List<EscapeDirections>();
 
         public ObstacleState M_ObstacleState { get; private set; }
@@ -44,8 +47,7 @@ namespace SpaceAI.ShipSystems
         public SA_ObstacleSystem(IShip ship) : base(ship)
         {
             this.ship = ship;
-            var com = ship as SA_BaseShip;
-            wingSpan = com.GetComponent<MeshFilter>().mesh.bounds.size.x;
+            wingSpan = ship.CurrentMesh.bounds.size.x * 2;
         }
 
         public override IShipSystem Init(IShip ship, GameObject gameObject)
@@ -73,15 +75,21 @@ namespace SpaceAI.ShipSystems
                     float distanceToTarget = Vector3.Distance(ship.CurrentShipTransform.position, newTargetPos);
                     float timeForTarget = distanceToTarget / ship.ShipConfiguration.MainConfig.MoveSpeed;
                     ship.SetTarget(newTargetPos);
-                    ship.CanFollowTarget(true);                    
+                    ship.CanFollowTarget(true);
 
                     if (ship.CurrentShipSize < 50 && timeForTarget < 1F)
                     {
                         ReturnToTarget();
                     }
 
-                    if(ship.CurrentShipSize > 50 && timeForTarget < 2F)
+                    if (ship.CurrentShipSize > 50 && timeForTarget < 2F)
                     {
+                        ReturnToTarget();
+                    }
+
+                    if (Time.time > executeTime + maxStateTime && oldTargetPos == newTargetPos)
+                    {
+                        maxStateTime = Time.time;
                         ReturnToTarget();
                     }
 
@@ -91,6 +99,8 @@ namespace SpaceAI.ShipSystems
 
         private async void ReturnToTarget()
         {
+            ForceStop();
+
             await Task.Delay(TimeSpan.FromSeconds(0.3F));
 
             ship.SetTarget(storeTarget);
@@ -123,6 +133,12 @@ namespace SpaceAI.ShipSystems
                 if (!overrideTarget)
                 {
                     newTargetPos = GetClosest();
+
+                    if (oldTargetPos != newTargetPos)
+                    {
+                        oldTargetPos = newTargetPos;
+                    }
+
                     ship.SetTarget(newTargetPos);
                     ship.CanFollowTarget(true);
                     overrideTarget = true;
@@ -133,66 +149,23 @@ namespace SpaceAI.ShipSystems
 
         private void FindEscapeDirections(Collider col)
         {
-            if (Physics.Raycast(col.transform.position, col.transform.up, out RaycastHit hitUp, col.bounds.extents.y * 2 + wingSpan))
+            AddEscapeDirectionIfNotBlocked(col.transform.position, col.transform.up, col.bounds.extents.y * 2 + wingSpan);
+            AddEscapeDirectionIfNotBlocked(col.transform.position, -col.transform.up, col.bounds.extents.y * 2 + wingSpan);
+            AddEscapeDirectionIfNotBlocked(col.transform.position, col.transform.right, col.bounds.extents.x * 2 + wingSpan);
+            AddEscapeDirectionIfNotBlocked(col.transform.position, -col.transform.right, col.bounds.extents.x * 2 + wingSpan);
+        }
+
+        private void AddEscapeDirectionIfNotBlocked(Vector3 position, Vector3 direction, float distance)
+        {
+            if (Physics.Raycast(position, direction, out _, distance)) return;
+
+            Vector3 dir = position + direction * distance;
+
+            EscapeDirections escapeDirection = new EscapeDirections(dir);
+
+            if (!escapeDirections.Contains(escapeDirection))
             {
-                // Calculate heigth of obj to create a new Transform.position
-            }
-            else
-            {
-                // Write calculeted heigth to transform and add it to list           
-                Vector3 dir = col.transform.position + new Vector3(0, col.bounds.extents.y * 2 + wingSpan, 0);
-
-                EscapeDirections d = new EscapeDirections(dir);
-
-                if (!escapeDirections.Contains(d))
-                {
-                    escapeDirections.Add(d);
-                }
-            }
-            if (Physics.Raycast(col.transform.position, -col.transform.up, out RaycastHit hitDown, col.bounds.extents.y * 2 + wingSpan))
-            {
-
-            }
-            else
-            {
-                Vector3 dir = col.transform.position + new Vector3(0, -col.bounds.extents.y * 2 - wingSpan, 0);
-
-                EscapeDirections d = new EscapeDirections(dir);
-
-                if (!escapeDirections.Contains(d))
-                {
-                    escapeDirections.Add(d);
-                }
-            }
-            if (Physics.Raycast(col.transform.position, col.transform.right, out RaycastHit hitRight, col.bounds.extents.x * 2 + wingSpan))
-            {
-
-            }
-            else
-            {
-                Vector3 dir = col.transform.position + new Vector3(col.bounds.extents.x * 2 + wingSpan, 0, 0);
-
-                EscapeDirections d = new EscapeDirections(dir);
-
-                if (!escapeDirections.Contains(d))
-                {
-                    escapeDirections.Add(d);
-                }
-            }
-            if (Physics.Raycast(col.transform.position, -col.transform.right, out RaycastHit hitLeft, col.bounds.extents.x * 2 + wingSpan))
-            {
-
-            }
-            else
-            {
-                Vector3 dir = col.transform.position + new Vector3(-col.bounds.extents.x * 2 - wingSpan, 0, 0);
-
-                EscapeDirections d = new EscapeDirections(dir);
-
-                if (!escapeDirections.Contains(d))
-                {
-                    escapeDirections.Add(d);
-                }
+                escapeDirections.Add(escapeDirection);
             }
         }
 
@@ -221,11 +194,16 @@ namespace SpaceAI.ShipSystems
 
         private RaycastHit Rays(Vector3 direction, float offsetX)
         {
-            float LoockAhed = ship.CurrentShipSize > 50 ? shipSpeed * 2 : shipSpeed * 3;
+            float LoockAhed = ship.CurrentShipSize > 50 ? shipSpeed * 10 : shipSpeed * 20;
             Ray ray = new Ray(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction);
-            //Debug.DrawRay(ship.CurrentShipTransform().position + new Vector3(offsetX, 0, 0), direction * LoockAhed, Color.red);
+            //Debug.DrawRay(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction * LoockAhed, Color.red);
             Physics.SphereCastNonAlloc(ray, ship.CurrentShipSize, raycastHits, LoockAhed);
             return raycastHits[0];
+        }
+
+        private void ForceStop()
+        {
+            ship.ShipConfiguration.MainConfig.MoveSpeed /= 1.5F;
         }
 
         public override void ShipSystemEvent(Collision obj)

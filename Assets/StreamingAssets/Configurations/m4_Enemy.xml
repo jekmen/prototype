@@ -3,22 +3,20 @@
   <name>m4_Enemy</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>187</Speed>
-    <SpeedMax>187</SpeedMax>
+    <Speed>98</Speed>
+    <SpeedMax>98</SpeedMax>
     <SpeedMin>-10</SpeedMin>
-    <MoveSpeedIncrease>7</MoveSpeedIncrease>
-    <RotationSpeed>1.5</RotationSpeed>
-    <PichSens>30</PichSens>
-    <YawSens>86</YawSens>
-    <MinPitchSens>90</MinPitchSens>
-    <MinYawSens>280</MinYawSens>
+    <MoveSpeedIncrease>2</MoveSpeedIncrease>
+    <RotationSpeed>1.25</RotationSpeed>
+    <MinPitchSens>64</MinPitchSens>
+    <MinYawSens>46</MinYawSens>
     <MaxYawSens>180</MaxYawSens>
     <MaxPitchSens>180</MaxPitchSens>
     <MaxPitchAngle>180</MaxPitchAngle>
     <MaxYawAngle>180</MaxYawAngle>
     <ShipMass>3293</ShipMass>
     <HP>200</HP>
-    <Prediction>880</Prediction>
+    <Prediction>250</Prediction>
     <DurableForce>17</DurableForce>
     <CollisionDamage>3</CollisionDamage>
     <patrolPoint>
@@ -26,7 +24,7 @@
       <y>0</y>
       <z>0</z>
     </patrolPoint>
-    <flyDistance>1200</flyDistance>
+    <flyDistance>3000</flyDistance>
     <MainRot>
       <x>0</x>
       <y>0</y>
@@ -50,7 +48,7 @@
     <TargetRequestFrequency>1.5</TargetRequestFrequency>
   </AIConfig>
   <ShieldsConfiguration>
-    <EnableShields>true</EnableShields>
+    <EnableShields>false</EnableShields>
     <CollisionEnter>true</CollisionEnter>
     <DecaySpeed>2</DecaySpeed>
     <ReactSpeed>0.1</ReactSpeed>
@@ -58,7 +56,7 @@
     <ShieldPower>100</ShieldPower>
   </ShieldsConfiguration>
   <Options>
-    <useTurrets>true</useTurrets>
+    <useTurrets>false</useTurrets>
     <independentTurrets>false</independentTurrets>
   </Options>
   <ShipSystems>

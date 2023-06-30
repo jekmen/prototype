@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1635801592140676}
+  m_IsPrefabParent: 1
+--- !u!1 &1635801592140676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4699454634112374}
+  - component: {fileID: 114567955694085860}
+  m_Layer: 0
+  m_Name: AsteroidField
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4699454634112374
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1635801592140676}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114567955694085860
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1635801592140676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c8f22480660dd740a952fa651f42b4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  polyCount: 1
+  polyCountCollider: 2
+  prefabAsteroids:
+  - {fileID: 400000, guid: 5b77250c2e506ae44aa0a22e5d82e686, type: 2}
+  - {fileID: 400000, guid: 46405e8849059964aa5c939ec12e7e28, type: 2}
+  - {fileID: 400000, guid: d1e607029cc89444391ee3b980a32a75, type: 2}
+  materialVeryCommon:
+  - {fileID: 2100000, guid: 8b8e0519ed2dd6b41a54ab0001765d78, type: 2}
+  materialCommon:
+  - {fileID: 2100000, guid: 35d7a25f79c36a141864172989a3bf70, type: 2}
+  materialRare:
+  - {fileID: 2100000, guid: 2c91a6947fdaa89489761bb4a0436a3f, type: 2}
+  materialVeryRare:
+  - {fileID: 2100000, guid: 948c5032f51c2a14e81b4c62ce3d074c, type: 2}
+  range: 5333
+  maxAsteroids: 350
+  respawnDestroyedAsteroids: 0
+  respawnIfOutOfRange: 0
+  distanceSpawn: 0.95
+  minAsteroidScale: 0.51415944
+  maxAsteroidScale: 1
+  scaleMultiplier: 250
+  minAsteroidResources: 0.1
+  maxAsteroidResources: 1
+  ResourcesMultiplier: 1.12
+  isRigidbody: 1
+  minAsteroidRotationSpeed: 0.460177
+  maxAsteroidRotationSpeed: 1
+  rotationSpeedMultiplier: 33.21
+  minAsteroidDriftSpeed: 0.30973452
+  maxAsteroidDriftSpeed: 1
+  driftSpeedMultiplier: 76.5
+  mass: 33.24
+  minAsteroidAngularVelocity: 0
+  maxAsteroidAngularVelocity: 1
+  angularVelocityMultiplier: 2
+  minAsteroidVelocity: 0
+  maxAsteroidVelocity: 1
+  velocityMultiplier: 5
+  fadeAsteroids: 1
+  distanceFade: 0.95

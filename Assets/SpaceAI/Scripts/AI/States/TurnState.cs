@@ -5,8 +5,8 @@ namespace SpaceAI.FSM
 {
     public class TurnState : FSMState
     {
-        private float timeStamp = 0;
-        private int turnTime = 0;
+        private float timeStamp = 2;
+        private float turnTime = 3;
         private float rollFrequency;
         private int makeManuver;
 
@@ -17,8 +17,7 @@ namespace SpaceAI.FSM
 
         public override void DoBeforeEntering()
         {
-            turnTime = UnityEngine.Random.Range(2, 4);
-            timeStamp = Time.time;
+            turnTime = UnityEngine.Random.Range(3, 5);
             rollFrequency = UnityEngine.Random.Range(0.5F, 2);
             makeManuver = UnityEngine.Random.Range(1, 3);
             owner.SetTarget(owner.CurrentShipTransform.position - new Vector3(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100)) * 100);
@@ -28,7 +27,7 @@ namespace SpaceAI.FSM
         {
             if (owner.CurrentShipSize > 50) return;
 
-            if (makeManuver < 3)
+            if (makeManuver >= 2)
             {
                 float rollAmplitude = 10f; // adjust as needed
                 float rollOffset = Time.time * rollFrequency;
@@ -43,14 +42,14 @@ namespace SpaceAI.FSM
             {
                 if (owner.CurrentEnemy)
                 {
-                    timeStamp = Time.time;
                     owner.CurrentAIProvider.FSM.PerformTransition(Transition.Attack);
                 }
                 else
                 {
-                    timeStamp = Time.time;
                     owner.CurrentAIProvider.FSM.PerformTransition(Transition.Patrol);
                 }
+
+                timeStamp = Time.time;
             }
         }
 

@@ -20,5 +20,5 @@ MonoBehaviour:
   ShieldPrefab: {fileID: 6600946848997053795, guid: 49afa127254e4b84d8945d5205dffbd9,
     type: 3}
   ShellPrefab:
-  - {fileID: 865237326849596402, guid: 69deb6cfbbcc8374eb22fbc7f0908d9e, type: 3}
+  - {fileID: 114700999166701996, guid: 69d17977579b6204fb3d5ba8cfbf8c99, type: 3}
   - {fileID: 7409202132606032066, guid: dd5ffe1846b2c244e81631bd62677d9b, type: 3}

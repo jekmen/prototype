@@ -79,7 +79,7 @@ namespace SpaceAI.ScaneTools
 
                     if (m_count > storedObjs.Count)
                     {
-                        GameObject o = Instantiate(shipPrefabs[(i += 1) % shipPrefabs.Length], new Vector3(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100)), Quaternion.identity);
+                        GameObject o = Instantiate(shipPrefabs[(i += 1) % shipPrefabs.Length], new Vector3(UnityEngine.Random.Range(-1000, 1000), UnityEngine.Random.Range(-1000, 1000), UnityEngine.Random.Range(-1000, 1000)), Quaternion.identity);
                         storedObjs.Add(o);
                     }
                 }

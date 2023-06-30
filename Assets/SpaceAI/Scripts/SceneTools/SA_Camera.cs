@@ -48,23 +48,19 @@ namespace SpaceAI.ScaneTools
 
         void DoCamera()
         {
-            if (swichTargets && Time.time > t + Random.Range(15, 30))
+            if (swichTargets && !target)
             {
                 t = Time.time;
 
-                if (manager)
+                if (manager && manager.SharedTargets.Count > 0)
                 {
-                    var Iship = manager.SharedTargets[Random.Range(0, manager.SharedTargets.Count)];
+                    var Iship = manager.SharedTargets[index++ % manager.SharedTargets.Count];
                     var ship = Iship as Component;
-
-                    if (ship && ship.gameObject.activeSelf)
-                    {
-                        target = ship.transform;
-                    }
+                    target = ship.transform;
                 }
             }
 
-            if (target == null) return;
+            if (!target) return;
 
             Quaternion _lookAt;
 

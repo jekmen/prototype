@@ -1,0 +1,181 @@
+fileFormatVersion: 2
+guid: ec2d2e5ab7007d6468958a46ffadf01f
+ModelImporter:
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      74: 7725276675701413448
+    second: Point.001|Point.001|Point.001|Point.001Action.001|Point.001|Point.001Acti
+  - first:
+      74: -4267958318278378210
+    second: Point.001|Point.001|Point.001|Point.001Action.002|Point.001|Point.001Acti
+  - first:
+      74: -3640747980635892135
+    second: Point.001|Point.001|Point.001|Point.001Action|Point.001|Point.001Action
+  - first:
+      74: -7771735116669689605
+    second: Point.001|Point.001|Point.001|PointAction|Point.001|PointAction
+  - first:
+      74: -4707377401010668813
+    second: Point.001|Point.001|Point.001|Sphere.014Action|Point.001|Sphere.014Action
+  - first:
+      74: 731762280704622989
+    second: Point.001|Point.002|Point.002|Point.001Action.001|Point.002|Point.001Acti
+  - first:
+      74: -6331330968508974287
+    second: Point.001|Point.002|Point.002|Point.001Action.002|Point.002|Point.001Acti
+  - first:
+      74: -7960695046615528279
+    second: Point.001|Point.002|Point.002|Point.001Action|Point.002|Point.001Action
+  - first:
+      74: -7068797603854337403
+    second: Point.001|Point.002|Point.002|PointAction|Point.002|PointAction
+  - first:
+      74: -2725123173077091481
+    second: Point.001|Point.002|Point.002|Sphere.014Action|Point.002|Sphere.014Action
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BlackWing
+    second: {fileID: 2100000, guid: 00c7eee5aa36a9e428a5473e3f91a9ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: FRAME
+    second: {fileID: 2100000, guid: 7ea3737bdcbee5c43bfef1c016ec26f2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: e9d9cf23b929f704faec9ff927422f8e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: hull
+    second: {fileID: 2100000, guid: c057e95b4702cb140b51717266b40c17, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: light1
+    second: {fileID: 2100000, guid: aac81bb5c5415bc4aa7025da0218fbfe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: light2
+    second: {fileID: 2100000, guid: 4212e15ba3a97bd4fbd7ea7ca743e791, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: light3
+    second: {fileID: 2100000, guid: 64d2f52987ff2ba45924cd7a06429037, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: light4
+    second: {fileID: 2100000, guid: 6182f4e53c235e34ab24b796267f0f7a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: window
+    second: {fileID: 2100000, guid: d0c86863b679c1742a4a22f286a43212, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 1
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 2
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 2
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

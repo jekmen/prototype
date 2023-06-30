@@ -29,7 +29,7 @@ namespace SpaceAI.FSM
 
         public override void DoBeforeEntering()
         {
-            rT = UnityEngine.Random.Range(1, 3);
+            rT = UnityEngine.Random.Range(3, 6);
             timeState = Time.time;
             requestTime = 0;
             owner.CanFollowTarget(false);

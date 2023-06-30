@@ -5,11 +5,17 @@ TagManager:
   serializedVersion: 2
   tags:
   - Shootable
+  - SpaceScene_Nebula
+  - SpaceScene_Galaxy
+  - SpaceScene_Planet
+  - SpaceScene_Moon
+  - SpaceScene_LocalStar
+  - SpaceScene_Camera
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - SpaceEnv
   - Water
   - UI
   - 

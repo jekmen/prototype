@@ -7,8 +7,8 @@ namespace SpaceAI.FSM
 {
     public class AttackState : FSMState
     {
-        private const float MinEnemyDistance = 30f;
-        private const float MaxEnemyDistance = 150f;
+        private const float MinEnemyDistance = 80f;
+        private const float MaxEnemyDistance = 200f;
         private const float CloseEnemyDistance = 50f;
 
         private int toClose;
@@ -29,11 +29,11 @@ namespace SpaceAI.FSM
         {
             if (owner.CurrentEnemy)
             {
-                var enemySizeZ = owner.CurrentEnemy.GetComponent<MeshFilter>().mesh.bounds.size.z;
+                var enemySizeZ = owner.CurrentEnemy.GetComponentInChildren<MeshFilter>().mesh.bounds.size.z;
 
                 if (enemySizeZ > CloseEnemyDistance)
                 {
-                    toClose = (int)(enemySizeZ + owner.CurrentEnemy.GetComponent<MeshFilter>().mesh.bounds.size.x);
+                    toClose = (int)(enemySizeZ + owner.CurrentEnemy.GetComponentInChildren<MeshFilter>().mesh.bounds.size.x + owner.ShipConfiguration.MainConfig.MoveSpeed);
                 }
                 else
                 {
@@ -51,9 +51,10 @@ namespace SpaceAI.FSM
 
             Vector3 targetFuturePos = CalculatePrediction(owner);
 
+            owner.SetTarget(targetFuturePos);
+
             if (owner.WayIsFree())
             {
-                owner.SetTarget(targetFuturePos);
                 owner.CanFollowTarget(true);
 
                 var dir = (targetFuturePos - owner.CurrentShipTransform.position).normalized;

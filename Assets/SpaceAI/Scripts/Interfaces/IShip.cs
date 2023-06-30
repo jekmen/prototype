@@ -28,6 +28,8 @@ namespace SpaceAI.Ship
 
         GameObject CurrentEnemy { get; set; }
 
+        Mesh CurrentMesh { get;}
+
         Transform CurrentShipTransform { get; }
 
         Vector3 GetCurrentTargetPosition { get; }

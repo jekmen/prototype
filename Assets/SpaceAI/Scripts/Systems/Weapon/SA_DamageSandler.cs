@@ -124,6 +124,8 @@ namespace SpaceAI.WeaponSystem
         /// <param name="collision"></param>
         private void OnCollisionEnter(Collision collision)
         {
+            if (!Owner) return;
+
             if (collision.gameObject.GetComponent<IDamageSendler>() is IDamageSendler dms)
             {
                 if (dms.Owner == Owner)

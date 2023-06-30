@@ -10,6 +10,7 @@ namespace SpaceAI.Ship
     public class SA_ShipController : SA_BaseShip
     {
         private bool isReady = false;
+        private float worldSpeed = 2.5F;
 
         protected override void OnSystemsReady(ShipSystemsInitedEvent e)
         {
@@ -53,18 +54,14 @@ namespace SpaceAI.Ship
                         ShipConfiguration.MainConfig.MainRot = Quaternion.LookRotation(GetCurrentTargetPosition - transform.position);
                     }
                 }
+
+                var barelRotationSpeed = ShipConfiguration.MainConfig.RotationSpeed * Time.deltaTime * 1000;
+                var barelShipRotation = Quaternion.Euler(-relativePoint.y * Time.deltaTime * barelRotationSpeed, 0, -relativePoint.x * Time.deltaTime * barelRotationSpeed);
+                var shipRotation = Quaternion.Lerp(rb.rotation, ShipConfiguration.MainConfig.MainRot, Time.deltaTime);
+
+                rb.rotation = shipRotation;
+                rb.rotation *= barelShipRotation;
             }
-
-            float pitchAngle = Vector3.SignedAngle(transform.forward, Vector3.ProjectOnPlane(rb.velocity, transform.right), transform.right);
-            float yawAngle = Vector3.SignedAngle(transform.forward, Vector3.ProjectOnPlane(rb.velocity, transform.up), transform.up);
-
-            float pitchSens = Mathf.Lerp(ShipConfiguration.MainConfig.MinPitchSens, ShipConfiguration.MainConfig.MaxPitchSens, Mathf.InverseLerp(0f, ShipConfiguration.MainConfig.MaxPitchAngle, Mathf.Abs(pitchAngle)));
-            float yawSens = Mathf.Lerp(ShipConfiguration.MainConfig.MinYawSens, ShipConfiguration.MainConfig.MaxYawSens, Mathf.InverseLerp(0f, ShipConfiguration.MainConfig.MaxYawAngle, Mathf.Abs(yawAngle)));
-
-            var shipRotation = Quaternion.Lerp(rb.rotation, ShipConfiguration.MainConfig.MainRot, Time.deltaTime * ShipConfiguration.MainConfig.RotationSpeed) *
-                               Quaternion.Euler(-relativePoint.y * (Time.deltaTime * pitchSens), 0, -relativePoint.x * (Time.deltaTime * yawSens));
-
-            rb.rotation = shipRotation;
 
             MovmentCalculation();
         }
@@ -72,8 +69,8 @@ namespace SpaceAI.Ship
         private void MovmentCalculation()
         {
             ShipConfiguration.MainConfig.MoveSpeed = Mathf.Lerp(ShipConfiguration.MainConfig.MoveSpeed, ShipConfiguration.MainConfig.Speed, Time.deltaTime / ShipConfiguration.MainConfig.MoveSpeedIncrease);
-            rb.velocity = Vector3.Lerp(rb.velocity, velocityTarget, Time.deltaTime * 2);
             SetVelocityTarget(rb.rotation * Vector3.forward * (ShipConfiguration.MainConfig.Speed + ShipConfiguration.MainConfig.MoveSpeed));
+            rb.velocity = Vector3.Lerp(rb.velocity, velocityTarget, Time.deltaTime * worldSpeed);
         }
 
         public override bool ToFar()
@@ -91,6 +88,12 @@ namespace SpaceAI.Ship
         public override void SetCurrentEnemy(GameObject newTarget)
         {
             CurrentEnemy = newTarget;
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, GetCurrentTargetPosition);
         }
     }
 }
