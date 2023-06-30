@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0febdf1ad23c04ea1cce97de7d64d5, type: 3}
+  m_Name: SetupWizard
+  m_EditorClassIdentifier: 
+  bg: {fileID: 2800000, guid: f1813020528c8ce41b035a934475c9d8, type: 3}
+  model: {fileID: 919132149155446097, guid: ea7207c7642a64e4bb4756c5ac12d870, type: 3}
+  script: {fileID: 11500000, guid: 5341ef5cb3b79114c9c25f1502561f31, type: 3}
+  env: {fileID: 1635801592140676, guid: 7750ac257b3c5974b89c412a4ad470b8, type: 3}
+  materials:
+  - {fileID: 2100000, guid: cf2e7e5cb8020a6499eff144b5ee5224, type: 2}
+  - {fileID: 2100000, guid: cdb63438130486c4c9092e4d68008778, type: 2}
+  firstMsg: In this quick guide, you will get information on how to set up ship models.
+    For example, let's take a small fighter, first you need to place it on the stage.
+    Before clicking the button below, you need to create a "StreamingAssets" folder
+    and move the "Configurations" folder there.
+  secondMsg: Great! Please note that the model must be turned by the front part in
+    the direction of the Z vector. This is necessary so that the ship moves forward.
+    The next step is to configure the main component (ship controller)
+  trdMsg: 'If you moved the Configuration folder to StreamingAssets, you will see
+    several buttons. These are the configurations of different ships, more detailed
+    information on the settings file can be found in the Components documentation,
+    now click "Load: XWing"'
+  frtMsg: Great! The file is loaded, it remains to add a collider for the ship, without
+    it it will not be able to bypass obstacles and receive damage
+  fiveMsg: 

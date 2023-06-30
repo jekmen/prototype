@@ -218,19 +218,25 @@ namespace SpaceAI.SceneEnvironment
             // Asteroid Prefab (array of asteroid shapes the asteroid field should randomly consist of) 
             EditorGUILayout.LabelField("Asteroid Prefabs", EditorStyles.boldLabel);
             _showPrefabs = EditorGUILayout.Foldout(_showPrefabs, "Prefabs");
+#pragma warning disable CS0618
             EditorGUIUtility.LookLikeInspector();
+#pragma warning restore CS0618
             if (_showPrefabs)
             {
                 ArrayGUI(myTarget, "prefabAsteroids");
             }
+#pragma warning disable CS0618
             EditorGUIUtility.LookLikeControls();
+#pragma warning restore CS0618
             EditorGUILayout.Separator();
 
             // Asteroid Materials (array of asteroid materials the asteroid field should randomly consist of)
             // The random selection is weighted between common and rare materials.
             EditorGUILayout.LabelField("Asteroid Materials", EditorStyles.boldLabel);
             _showMaterials = EditorGUILayout.Foldout(_showMaterials, "Materials");
+#pragma warning disable CS0618
             EditorGUIUtility.LookLikeInspector();
+#pragma warning restore CS0618
             if (_showMaterials)
             {
                 EditorGUILayout.LabelField("Very Common Materials (50%)", EditorStyles.boldLabel);
@@ -242,7 +248,9 @@ namespace SpaceAI.SceneEnvironment
                 EditorGUILayout.LabelField("Very Rare Materials (5%)", EditorStyles.boldLabel);
                 ArrayGUI(myTarget, "materialVeryRare");
             }
-            EditorGUIUtility.LookLikeControls();
+#pragma warning disable CS0618
+            EditorGUIUtility.LookLikeInspector();
+#pragma warning restore CS0618
 
             // Apply the modified properties
             myTarget.ApplyModifiedProperties();

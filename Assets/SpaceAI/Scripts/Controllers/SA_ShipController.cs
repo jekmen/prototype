@@ -89,11 +89,5 @@ namespace SpaceAI.Ship
         {
             CurrentEnemy = newTarget;
         }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, GetCurrentTargetPosition);
-        }
     }
 }

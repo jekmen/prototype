@@ -1,0 +1,22 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+namespace SpaceAI.Guide
+{
+    [CreateAssetMenu(fileName = "SetupWizard", menuName = "SpaceAI/SetupWizard")]
+    public class SA_SetupWizardScriptable : ScriptableObject
+    {
+        public Texture2D bg;
+        public GameObject model;
+        public MonoScript script;
+        public GameObject env;
+        public Material[] materials;
+        public string firstMsg;
+        public string secondMsg;
+        public string trdMsg;
+        public string frtMsg;
+        public string fiveMsg;
+    }
+}
