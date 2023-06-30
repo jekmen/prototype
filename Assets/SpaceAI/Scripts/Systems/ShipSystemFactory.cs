@@ -9,22 +9,22 @@ namespace SpaceAI.ShipSystems
     [Serializable]
     public class ShipSystemFactory
     {
-        private readonly IDictionary<string, IShipSystem> systemTypes;
-        private readonly HashSet<IShipSystem> systemInstances;
+        private readonly IDictionary<string, SA_IShipSystem> systemTypes;
+        private readonly HashSet<SA_IShipSystem> systemInstances;
 
-        public HashSet<IShipSystem> ShipSystemInstances => systemInstances;
+        public HashSet<SA_IShipSystem> ShipSystemInstances => systemInstances;
 
-        public ShipSystemFactory(IDictionary<string, IShipSystem> systemTypes)
+        public ShipSystemFactory(IDictionary<string, SA_IShipSystem> systemTypes)
         {
             this.systemTypes = systemTypes;
-            systemInstances = new HashSet<IShipSystem>();
+            systemInstances = new HashSet<SA_IShipSystem>();
         }
 
-        public T CreateSystem<T>(IShip ship, GameObject asset = null) where T : IShipSystem
+        public T CreateSystem<T>(SA_IShip ship, GameObject asset = null) where T : SA_IShipSystem
         {
             var systemType = typeof(T);
 
-            if (systemTypes.TryGetValue(systemType.FullName, out IShipSystem systemInstance) && systemInstance is T instanceOfTypeT)
+            if (systemTypes.TryGetValue(systemType.FullName, out SA_IShipSystem systemInstance) && systemInstance is T instanceOfTypeT)
             {
                 var i = (T)instanceOfTypeT.Init(ship, asset);
 

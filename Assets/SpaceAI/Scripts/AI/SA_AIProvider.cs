@@ -6,12 +6,12 @@ namespace SpaceAI.FSM
     [Serializable]
     public class SA_AIProvider
     {
-        private IShip ship;
+        private SA_IShip ship;
         private FSMSystem fsm;
 
         public FSMSystem FSM => fsm;
 
-        public SA_AIProvider(IShip ship)
+        public SA_AIProvider(SA_IShip ship)
         {
             this.ship = ship;
         }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SpaceAI.WeaponSystem
 {
-    public class SA_DamageBase : MonoBehaviour, IDamageSendler
+    public class SA_DamageBase : MonoBehaviour, SA_IDamageSendler
     {
         [SerializeField] protected Rigidbody rb;
         [SerializeField] protected GameObject explousionEffectPrefab;

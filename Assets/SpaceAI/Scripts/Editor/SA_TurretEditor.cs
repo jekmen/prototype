@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SpaceAI.WeaponSystem
 {
-    [CustomEditor(typeof(SA_TurretRotation))]
+    [CustomEditor(typeof(SA_Turret))]
     [CanEditMultipleObjects]
     public class SA_TurretEditor : Editor
     {
@@ -11,7 +11,7 @@ namespace SpaceAI.WeaponSystem
 
         public override void OnInspectorGUI()
         {
-            SA_TurretRotation turret = (SA_TurretRotation)target;
+            SA_Turret turret = (SA_Turret)target;
 
             DrawDefaultInspector();
 
@@ -32,7 +32,7 @@ namespace SpaceAI.WeaponSystem
 
         private void OnSceneGUI()
         {
-            SA_TurretRotation turret = (SA_TurretRotation)target;
+            SA_Turret turret = (SA_Turret)target;
             Transform transform = turret.transform;
 
             // Don't show turret arcs when playing, because they won't be correct.

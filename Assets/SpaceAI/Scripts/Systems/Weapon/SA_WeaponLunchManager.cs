@@ -10,7 +10,7 @@ using UnityEngine;
 namespace SpaceAI.WeaponSystem
 {
     [RequireComponent(typeof(AudioSource))]
-    public class SA_WeaponLunchManager : SA_WeaponBase, IWeapon
+    public class SA_WeaponLunchManager : SA_WeaponBase, SA_IWeapon
     {
         private readonly string _poolName = "BulletPool";
 
@@ -45,9 +45,9 @@ namespace SpaceAI.WeaponSystem
         private GameObject muzzle;
 
         private int poolID;
-        private IShip owner;
+        private SA_IShip owner;
 
-        Settings IWeapon.Settings => settings;
+        Settings SA_IWeapon.Settings => settings;
 
         private void InitGuns()
         {
@@ -195,7 +195,7 @@ namespace SpaceAI.WeaponSystem
             }
         }
 
-        public void SetOwner(IShip ownerShip)
+        public void SetOwner(SA_IShip ownerShip)
         {
             owner = ownerShip;
         }

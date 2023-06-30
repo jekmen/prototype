@@ -12,12 +12,12 @@ namespace SpaceAI.FSM
         /// <summary>
         /// GameObject that has the FSMSystem attached. Npc must be set by FSMSystem.
         /// </summary>
-        protected IShip owner;
+        protected SA_IShip owner;
         protected Dictionary<Transition, StateID> map = new Dictionary<Transition, StateID>();
         protected StateID stateID;
         public StateID ID { get { return stateID; } }
 	
-	    protected FSMState(IShip npc)
+	    protected FSMState(SA_IShip npc)
 	    {
 		    owner = npc;
 	    }

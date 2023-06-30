@@ -7,7 +7,7 @@ using System;
 [Serializable]
 public class SA_HealthProvider
 {
-    private IShip ship;
+    private SA_IShip ship;
     private ParticleSystem onFire;
     private float currentHP;
     private float maxHP;
@@ -16,7 +16,7 @@ public class SA_HealthProvider
 
     public SA_Shield Shield => shield;
 
-    public SA_HealthProvider(IShip ship, ParticleSystem onFire, ShipSystemFactory shipSystemFactory)
+    public SA_HealthProvider(SA_IShip ship, ParticleSystem onFire, ShipSystemFactory shipSystemFactory)
     {
         this.ship = ship;
         this.onFire = onFire;
@@ -95,7 +95,7 @@ public class SA_HealthProvider
     {
         bool isDethCome = false;
 
-        if (collision.gameObject.GetComponent(typeof(IDamageSendler))) return;
+        if (collision.gameObject.GetComponent(typeof(SA_IDamageSendler))) return;
 
         if (ship.ShipConfiguration.Items.HitSounds != null && ship.ShipConfiguration.Items.HitSounds.Length > 0)
         {

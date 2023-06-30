@@ -15,16 +15,16 @@ namespace SpaceAI.FSM
         private float requestTime;
         private float requestFrequency;
 
-        private ShipTargetRequesEvent targetSerchRequest;
+        private SA_ShipTargetRequesEvent targetSerchRequest;
 
-        public IdleState(IShip obj) : base(obj)
+        public IdleState(SA_IShip obj) : base(obj)
         {
             stateID = StateID.Idle;            
 
             scanRange = owner.ShipConfiguration.AIConfig.ShipTargetScanRange;
             requestFrequency = owner.ShipConfiguration.AIConfig.TargetRequestFrequency;
 
-            targetSerchRequest = new ShipTargetRequesEvent(owner, scanRange);
+            targetSerchRequest = new SA_ShipTargetRequesEvent(owner, scanRange);
         }
 
         public override void DoBeforeEntering()
@@ -47,7 +47,7 @@ namespace SpaceAI.FSM
                 {
                     if (Time.time > requestTime + requestFrequency)
                     {
-                        EventsBus.Publish(targetSerchRequest);
+                        SA_EventsBus.Publish(targetSerchRequest);
 
                         requestTime = Time.time;
                     }

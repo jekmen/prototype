@@ -44,13 +44,13 @@ namespace SpaceAI.ShipSystems
 
         public SA_ObstacleSystem() { }
 
-        public SA_ObstacleSystem(IShip ship) : base(ship)
+        public SA_ObstacleSystem(SA_IShip ship) : base(ship)
         {
             this.ship = ship;
             wingSpan = ship.CurrentMesh.bounds.size.x * 2;
         }
 
-        public override IShipSystem Init(IShip ship, GameObject gameObject)
+        public override SA_IShipSystem Init(SA_IShip ship, GameObject gameObject)
         {
             return new SA_ObstacleSystem(ship);
         }
@@ -115,7 +115,7 @@ namespace SpaceAI.ShipSystems
         {
             RaycastHit hit = Rays(direction, offsetX);
 
-            if (!hit.transform || hit.transform.GetComponentInParent(typeof(IDamageSendler))) return;
+            if (!hit.transform || hit.transform.GetComponentInParent(typeof(SA_IDamageSendler))) return;
 
             if (hit.transform.root.gameObject != ship.CurrentShipTransform.gameObject)
             {

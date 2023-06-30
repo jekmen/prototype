@@ -9,17 +9,17 @@ using UnityEngine;
 namespace SpaceAI.WeaponSystem
 {
     [Serializable]
-    public class SA_WeaponController : IShipSystem
+    public class SA_WeaponController : SA_IShipSystem
     {
         private int CurrentWeapon = 0;
 
-        public IReadOnlyList<IWeapon> WeaponLists { get; }
+        public IReadOnlyList<SA_IWeapon> WeaponLists { get; }
 
         public SA_WeaponController() { }
 
-        public SA_WeaponController(IShip ownerShip)
+        public SA_WeaponController(SA_IShip ownerShip)
         {
-            WeaponLists = ownerShip.CurrentShipTransform.GetComponentsInChildren<IWeapon>(true).ToList();
+            WeaponLists = ownerShip.CurrentShipTransform.GetComponentsInChildren<SA_IWeapon>(true).ToList();
 
             foreach (var weapon in WeaponLists)
             {
@@ -28,12 +28,12 @@ namespace SpaceAI.WeaponSystem
             }
         }
 
-        public IShipSystem Init(IShip ship, GameObject gameObject)
+        public SA_IShipSystem Init(SA_IShip ship, GameObject gameObject)
         {
             return new SA_WeaponController(ship);
         }
 
-        public IWeapon GetCurrentWeapon()
+        public SA_IWeapon GetCurrentWeapon()
         {
             if (CurrentWeapon < WeaponLists.Count && WeaponLists[CurrentWeapon] != null)
             {
@@ -84,7 +84,7 @@ namespace SpaceAI.WeaponSystem
             {
                 foreach (var weapon in WeaponLists)
                 {
-                    if (weapon is SA_TurretRotation turret)
+                    if (weapon is SA_Turret turret)
                     {
                         turret.SetIdle(true);
                     }
@@ -98,7 +98,7 @@ namespace SpaceAI.WeaponSystem
             {
                 foreach (var weapon in WeaponLists)
                 {
-                    if (weapon is SA_TurretRotation turret)
+                    if (weapon is SA_Turret turret)
                     {
                         turret.SetAimpoint(target);
                     }
@@ -114,7 +114,7 @@ namespace SpaceAI.WeaponSystem
             {
                 foreach (var weapon in WeaponLists)
                 {
-                    if (weapon is SA_TurretRotation turret)
+                    if (weapon is SA_Turret turret)
                     {
                         turret.Target = target.gameObject;
                         turret.independent = true;

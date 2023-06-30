@@ -5,11 +5,11 @@ using UnityEngine;
 namespace SpaceAI.ShipSystems
 {
     [Serializable]
-    public abstract class SA_ShipSystem : IShipSystem
+    public abstract class SA_ShipSystem : SA_IShipSystem
     {
-        protected IShip ship;
+        protected SA_IShip ship;
 
-        public SA_ShipSystem(IShip ship)
+        public SA_ShipSystem(SA_IShip ship)
         {
             this.ship = ship;
         }
@@ -18,7 +18,7 @@ namespace SpaceAI.ShipSystems
 
         ~SA_ShipSystem() { }
 
-        public abstract IShipSystem Init(IShip ship, GameObject gameObject);
+        public abstract SA_IShipSystem Init(SA_IShip ship, GameObject gameObject);
 
         public virtual void ShipSystemEvent(Collision obj)
         {

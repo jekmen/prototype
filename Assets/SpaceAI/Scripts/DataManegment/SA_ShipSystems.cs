@@ -16,9 +16,9 @@ namespace SpaceAI.DataManagment
 #endif
         [HideInInspector] public List<string> shipSystemsScripts;
 
-        public IDictionary<string, IShipSystem> CreateAll()
+        public IDictionary<string, SA_IShipSystem> CreateAll()
         {
-            IDictionary<string, IShipSystem> valuePairs = new Dictionary<string, IShipSystem>();
+            IDictionary<string, SA_IShipSystem> valuePairs = new Dictionary<string, SA_IShipSystem>();
 
             foreach (var item in shipSystemsScripts)
             {
@@ -30,9 +30,9 @@ namespace SpaceAI.DataManagment
                 {
                     object obj = Activator.CreateInstance(scriptType);
 
-                    if (scriptType.GetInterface(nameof(IShipSystem)) != null)
+                    if (scriptType.GetInterface(nameof(SA_IShipSystem)) != null)
                     {
-                        IShipSystem scriptObject = obj as IShipSystem;
+                        SA_IShipSystem scriptObject = obj as SA_IShipSystem;
                         // Use scriptObject
                         valuePairs.Add(scriptName, scriptObject);
                     }

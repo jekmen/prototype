@@ -10,7 +10,7 @@ namespace SpaceAI.FSM
         private float rollFrequency;
         private int makeManuver;
 
-        public TurnState(IShip obj) : base(obj)
+        public TurnState(SA_IShip obj) : base(obj)
         {
             stateID = StateID.Turn;
         }

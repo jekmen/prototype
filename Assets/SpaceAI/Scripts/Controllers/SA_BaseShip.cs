@@ -14,7 +14,7 @@ using UnityEngine;
 namespace SpaceAI.Ship
 {
     [RequireComponent(typeof(Rigidbody))]
-    public abstract class SA_BaseShip : MonoBehaviour, IShip, IDamage
+    public abstract class SA_BaseShip : MonoBehaviour, SA_IShip, SA_IDamage
     {
         [HideInInspector] public string currFile;
         [HideInInspector] public string configFileName;
@@ -37,10 +37,10 @@ namespace SpaceAI.Ship
         private SA_Shield shield = null;
         private ParticleSystem onFire;
 
-        private ShipRegistryEvent shipRegistryEvent;
-        private ShipSystemsInitedEvent shipSystemsInitedEvent;
+        private SA_ShipRegistryEvent shipRegistryEvent;
+        private SA_ShipSystemsInitedEvent shipSystemsInitedEvent;
 
-        private readonly HashSet<IShipSystem> shipSystems = new();
+        private readonly HashSet<SA_IShipSystem> shipSystems = new();
 
         public SA_ShipConfigurationManager ShipConfiguration => shipConfiguration;
 
@@ -72,12 +72,12 @@ namespace SpaceAI.Ship
 
         protected virtual void OnEnable()
         {
-            EventsBus.AddEventListener<ShipSystemsInitedEvent>(OnSystemsReady);
+            SA_EventsBus.AddEventListener<SA_ShipSystemsInitedEvent>(OnSystemsReady);
         }
 
         protected virtual void OnDisable()
         {
-            EventsBus.RemoveEventListener<ShipSystemsInitedEvent>(OnSystemsReady);
+            SA_EventsBus.RemoveEventListener<SA_ShipSystemsInitedEvent>(OnSystemsReady);
 
             foreach (var system in shipSystems)
             {
@@ -109,7 +109,7 @@ namespace SpaceAI.Ship
 
         private IEnumerator InitShipComponents()
         {
-            shipRegistryEvent = new ShipRegistryEvent(this);
+            shipRegistryEvent = new SA_ShipRegistryEvent(this);
 
             yield return null;
 
@@ -122,9 +122,9 @@ namespace SpaceAI.Ship
 
             InitBuildInSystems();
 
-            EventsBus.Publish(shipRegistryEvent);
+            SA_EventsBus.Publish(shipRegistryEvent);
 
-            EventsBus.Publish(shipSystemsInitedEvent);
+            SA_EventsBus.Publish(shipSystemsInitedEvent);
         }
 
         private void GetComponents()
@@ -203,11 +203,11 @@ namespace SpaceAI.Ship
 
         protected abstract void Move();
 
-        protected abstract void OnSystemsReady(ShipSystemsInitedEvent e);
+        protected abstract void OnSystemsReady(SA_ShipSystemsInitedEvent e);
 
         private void OnDeathCome()
         {
-            EventsBus.Publish(new ShipUnRegisterEvent(this));
+            SA_EventsBus.Publish(new SA_ShipUnRegisterEvent(this));
         }
 
         #region Interface

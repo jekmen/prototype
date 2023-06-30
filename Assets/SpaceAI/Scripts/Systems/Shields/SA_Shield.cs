@@ -28,7 +28,7 @@ namespace SpaceAI.ShipSystems
 
         public SA_Shield() { }        
 
-        public SA_Shield(IShip ship, GameObject shieldField) : base(ship)
+        public SA_Shield(SA_IShip ship, GameObject shieldField) : base(ship)
         {          
             Configuration = ship.ShipConfiguration;
             var com = ship as SA_BaseShip;
@@ -44,7 +44,7 @@ namespace SpaceAI.ShipSystems
             InitShield();
         }
 
-        public override IShipSystem Init(IShip ship, GameObject gameObject)
+        public override SA_IShipSystem Init(SA_IShip ship, GameObject gameObject)
         {
             return new SA_Shield(ship, gameObject);
         }

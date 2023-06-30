@@ -12,7 +12,7 @@ namespace SpaceAI.Ship
         private bool isReady = false;
         private float worldSpeed = 2.5F;
 
-        protected override void OnSystemsReady(ShipSystemsInitedEvent e)
+        protected override void OnSystemsReady(SA_ShipSystemsInitedEvent e)
         {
             isReady = ShipConfiguration;
 

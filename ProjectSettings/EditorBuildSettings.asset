@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/SpaceAI/Scenes/T.unity
+    path: Assets/SpaceAI/Scenes/StarWarsDemo.unity
+    guid: 620e1cc975f75eb449dfa49590b330b0
+  - enabled: 1
+    path: Assets/SpaceAI/Scenes/Demo.unity
     guid: 82120fe294e3aaa4a9d9127ecebfcc04
   m_configObjects: {}

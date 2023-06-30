@@ -108,7 +108,7 @@ namespace SpaceAI.WeaponSystem
                 if (!hit)
                     continue;
 
-                if (hit.gameObject.GetComponent<IDamage>() is IDamage damagebleComponent)
+                if (hit.gameObject.GetComponent<SA_IDamage>() is SA_IDamage damagebleComponent)
                 {
                     damagebleComponent.ApplyDamage(damage, Owner);
                 }
@@ -126,7 +126,7 @@ namespace SpaceAI.WeaponSystem
         {
             if (!Owner) return;
 
-            if (collision.gameObject.GetComponent<IDamageSendler>() is IDamageSendler dms)
+            if (collision.gameObject.GetComponent<SA_IDamageSendler>() is SA_IDamageSendler dms)
             {
                 if (dms.Owner == Owner)
                 {
@@ -139,7 +139,7 @@ namespace SpaceAI.WeaponSystem
                 }
             }
 
-            if (collision.gameObject.GetComponent<IDamage>() is IDamage damagebleComponent)
+            if (collision.gameObject.GetComponent<SA_IDamage>() is SA_IDamage damagebleComponent)
             {
                 if (!Explosive)
                 {

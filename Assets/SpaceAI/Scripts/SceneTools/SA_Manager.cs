@@ -25,7 +25,7 @@ namespace SpaceAI.ScaneTools
         private float t;
         private int i = 0;
 
-        public List<IShip> SharedTargets { get; set; } = new List<IShip>();
+        public List<SA_IShip> SharedTargets { get; set; } = new List<SA_IShip>();
         public static List<Pool> BulletPool { get; set; } = new List<Pool>();
 
         private void Awake()
@@ -40,29 +40,29 @@ namespace SpaceAI.ScaneTools
 
         private void OnEnable()
         {
-            EventsBus.AddEventListener<ShipRegistryEvent>(OnShipRegistryUpdate);
-            EventsBus.AddEventListener<ShipUnRegisterEvent>(OnShipUnRegisterUpdate);
-            EventsBus.AddEventListener<ShipTargetRequesEvent>(OnShipTargetUpdate);
+            SA_EventsBus.AddEventListener<SA_ShipRegistryEvent>(OnShipRegistryUpdate);
+            SA_EventsBus.AddEventListener<SA_ShipUnRegisterEvent>(OnShipUnRegisterUpdate);
+            SA_EventsBus.AddEventListener<SA_ShipTargetRequesEvent>(OnShipTargetUpdate);
         }
 
         private void OnDisable()
         {
-            EventsBus.RemoveEventListener<ShipRegistryEvent>(OnShipRegistryUpdate);
-            EventsBus.RemoveEventListener<ShipUnRegisterEvent>(OnShipUnRegisterUpdate);
-            EventsBus.RemoveEventListener<ShipTargetRequesEvent>(OnShipTargetUpdate);
+            SA_EventsBus.RemoveEventListener<SA_ShipRegistryEvent>(OnShipRegistryUpdate);
+            SA_EventsBus.RemoveEventListener<SA_ShipUnRegisterEvent>(OnShipUnRegisterUpdate);
+            SA_EventsBus.RemoveEventListener<SA_ShipTargetRequesEvent>(OnShipTargetUpdate);
         }
 
-        private void OnShipTargetUpdate(ShipTargetRequesEvent e)
+        private void OnShipTargetUpdate(SA_ShipTargetRequesEvent e)
         {
             GetTarget(e.Ship, e.ScanRange);
         }
 
-        private void OnShipUnRegisterUpdate(ShipUnRegisterEvent e)
+        private void OnShipUnRegisterUpdate(SA_ShipUnRegisterEvent e)
         {
             UnSubscribe(e.Ship);
         }
 
-        private void OnShipRegistryUpdate(ShipRegistryEvent e)
+        private void OnShipRegistryUpdate(SA_ShipRegistryEvent e)
         {
             Subscribe(e.Ship);
         }
@@ -97,7 +97,7 @@ namespace SpaceAI.ScaneTools
         /// </summary>
         /// <param name="shipObj"></param>
         /// <param name="deactivate"></param>
-        public void UnSubscribe(IShip shipObj, bool deactivate = false)
+        public void UnSubscribe(SA_IShip shipObj, bool deactivate = false)
         {
             if (deactivate)
             {
@@ -116,7 +116,7 @@ namespace SpaceAI.ScaneTools
         /// Subscribe object
         /// </summary>
         /// <param name="shipObj"></param>
-        public void Subscribe(IShip shipObj)
+        public void Subscribe(SA_IShip shipObj)
         {
             if (!SharedTargets.Contains(shipObj))
             {
@@ -130,7 +130,7 @@ namespace SpaceAI.ScaneTools
         /// <param name="shipController"></param>
         /// <param name="scanRange"></param>
         /// <returns></returns>
-        public bool GetTarget(IShip shipController, float scanRange)
+        public bool GetTarget(SA_IShip shipController, float scanRange)
         {
             if (!shipController.CurrentEnemy && SharedTargets != null)
             {
@@ -138,7 +138,7 @@ namespace SpaceAI.ScaneTools
                 {
                     for (int EnumMemberCount = 0; EnumMemberCount < shipController.ShipConfiguration.AIConfig.GroupTypesToAction.Length; EnumMemberCount++)
                     {
-                        IShip tar = SharedTargets[UnityEngine.Random.Range(0, SharedTargets.Count)];
+                        SA_IShip tar = SharedTargets[UnityEngine.Random.Range(0, SharedTargets.Count)];
 
                         if (tar.Ship() == shipController.ShipConfiguration.AIConfig.GroupTypesToAction[EnumMemberCount])
                         {

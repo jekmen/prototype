@@ -15,7 +15,7 @@ namespace SpaceAI.FSM
         private float rangeAttackDirection;
         private int sitOnTale;
 
-        public AttackState(IShip obj) : base(obj)
+        public AttackState(SA_IShip obj) : base(obj)
         {
             stateID = StateID.Attack;
 
@@ -83,7 +83,7 @@ namespace SpaceAI.FSM
             }
         }
 
-        private Vector3 CalculatePrediction(IShip ship)
+        private Vector3 CalculatePrediction(SA_IShip ship)
         {
             float bulletSpeed = owner.ShipConfiguration.MainConfig.Prediction;
             float distanceToTarget = Vector3.Distance(ship.CurrentShipTransform.position, ship.CurrentEnemy.transform.position);
