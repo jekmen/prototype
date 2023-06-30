@@ -60,5 +60,5 @@
       <string>SpaceAI.ShipSystems.SA_Shield</string>
     </shipSystemsScripts>
   </ShipSystems>
-  <ItemDataPath>Items/ItemsStafFighter_red</ItemDataPath>
+  <ItemDataPath>Items/tiefigter</ItemDataPath>
 </SA_ShipConfigurationManager>

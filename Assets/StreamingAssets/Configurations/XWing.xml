@@ -42,12 +42,12 @@
     <TargetRequestFrequency>1.5</TargetRequestFrequency>
   </AIConfig>
   <ShieldsConfiguration>
-    <EnableShields>false</EnableShields>
+    <EnableShields>true</EnableShields>
     <CollisionEnter>true</CollisionEnter>
     <DecaySpeed>2</DecaySpeed>
     <ReactSpeed>0.1</ReactSpeed>
     <FixNonUniformScale>true</FixNonUniformScale>
-    <ShieldPower>100</ShieldPower>
+    <ShieldPower>300</ShieldPower>
   </ShieldsConfiguration>
   <Options>
     <useTurrets>false</useTurrets>
@@ -60,5 +60,5 @@
       <string>SpaceAI.WeaponSystem.SA_WeaponController</string>
     </shipSystemsScripts>
   </ShipSystems>
-  <ItemDataPath>Items/ItemsStafFighter_green</ItemDataPath>
+  <ItemDataPath>Items/xwing</ItemDataPath>
 </SA_ShipConfigurationManager>
