@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/SpaceAI/Scenes/Demo.unity
     guid: 82120fe294e3aaa4a9d9127ecebfcc04
+  - enabled: 1
+    path: Assets/SpaceAI/Guide/Scenes/Guide.unity
+    guid: 4b3b38f4f47d0fc46a2f0817dc956aaa
   m_configObjects: {}

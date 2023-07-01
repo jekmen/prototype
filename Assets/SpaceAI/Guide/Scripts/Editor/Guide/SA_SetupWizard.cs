@@ -1,7 +1,9 @@
 using SpaceAI.Ship;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace SpaceAI.Guide
@@ -46,16 +48,23 @@ namespace SpaceAI.Guide
 
             bgColor = new GUIStyle();
 
-            bgColor.normal.background = _prefabAssemblerData.bg;
+            bgColor.normal.background = _prefabAssemblerData.bg;           
 
-            msg = _prefabAssemblerData.firstMsg;
+            try
+            {
+                EditorSceneManager.OpenScene("Assets/SpaceAI/Guide/Scenes/Guide.unity", OpenSceneMode.Single);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private void OnGUI()
         {
-            _prefabAssemblerData = (SA_SetupWizardScriptable)EditorGUILayout.ObjectField("Data", _prefabAssemblerData, typeof(SA_SetupWizardScriptable), true);
-
             _previewWindow.OnInteractivePreviewGUI(GUILayoutUtility.GetRect(256, 256), bgColor);
+
+            msg = EditorApplication.isPlaying ? _prefabAssemblerData.fiveMsg : _prefabAssemblerData.firstMsg;
 
             GUILayout.Box(msg);
 
@@ -95,11 +104,11 @@ namespace SpaceAI.Guide
                 msg = _prefabAssemblerData.frtMsg;
             }
 
-            if (ship && ship.GetComponent<SA_ShipController>() && ship.GetComponent<BoxCollider>() && GUILayout.Button("Test flight"))
+            if (!EditorApplication.isPlaying && ship && ship.GetComponent<SA_ShipController>() && ship.GetComponent<BoxCollider>() && GUILayout.Button("Test flight"))
             {
                 EditorApplication.EnterPlaymode();
 
-                Instantiate(_prefabAssemblerData.env);
+                Instantiate(_prefabAssemblerData.asteroidField);
 
                 msg = _prefabAssemblerData.fiveMsg;
             }

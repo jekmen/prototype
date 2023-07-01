@@ -7,13 +7,7 @@
     <SpeedMax>98</SpeedMax>
     <SpeedMin>-10</SpeedMin>
     <MoveSpeedIncrease>2</MoveSpeedIncrease>
-    <RotationSpeed>1.25</RotationSpeed>
-    <MinPitchSens>64</MinPitchSens>
-    <MinYawSens>46</MinYawSens>
-    <MaxYawSens>180</MaxYawSens>
-    <MaxPitchSens>180</MaxPitchSens>
-    <MaxPitchAngle>180</MaxPitchAngle>
-    <MaxYawAngle>180</MaxYawAngle>
+    <RotationSpeed>5.25</RotationSpeed>
     <ShipMass>3293</ShipMass>
     <HP>200</HP>
     <Prediction>250</Prediction>
@@ -24,7 +18,7 @@
       <y>0</y>
       <z>0</z>
     </patrolPoint>
-    <flyDistance>3000</flyDistance>
+    <flyDistance>800</flyDistance>
     <MainRot>
       <x>0</x>
       <y>0</y>
@@ -48,7 +42,7 @@
     <TargetRequestFrequency>1.5</TargetRequestFrequency>
   </AIConfig>
   <ShieldsConfiguration>
-    <EnableShields>false</EnableShields>
+    <EnableShields>true</EnableShields>
     <CollisionEnter>true</CollisionEnter>
     <DecaySpeed>2</DecaySpeed>
     <ReactSpeed>0.1</ReactSpeed>
@@ -56,8 +50,8 @@
     <ShieldPower>100</ShieldPower>
   </ShieldsConfiguration>
   <Options>
-    <useTurrets>false</useTurrets>
-    <independentTurrets>false</independentTurrets>
+    <useTurrets>true</useTurrets>
+    <independentTurrets>true</independentTurrets>
   </Options>
   <ShipSystems>
     <shipSystemsScripts>

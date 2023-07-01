@@ -196,7 +196,7 @@ namespace SpaceAI.Ship
         {
             rb = GetComponent<Rigidbody>();
             rb.useGravity = false;
-            rb.drag = 0.8F;
+            rb.drag = 1.3F;
             rb.angularDrag = 0.5F;
         }
 #endif

@@ -10,8 +10,8 @@ namespace SpaceAI.Guide
     {
         public Texture2D bg;
         public GameObject model;
+        public GameObject asteroidField;
         public MonoScript script;
-        public GameObject env;
         public Material[] materials;
         public string firstMsg;
         public string secondMsg;

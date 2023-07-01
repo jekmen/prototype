@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bg: {fileID: 2800000, guid: f1813020528c8ce41b035a934475c9d8, type: 3}
   model: {fileID: 919132149155446097, guid: ea7207c7642a64e4bb4756c5ac12d870, type: 3}
+  asteroidField: {fileID: 9156552135107296170, guid: 06f0b6b07e4dc634c83cbc61a5e5b1ae,
+    type: 3}
   script: {fileID: 11500000, guid: 5341ef5cb3b79114c9c25f1502561f31, type: 3}
-  env: {fileID: 1635801592140676, guid: 7750ac257b3c5974b89c412a4ad470b8, type: 3}
   materials:
   - {fileID: 2100000, guid: cf2e7e5cb8020a6499eff144b5ee5224, type: 2}
   - {fileID: 2100000, guid: cdb63438130486c4c9092e4d68008778, type: 2}
@@ -32,4 +33,4 @@ MonoBehaviour:
     now click "Load: XWing"'
   frtMsg: Great! The file is loaded, it remains to add a collider for the ship, without
     it it will not be able to bypass obstacles and receive damage
-  fiveMsg: 
+  fiveMsg: Everything is ready, you can enjoy the flight!

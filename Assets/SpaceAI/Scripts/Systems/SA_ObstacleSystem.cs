@@ -48,6 +48,11 @@ namespace SpaceAI.ShipSystems
         {
             this.ship = ship;
             wingSpan = ship.CurrentMesh.bounds.size.x * 2;
+
+            if (wingSpan < 1)
+            {
+                wingSpan = 4;
+            }
         }
 
         public override SA_IShipSystem Init(SA_IShip ship, GameObject gameObject)
@@ -77,7 +82,7 @@ namespace SpaceAI.ShipSystems
                     ship.SetTarget(newTargetPos);
                     ship.CanFollowTarget(true);
 
-                    if (ship.CurrentShipSize < 50 && timeForTarget < 1F)
+                    if (ship.CurrentShipSize < 50 && timeForTarget < 5F)
                     {
                         ReturnToTarget();
                     }
@@ -90,7 +95,7 @@ namespace SpaceAI.ShipSystems
                     if (Time.time > executeTime + maxStateTime && oldTargetPos == newTargetPos)
                     {
                         maxStateTime = Time.time;
-                        ReturnToTarget();
+                        //ReturnToTarget();
                     }
 
                     break;
@@ -190,15 +195,13 @@ namespace SpaceAI.ShipSystems
             return clos;
         }
 
-        readonly RaycastHit[] raycastHits = new RaycastHit[5];
-
         private RaycastHit Rays(Vector3 direction, float offsetX)
         {
-            float LoockAhed = ship.CurrentShipSize > 50 ? shipSpeed * 10 : shipSpeed * 20;
-            Ray ray = new Ray(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction);
-            //Debug.DrawRay(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction * LoockAhed, Color.red);
-            Physics.SphereCastNonAlloc(ray, ship.CurrentShipSize, raycastHits, LoockAhed);
-            return raycastHits[0];
+            float loockAhead = ship.CurrentShipSize > 50 ? shipSpeed * 5 : shipSpeed * 2;
+
+            Physics.Raycast(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction, out RaycastHit raycastHit, loockAhead);
+
+            return raycastHit;
         }
 
         private void ForceStop()
