@@ -39,7 +39,7 @@ namespace SpaceAI.DataManagment
                 EditorGUILayout.PropertyField(property, true);
             }
 
-            bool validate = script.ShipSystems.shipSystems != null && script.ShipSystems.shipSystemsScripts != null 
+            bool validate = script.ShipSystems.shipSystems != null && script.ShipSystems.shipSystemsScripts != null
                             && script.ShipSystems.shipSystems.Count != script.ShipSystems.shipSystemsScripts.Count;
 
             if (validate)
@@ -106,87 +106,104 @@ namespace SpaceAI.DataManagment
             serializedObject = new SerializedObject(script);
         }
     }
-}
 
-[CustomEditor(typeof(SA_BaseShip), true)]
-public class BaseShipLoader : Editor
-{
-    SA_BaseShip sA_BaseShip;
-    int iButtonWidth = 220;
-
-    private void OnEnable()
+    [CustomEditor(typeof(SA_BaseShip), true)]
+    public class BaseShipLoader : Editor
     {
-        sA_BaseShip = (SA_BaseShip)target;
-    }
+        SA_BaseShip sA_BaseShip;
+        int iButtonWidth = 220;
 
-    public override void OnInspectorGUI()
-    {
-        SetUp();
-    }
-
-    void SetUp()
-    {
-        if (!Directory.Exists(Path.Combine(Application.streamingAssetsPath, "Configurations")) || Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, "Configurations")).Length == 0)
+        private void OnEnable()
         {
-            GUILayout.BeginVertical();
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-
-            sA_BaseShip.configFileName = "";
-            EditorGUILayout.HelpBox("First you need to create a configuration file. SpaceAI->Create->FlightConfig", MessageType.Info);
-
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
-            return;
+            sA_BaseShip = (SA_BaseShip)target;
         }
 
-        if (string.IsNullOrEmpty(sA_BaseShip.configFileName))
+        public override void OnInspectorGUI()
         {
-            GUILayout.Space(15);
+            SetUp();
+        }
 
-            foreach (var item in Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, "Configurations")))
+        void SetUp()
+        {
+            if (!Directory.Exists(Path.Combine(Application.streamingAssetsPath, "Configurations")) || Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, "Configurations")).Length == 0)
             {
                 GUILayout.BeginVertical();
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
 
-                if (!item.Contains(".meta") && GUILayout.Button("Load: " + Path.GetFileNameWithoutExtension(item), GUILayout.Width(iButtonWidth)))
+                sA_BaseShip.configFileName = "";
+                EditorGUILayout.HelpBox("First you need to create a configuration file. SpaceAI->Create->FlightConfig", MessageType.Info);
+
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
+                return;
+            }
+
+            if (string.IsNullOrEmpty(sA_BaseShip.configFileName))
+            {
+                GUILayout.Space(15);
+
+                foreach (var item in Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, "Configurations")))
                 {
-                    sA_BaseShip.currFile = item;
-                    sA_BaseShip.configFileName = Path.GetFileNameWithoutExtension(item);
+                    GUILayout.BeginVertical();
+                    GUILayout.BeginHorizontal();
+                    GUILayout.FlexibleSpace();
+
+                    if (!item.Contains(".meta") && GUILayout.Button("Load: " + Path.GetFileNameWithoutExtension(item), GUILayout.Width(iButtonWidth)))
+                    {
+                        sA_BaseShip.currFile = item;
+                        sA_BaseShip.configFileName = Path.GetFileNameWithoutExtension(item);
+                        EditorUtility.SetDirty(sA_BaseShip);
+                    }
+
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+                    GUILayout.EndVertical();
+                }
+            }
+            else
+            {
+                if (!File.Exists(sA_BaseShip.currFile))
+                {
+                    sA_BaseShip.configFileName = "";
+                }
+
+                GUILayout.Space(15);
+
+                EditorGUILayout.HelpBox("Current file: " + sA_BaseShip.configFileName, MessageType.Info);
+
+                GUILayout.BeginVertical();
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+
+                if (!Application.isPlaying && GUILayout.Button("Clear", GUILayout.Width(iButtonWidth)))
+                {
+                    sA_BaseShip.configFileName = "";
                     EditorUtility.SetDirty(sA_BaseShip);
                 }
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
+
+                GUILayout.Space(5);
+
+                GUILayout.BeginVertical();
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+
+                if (!Application.isPlaying && GUILayout.Button("Open: " + sA_BaseShip.configFileName, GUILayout.Width(iButtonWidth)))
+                {
+                    string path = "Assets/SpaceAI/Data/FlightConfigs/";
+                    SA_ShipConfigurationManager scriptObject = (SA_ShipConfigurationManager)AssetDatabase.LoadAssetAtPath(path + sA_BaseShip.configFileName + ".asset", typeof(SA_ShipConfigurationManager));
+                    Selection.activeObject = scriptObject;
+                }
+
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
             }
-        }
-        else
-        {
-            if (!File.Exists(sA_BaseShip.currFile))
-            {
-                sA_BaseShip.configFileName = "";
-            }
-
-            GUILayout.Space(15);
-
-            EditorGUILayout.HelpBox("Current file: " + sA_BaseShip.configFileName, MessageType.Info);
-
-            GUILayout.BeginVertical();
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-
-            if (!Application.isPlaying && GUILayout.Button("Clear", GUILayout.Width(iButtonWidth)))
-            {
-                sA_BaseShip.configFileName = "";
-                EditorUtility.SetDirty(sA_BaseShip);
-            }
-
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
 
             GUILayout.Space(5);
 
@@ -194,32 +211,15 @@ public class BaseShipLoader : Editor
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            if (!Application.isPlaying && GUILayout.Button("Open: " + sA_BaseShip.configFileName, GUILayout.Width(iButtonWidth)))
+            if (!Application.isPlaying && GUILayout.Button("Validate", GUILayout.Width(iButtonWidth)))
             {
-                string path = "Assets/SpaceAI/Data/FlightConfigs/";
-                SA_ShipConfigurationManager scriptObject = (SA_ShipConfigurationManager)AssetDatabase.LoadAssetAtPath(path + sA_BaseShip.configFileName + ".asset", typeof(SA_ShipConfigurationManager));
-                Selection.activeObject = scriptObject;
+                sA_BaseShip.Validate();
+                EditorUtility.SetDirty(sA_BaseShip);
             }
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
         }
-
-        GUILayout.Space(5);
-
-        GUILayout.BeginVertical();
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-
-        if (!Application.isPlaying && GUILayout.Button("Validate", GUILayout.Width(iButtonWidth)))
-        {
-            sA_BaseShip.Validate();
-            EditorUtility.SetDirty(sA_BaseShip);
-        }
-
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-        GUILayout.EndVertical();
     }
 }
