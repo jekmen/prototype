@@ -1,18 +1,16 @@
-﻿using SpaceAI.Core;
-using SpaceAI.DataManagment;
-using SpaceAI.Events;
-using SpaceAI.FSM;
-using SpaceAI.ScaneTools;
-using SpaceAI.ShipSystems;
-using SpaceAI.WeaponSystem;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
-
-namespace SpaceAI.Ship
+﻿namespace SpaceAI.Ship
 {
+    using SpaceAI.Core;
+    using SpaceAI.DataManagment;
+    using SpaceAI.Events;
+    using SpaceAI.FSM;
+    using SpaceAI.ShipSystems;
+    using SpaceAI.WeaponSystem;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+
     [RequireComponent(typeof(Rigidbody))]
     public abstract class SA_BaseShip : MonoBehaviour, SA_IShip, SA_IDamage
     {

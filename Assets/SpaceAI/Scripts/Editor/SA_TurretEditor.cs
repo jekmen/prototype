@@ -1,8 +1,8 @@
-﻿using UnityEditor;
-using UnityEngine;
-
-namespace SpaceAI.WeaponSystem
+﻿namespace SpaceAI.WeaponSystem
 {
+    using UnityEditor;
+    using UnityEngine;
+
     [CustomEditor(typeof(SA_Turret))]
     [CanEditMultipleObjects]
     public class SA_TurretEditor : Editor
@@ -16,11 +16,6 @@ namespace SpaceAI.WeaponSystem
             DrawDefaultInspector();
 
             EditorGUILayout.BeginHorizontal();
-
-            if (GUILayout.Button(new GUIContent("Auto-Populate Transforms", "Automatically search and populate the \"Turret Base\" and \"Turret Barrels\" object references.\n\nRequires a child GameObject called \"Base\" and for that GameObject to have a child named \"Barrels\".")))
-            {
-                turret.AutoPopulateBaseAndBarrels();
-            }
 
             if (GUILayout.Button(new GUIContent("Clear Transforms", "Sets the \"Turret Base\" and \"Turret Barrels\" references to None.")))
             {

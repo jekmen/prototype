@@ -1,11 +1,11 @@
-﻿using SpaceAI.DataManagment;
-using SpaceAI.FSM;
-using SpaceAI.WeaponSystem;
-using System;
-using UnityEngine;
-
-namespace SpaceAI.Ship
+﻿namespace SpaceAI.Ship
 {
+    using SpaceAI.DataManagment;
+    using SpaceAI.FSM;
+    using SpaceAI.WeaponSystem;
+    using System;
+    using UnityEngine;
+
     /// <summary>
     /// Target identifier
     /// </summary>

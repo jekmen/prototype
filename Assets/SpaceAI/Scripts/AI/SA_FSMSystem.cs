@@ -1,10 +1,26 @@
-using SpaceAI.Ship;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-
+/// <summary>
+/// The `FSMSystem` class is a finite state machine system used for managing states and transitions within an AI system. 
+/// It is part of the `SpaceAI.FSM` namespace.
+/// Key components of the class include :
+/// - `states`: A list of `FSMState` objects representing the different states in the finite state machine.
+/// - `CurrentStateID`: A property indicating the ID of the current state.
+/// - `CurrentState`: A property indicating the current `FSMState` object.
+/// The class provides the following functionality:
+/// - `AddState`: Adds a new state to the FSM.The initial state added becomes the current state.
+/// - `DeleteState`: Deletes a state from the FSM based on its ID.
+/// - `PerformTransition`: Performs a transition from the current state to a new state based on the provided transition. 
+/// It checks if the current state has the specified transition and updates the current state accordingly.
+/// The `FSMSystem` class is responsible for managing the flow of states and transitions within the AI system, 
+/// allowing for dynamic switching between different behaviors based on the current state and triggered transitions.
+/// Note: This class is part of a larger AI system and works in conjunction with other classes such as `FSMState`, `SA_AIProvider`, 
+/// and the `Transition` and `StateID` enums to define and control the AI behavior.
+/// </summary>
 namespace SpaceAI.FSM
 {
+    using System;
+    using System.Collections.Generic;
+    using UnityEngine;
+
     public enum Transition
     {
         NullTransition, // Use this transition to represent a non-existing transition in your system
@@ -22,22 +38,22 @@ namespace SpaceAI.FSM
     }
 
     [Serializable]
-    public class FSMSystem 
+    public class SA_FSMSystem
     {
-        private List<FSMState> states;
+        private List<SA_FSMState> states;
 
         public StateID CurrentStateID { get; private set; }
-        public FSMState CurrentState { get; private set; }
+        public SA_FSMState CurrentState { get; private set; }
 
-        public FSMSystem()
+        public SA_FSMSystem()
         {
-            states = new List<FSMState>();
+            states = new List<SA_FSMState>();
         }
 
         /// <summary>
         /// Add new states inside the FSM
         /// </summary>
-        public void AddState(FSMState s)
+        public void AddState(SA_FSMState s)
         {
             // Check for Null reference before deleting
             if (s == null)
@@ -55,7 +71,7 @@ namespace SpaceAI.FSM
             }
 
             // Add the state to the List if it's not inside it
-            foreach (FSMState state in states)
+            foreach (SA_FSMState state in states)
             {
                 if (state.ID == s.ID)
                 {
@@ -81,7 +97,7 @@ namespace SpaceAI.FSM
             }
 
             // Search the List and delete the state if it's inside it
-            foreach (FSMState state in states)
+            foreach (SA_FSMState state in states)
             {
                 if (state.ID == id)
                 {
@@ -118,7 +134,7 @@ namespace SpaceAI.FSM
             // Update the currentStateID and currentState      
             CurrentStateID = id;
 
-            foreach (FSMState state in states)
+            foreach (SA_FSMState state in states)
             {
                 if (state.ID == CurrentStateID)
                 {
@@ -134,6 +150,5 @@ namespace SpaceAI.FSM
                 }
             }
         }
-    } 
+    }
 }
-

@@ -1,7 +1,7 @@
-using UnityEngine;
-
 namespace SpaceAI.Core
 {
+    using UnityEngine;
+
     public interface SA_IDamageSendler
     {
         GameObject Owner { get; }

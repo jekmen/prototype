@@ -1,11 +1,10 @@
-﻿using SpaceAI.Core;
-using SpaceAI.Ship;
-using System;
-using System.Threading.Tasks;
-using UnityEngine;
-
-namespace SpaceAI.WeaponSystem
+﻿namespace SpaceAI.WeaponSystem
 {
+    using SpaceAI.Core;
+    using System;
+    using System.Threading.Tasks;
+    using UnityEngine;
+
     public class SA_DamageSandler : SA_DamageBase
     {
         public ShellType ShellType;

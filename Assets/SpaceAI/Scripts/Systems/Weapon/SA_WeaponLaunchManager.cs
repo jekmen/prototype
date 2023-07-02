@@ -1,16 +1,13 @@
-﻿using SpaceAI.Core;
-using SpaceAI.Events;
-using SpaceAI.ScaneTools;
-using SpaceAI.Ship;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace SpaceAI.WeaponSystem
+﻿namespace SpaceAI.WeaponSystem
 {
+    using SpaceAI.SceneTools;
+    using SpaceAI.Ship;
+    using System;
+    using System.Collections;
+    using UnityEngine;
+
     [RequireComponent(typeof(AudioSource))]
-    public class SA_WeaponLunchManager : SA_WeaponBase, SA_IWeapon
+    public class SA_WeaponLaunchManager : SA_WeaponBase, SA_IWeapon
     {
         private readonly string _poolName = "BulletPool";
 
@@ -51,8 +48,7 @@ namespace SpaceAI.WeaponSystem
 
         private void InitGuns()
         {
-            if (!Owner)
-                Owner = transform.root.gameObject;
+            if (!Owner) Owner = transform.root.gameObject;
 
             m_audio = GetComponent<AudioSource>();
 

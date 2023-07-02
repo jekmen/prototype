@@ -1,9 +1,9 @@
-﻿using SpaceAI.Ship;
-using System;
-using UnityEngine;
-
-namespace SpaceAI.ShipSystems
+﻿namespace SpaceAI.ShipSystems
 {
+    using SpaceAI.Ship;
+    using System;
+    using UnityEngine;
+
     [Serializable]
     public abstract class SA_ShipSystem : SA_IShipSystem
     {

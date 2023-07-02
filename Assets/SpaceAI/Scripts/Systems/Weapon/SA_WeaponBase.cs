@@ -1,8 +1,8 @@
-﻿using SpaceAI.Core;
-using UnityEngine;
-
-namespace SpaceAI.WeaponSystem
+﻿namespace SpaceAI.WeaponSystem
 {
+    using SpaceAI.Core;
+    using UnityEngine;
+
     public class SA_DamageBase : MonoBehaviour, SA_IDamageSendler
     {
         [SerializeField] protected Rigidbody rb;

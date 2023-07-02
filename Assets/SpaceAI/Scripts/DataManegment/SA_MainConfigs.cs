@@ -1,9 +1,9 @@
-﻿using System;
-using System.Xml.Serialization;
-using UnityEngine;
+﻿namespace SpaceAI.DataManagment
+{
+    using System;
+    using System.Xml.Serialization;
+    using UnityEngine;
 
-namespace SpaceAI.DataManagment
-{    
     [XmlRoot]
     [Serializable]
     public class SA_MainConfigs
@@ -19,7 +19,7 @@ namespace SpaceAI.DataManagment
         public float HP;
         public float Prediction;
         public float DurableForce;
-        public float CollisionDamage;                
+        public float CollisionDamage;
         [Header("Fly Settings")]
         public Vector3 patrolPoint;
         public float flyDistance;

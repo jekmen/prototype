@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using UnityEngine;
-
-namespace SpaceAI.DataManagment
+﻿namespace SpaceAI.DataManagment
 {
+    using System;
+    using System.Xml.Serialization;
+    using UnityEngine;
+
     [Serializable]
     [XmlRoot]
     public class SA_ShipConfigurationManager : ScriptableObject

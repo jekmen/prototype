@@ -1,9 +1,9 @@
-﻿using SpaceAI.Ship;
-using System;
-using System.Xml.Serialization;
-
-namespace SpaceAI.DataManagment
+﻿namespace SpaceAI.DataManagment
 {
+    using SpaceAI.Ship;
+    using System;
+    using System.Xml.Serialization;
+
     [Serializable]
     [XmlRoot]
     public class SA_AIConfifuration

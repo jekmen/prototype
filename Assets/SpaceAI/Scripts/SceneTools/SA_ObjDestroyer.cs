@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SpaceAI.ScaneTools
+namespace SpaceAI.SceneTools
 {
     public class SA_ObjDestroyer : MonoBehaviour
     {

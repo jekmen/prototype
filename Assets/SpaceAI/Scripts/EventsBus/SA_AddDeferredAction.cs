@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace SpaceAI.Events
+﻿namespace SpaceAI.Events
 {
+    using System;
+
     internal class SA_AddDeferredAction : SA_IDeferredAction
     {
         public Action AddHandlerAction;

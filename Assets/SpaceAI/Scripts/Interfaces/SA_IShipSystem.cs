@@ -1,8 +1,8 @@
-using SpaceAI.Ship;
-using UnityEngine;
-
 namespace SpaceAI.ShipSystems
 {
+    using SpaceAI.Ship;
+    using UnityEngine;
+
     public interface SA_IShipSystem
     {
         SA_IShipSystem Init(SA_IShip ship, GameObject gameObject);

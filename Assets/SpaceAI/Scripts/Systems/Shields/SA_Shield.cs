@@ -1,10 +1,10 @@
-﻿using SpaceAI.DataManagment;
-using SpaceAI.Ship;
-using System;
-using UnityEngine;
-
-namespace SpaceAI.ShipSystems
+﻿namespace SpaceAI.ShipSystems
 {
+    using SpaceAI.DataManagment;
+    using SpaceAI.Ship;
+    using System;
+    using UnityEngine;
+
     [Serializable]
     public class SA_Shield : SA_ShipSystem
     {

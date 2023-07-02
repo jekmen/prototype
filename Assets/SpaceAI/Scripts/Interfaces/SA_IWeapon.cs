@@ -1,8 +1,8 @@
-using SpaceAI.Ship;
-using UnityEngine;
-
 namespace SpaceAI.WeaponSystem
 {
+    using SpaceAI.Ship;
+    using UnityEngine;
+
     public enum ShellType
     {
         Laser,
@@ -13,7 +13,7 @@ namespace SpaceAI.WeaponSystem
     {
         void Shoot(Transform[] outShell = null);
 
-        SA_WeaponLunchManager.Settings Settings { get; }
+        SA_WeaponLaunchManager.Settings Settings { get; }
 
         void SetOwner(SA_IShip ownerShip);
 

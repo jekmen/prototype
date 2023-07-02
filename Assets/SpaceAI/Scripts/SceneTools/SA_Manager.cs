@@ -1,13 +1,13 @@
-﻿using SpaceAI.Events;
-using SpaceAI.Ship;
-using SpaceAI.WeaponSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
-namespace SpaceAI.ScaneTools
+﻿namespace SpaceAI.SceneTools
 {
+    using SpaceAI.Events;
+    using SpaceAI.Ship;
+    using SpaceAI.WeaponSystem;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using UnityEngine;
+
     public class SA_Manager : MonoBehaviour
     {
         [Serializable]

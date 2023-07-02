@@ -1,9 +1,9 @@
-﻿using SpaceAI.WeaponSystem;
-using System;
-using UnityEngine;
-
-namespace SpaceAI.Weapons
+﻿namespace SpaceAI.Weapons
 {
+    using SpaceAI.WeaponSystem;
+    using System;
+    using UnityEngine;
+
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CapsuleCollider))]
     [RequireComponent(typeof(SA_DamageSandler))]

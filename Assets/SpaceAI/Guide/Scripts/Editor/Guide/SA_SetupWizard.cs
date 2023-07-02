@@ -2,6 +2,7 @@ using SpaceAI.Ship;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace SpaceAI.Guide
         private GUIStyle bgColor;
         private GameObject ship;
         private string msg;
+        private string docsFile;
 
         static SA_SetupWizard()
         {
@@ -33,10 +35,13 @@ namespace SpaceAI.Guide
             SA_SetupWizard window = (SA_SetupWizard)GetWindow(typeof(SA_SetupWizard));
             window.Show();
             window.titleContent = new GUIContent("Setup Wizard");
+            
         }
 
         private void OnEnable()
         {
+            docsFile = Application.dataPath + "/SpaceAI/Guide/SpaceAIDocumentation.pdf";
+
             string[] guid = AssetDatabase.FindAssets("t:" + typeof(SA_SetupWizardScriptable).ToString(), null);
 
             if (guid.Length > 0 && !string.IsNullOrEmpty(guid[0]))
@@ -111,6 +116,16 @@ namespace SpaceAI.Guide
                 Instantiate(_prefabAssemblerData.asteroidField);
 
                 msg = _prefabAssemblerData.fiveMsg;
+            }
+
+            if (GUILayout.Button("Open documentation"))
+            {
+                if (EditorApplication.isPlaying)
+                {
+                    EditorApplication.ExitPlaymode();
+                }
+
+                Application.OpenURL("file:///" + docsFile);
             }
         }
     }

@@ -1,8 +1,8 @@
-﻿using SpaceAI.WeaponSystem;
-using UnityEngine;
-
-namespace SpaceAI.DataManagment
+﻿namespace SpaceAI.DataManagment
 {
+    using SpaceAI.WeaponSystem;
+    using UnityEngine;
+
     public class SA_ItemsStaf : ScriptableObject
     {
         public AudioClip[] HitSounds;

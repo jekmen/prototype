@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SpaceAI.ScaneTools
+namespace SpaceAI.SceneTools
 {
     /// <summary>
     /// This is just for preview you can remove this class

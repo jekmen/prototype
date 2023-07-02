@@ -1,13 +1,12 @@
-using SpaceAI.Ship;
-using SpaceAI.ShipSystems;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
 namespace SpaceAI.WeaponSystem
 {
+    using SpaceAI.Ship;
+    using SpaceAI.ShipSystems;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using UnityEngine;
+
     [Serializable]
     public class SA_WeaponController : SA_IShipSystem
     {

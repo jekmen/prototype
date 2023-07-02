@@ -1,7 +1,7 @@
-using SpaceAI.Ship;
-
 namespace SpaceAI.Events
 {
+    using SpaceAI.Ship;
+
     public struct SA_ShipRegistryEvent : SA_IEvent
     {
         public SA_IShip Ship;

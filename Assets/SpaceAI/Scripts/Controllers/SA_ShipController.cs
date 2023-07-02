@@ -1,12 +1,9 @@
-﻿using SpaceAI.Events;
-using SpaceAI.FSM;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace SpaceAI.Ship
+﻿namespace SpaceAI.Ship
 {
+    using SpaceAI.Events;
+    using SpaceAI.FSM;
+    using UnityEngine;
+
     public class SA_ShipController : SA_BaseShip
     {
         private bool isReady = false;

@@ -1,11 +1,12 @@
-using SpaceAI.Ship;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
 namespace SpaceAI.ShipSystems
 {
+    using SpaceAI.Ship;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using UnityEngine;
+
+
     [Serializable]
     public class ShipSystemFactory
     {

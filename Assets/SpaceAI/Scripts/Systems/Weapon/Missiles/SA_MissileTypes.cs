@@ -1,9 +1,9 @@
-﻿using SpaceAI.WeaponSystem;
-using System;
-using UnityEngine;
-
-namespace SpaceAI.Weapons
+﻿namespace SpaceAI.Weapons
 {
+    using SpaceAI.WeaponSystem;
+    using System;
+    using UnityEngine;
+
     public class SA_MissileTypes : SA_DamageSandler
     {
         [Serializable]

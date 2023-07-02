@@ -1,11 +1,9 @@
-﻿using SpaceAI.Ship;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace SpaceAI.WeaponSystem
+﻿namespace SpaceAI.WeaponSystem
 {
-    public class SA_Turret : SA_WeaponLunchManager
+    using SpaceAI.Ship;
+    using UnityEngine;
+
+    public class SA_Turret : SA_WeaponLaunchManager
     {
         [Tooltip("Should turret rotate in the FixedUpdate rather than Update?")]
         public bool runRotationsInFixed = false;
@@ -228,16 +226,6 @@ namespace SpaceAI.WeaponSystem
 
         #region EDITOR
 #if UNITY_EDITOR
-
-        public void AutoPopulateBaseAndBarrels()
-        {
-            /// Don't allow this while ingame.
-            if (!Application.isPlaying)
-            {
-
-            }
-        }
-
         public void ClearTransforms()
         {
             /// Don't allow this while ingame.

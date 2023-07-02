@@ -1,14 +1,12 @@
-﻿using SpaceAI.Core;
-using SpaceAI.Ship;
-using SpaceAI.WeaponSystem;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
-
-namespace SpaceAI.ShipSystems
+﻿namespace SpaceAI.ShipSystems
 {
+    using SpaceAI.Core;
+    using SpaceAI.Ship;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using UnityEngine;
+
     [Serializable]
     public class SA_ObstacleSystem : SA_ShipSystem
     {

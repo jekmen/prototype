@@ -1,8 +1,8 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace SpaceAI.DataManagment
+﻿namespace SpaceAI.DataManagment
 {
+    using System;
+    using System.Xml.Serialization;
+
     [Serializable]
     [XmlRoot]
     public class SA_Options

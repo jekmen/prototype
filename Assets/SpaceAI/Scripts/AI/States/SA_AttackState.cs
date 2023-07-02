@@ -1,11 +1,24 @@
-﻿using SpaceAI.Core;
-using SpaceAI.Ship;
-using SpaceAI.ShipSystems;
-using UnityEngine;
-
+﻿/// <summary>
+/// The `AttackState` class is a specific state implementation for the finite state machine (FSM) used in AI behavior. It is part of the `SpaceAI.FSM` namespace.
+/// Key components of the class include :
+/// - `MinEnemyDistance`, `MaxEnemyDistance`, `CloseEnemyDistance`: Constants that define distance thresholds for enemy engagement.
+/// - `toClose`, `rangeAttackDirection`, `sitOnTale`: Variables used for determining attack behavior.
+/// - Constructor: Initializes the state ID and resets turrets if configured to use them.
+/// - `DoBeforeEntering`: Sets up the state's initial conditions, such as determining the distance to the current enemy and attack behavior variables.
+/// - `Act`: Controls the behavior of the object (ship) in the game world during the attack state. 
+/// It calculates the target's future position, sets the target, and handles weapon firing and turret control.
+/// - `CalculatePrediction`: Helper method to calculate the predicted future position of the target based on its velocity and the bullet speed.
+/// - `Reason`: Determines if the state should transition to another state based on certain conditions. 
+/// It checks if the way is free, the distance to the target, and if the ship is too far from the patrol point.
+/// - `DoBeforeLeaving`: Performs any necessary actions or resets before leaving the state, such as resetting turrets if configured to use them.
+/// The `AttackState` class extends the abstract `FSMState` class and implements the abstract `Reason` and `Act` methods, 
+/// which define the specific behavior for the attack state.
+/// </summary>
 namespace SpaceAI.FSM
 {
-    public class AttackState : FSMState
+    using SpaceAI.Ship;
+    using UnityEngine;
+    public class SA_AttackState : SA_FSMState
     {
         private const float MinEnemyDistance = 80f;
         private const float MaxEnemyDistance = 200f;
@@ -15,7 +28,7 @@ namespace SpaceAI.FSM
         private float rangeAttackDirection;
         private int sitOnTale;
 
-        public AttackState(SA_IShip obj) : base(obj)
+        public SA_AttackState(SA_IShip obj) : base(obj)
         {
             stateID = StateID.Attack;
 

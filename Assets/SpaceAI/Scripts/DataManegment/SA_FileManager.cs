@@ -1,13 +1,12 @@
-﻿using System.Collections;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using UnityEngine;
-using UnityEngine.Networking;
-
-namespace SpaceAI.DataManagment
+﻿namespace SpaceAI.DataManagment
 {
+    using System.Collections;
+    using System.IO;
+    using System.Threading.Tasks;
+    using System.Xml.Serialization;
+    using UnityEngine;
+    using UnityEngine.Networking;
+
     public static class SA_FileManager
     {
         private const string baseDir = "Data";
