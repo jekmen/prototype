@@ -10,7 +10,7 @@
     <RotationSpeed>5.25</RotationSpeed>
     <ShipMass>3293</ShipMass>
     <HP>200</HP>
-    <Prediction>250</Prediction>
+    <Prediction>2</Prediction>
     <DurableForce>17</DurableForce>
     <CollisionDamage>3</CollisionDamage>
     <patrolPoint>
@@ -51,7 +51,7 @@
   </ShieldsConfiguration>
   <Options>
     <useTurrets>true</useTurrets>
-    <independentTurrets>true</independentTurrets>
+    <independentTurrets>false</independentTurrets>
   </Options>
   <ShipSystems>
     <shipSystemsScripts>

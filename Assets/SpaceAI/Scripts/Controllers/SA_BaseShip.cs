@@ -24,7 +24,7 @@
 
         protected Vector3 SetVelocityTarget(Vector3 vector) { velocityTarget = vector; return velocityTarget; }
 
-        private SA_ObstacleSystem obstacleSystem;
+        protected SA_ObstacleSystem obstacleSystem;
         private ShipSystemFactory shipSystemFactory;
         private SA_ShipConfigurationManager shipConfiguration;
         private SA_WeaponController weaponController;
@@ -95,7 +95,7 @@
         {
             yield return new WaitForEndOfFrame();
 
-            obstacleSystem.OvoideObstacles();
+           // obstacleSystem.OvoideObstacles();
 
             if (shield != null && !ShipConfiguration.ShieldsConfiguration.EnableShields)
             {

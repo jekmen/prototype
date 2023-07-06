@@ -5,6 +5,8 @@
 
     public class SA_Turret : SA_WeaponLaunchManager
     {
+        private const float _attackDirection = 0.98F;
+
         [Tooltip("Should turret rotate in the FixedUpdate rather than Update?")]
         public bool runRotationsInFixed = false;
 
@@ -61,6 +63,8 @@
 
         private void IndependentShipTurret()
         {
+            if (!isActiveAndEnabled) return;
+
             SA_IShip ship = GetComponentInParent<SA_IShip>();
 
             if (independent && ship != null)
@@ -69,7 +73,7 @@
 
                 if (Target)
                 {
-                    SetAimpointFromShip();
+                    SetAimpointFromShip(Target.transform);
                 }
             }
         }
@@ -89,22 +93,67 @@
             aimPoint = position;
         }
 
-        public void SetAimpointFromShip()
+        public void SetAimpointFromShip(Transform aimpoint)
         {
-            int c = 20;
-            Vector3 dir = (aimPoint - transform.position).normalized;
+            Vector3 predictendTarget = PredictTargetPosition(aimpoint, weaponController.GetCurrentWeapon().BulletInitPos, weaponController.GetCurrentWeapon().BulletSpeed);
 
-            foreach (var item in turretBarrels)
+            SetAimpoint(predictendTarget);
+
+            Vector3 dir = (predictendTarget - transform.position).normalized;
+
+            foreach (var barrel in turretBarrels)
             {
-                float dot = Mathf.Round(Vector3.Dot(dir, item.transform.forward * turnRate * c));
-                float attackDirection = Mathf.Round(turnRate * c) - 0.5F;
+                float dot = Vector3.Dot(dir, barrel.transform.forward);
 
-                if (dot > attackDirection)
+                if (dot > _attackDirection)
                 {
-                    weaponController.LaunchWeapons(shellOut);
+                    weaponController.LaunchWeapon(WeaponId);
                 }
             }
         }
+
+        private Vector3 PredictTargetPosition(Transform target, Vector3 bulletStartPosition, float bulletSpeed)
+        {
+            Rigidbody targetRigidbody = target.GetComponent<Rigidbody>();
+
+            if (targetRigidbody == null)
+            {
+                return target.transform.position; // Return current position if no Rigidbody
+            }
+
+            // Calculate the direction vector from the bullet's start position to the predicted target position
+            Vector3 direction = (PredictedPosition(target) - bulletStartPosition).normalized;
+
+            // Calculate the bullet's velocity vector by multiplying the direction vector with the bullet's speed
+            Vector3 bulletVelocity = direction * bulletSpeed;
+
+            // Calculate the time to intercept using the distance between the bullet's start position and the predicted target position
+            float distanceToIntercept = Vector3.Distance(bulletStartPosition, PredictedPosition(target));
+            float timeToIntercept = distanceToIntercept / bulletSpeed;
+
+            // Predict the future position based on the bullet's velocity and time to intercept
+            Vector3 predictedPosition = bulletStartPosition + bulletVelocity * timeToIntercept;
+
+            return predictedPosition;
+        }
+
+        private Vector3 PredictedPosition(Transform target)
+        {
+            Rigidbody targetRigidbody = target.GetComponent<Rigidbody>();
+
+            if (targetRigidbody == null)
+            {
+                return target.transform.position; // Return current position if no Rigidbody
+            }
+
+            Vector3 targetVelocity = targetRigidbody.velocity * 1.5F; // Adjust for more accurate prediction
+
+            // Predict the future position based on current position, velocity, and time to intercept
+            Vector3 predictedPosition = target.transform.position + targetVelocity;
+
+            return predictedPosition;
+        }
+
 
         public void SetIdle(bool idle)
         {
@@ -116,6 +165,8 @@
 
         private void RotateTurret()
         {
+            if (!isActiveAndEnabled) return;
+
             if (aiming)
             {
                 RotateBase();
@@ -134,7 +185,7 @@
             foreach (var turrBase in turretBase)
             {
                 // Note, the local conversion has to come from the parent.
-                Vector3 localTargetPos = turrBase.parent.InverseTransformPoint(aimPoint);
+                Vector3 localTargetPos = transform.InverseTransformPoint(aimPoint);
                 localTargetPos.y = 0.0f;
 
                 // Clamp target rotation by creating a limited rotation to the target.
@@ -162,22 +213,30 @@
             // TODO: A target position directly to the turret's right will cause the turret
             // to attempt to aim straight up. This looks silly and on slow moving turrets can
             // cause delays on targeting. This is why barrels have a boosted rotation speed.
+            Vector3 localTargetPos = Vector3.zero;
+
+            foreach (var turrBase in turretBase)
+            {
+                localTargetPos = turrBase.InverseTransformPoint(aimPoint);
+            }
+
+            // Note, the local conversion has to come from the parent.
+            localTargetPos.x = 0.0f;
+
+            // Clamp target rotation by creating a limited rotation to the target.
+            // Use different clamps depending if the target is above or below the turret.
+            Vector3 clampedLocalVec2Target = localTargetPos;
+
+            if (localTargetPos.y >= 0.0f)
+                clampedLocalVec2Target = Vector3.RotateTowards(Vector3.forward, localTargetPos, elevation, float.MaxValue);
+            else
+                clampedLocalVec2Target = Vector3.RotateTowards(Vector3.forward, localTargetPos, Mathf.Deg2Rad * depression, float.MaxValue);
+
+            // Create new rotation towards the target in local space.
+            Quaternion rotationGoal = Quaternion.LookRotation(clampedLocalVec2Target);
+
             foreach (var turretBarr in turretBarrels)
             {
-                // Note, the local conversion has to come from the parent.
-                Vector3 localTargetPos = turretBarr.InverseTransformPoint(aimPoint);
-                localTargetPos.x = 0.0f;
-
-                // Clamp target rotation by creating a limited rotation to the target.
-                // Use different clamps depending if the target is above or below the turret.
-                Vector3 clampedLocalVec2Target = localTargetPos;
-                if (localTargetPos.y >= 0.0f)
-                    clampedLocalVec2Target = Vector3.RotateTowards(Vector3.forward, localTargetPos, Mathf.Deg2Rad * elevation, float.MaxValue);
-                else
-                    clampedLocalVec2Target = Vector3.RotateTowards(Vector3.forward, localTargetPos, Mathf.Deg2Rad * depression, float.MaxValue);
-
-                // Create new rotation towards the target in local space.
-                Quaternion rotationGoal = Quaternion.LookRotation(clampedLocalVec2Target);
                 Quaternion newRotation = Quaternion.RotateTowards(turretBarr.localRotation, rotationGoal, 2.0f * turnRate * Time.deltaTime);
 
                 // Set the new rotation of the barrels.
@@ -222,6 +281,12 @@
             {
                 Debug.DrawRay(item.position, item.forward * 100.0f, Color.red);
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(aimPoint, 2);
         }
 
         #region EDITOR

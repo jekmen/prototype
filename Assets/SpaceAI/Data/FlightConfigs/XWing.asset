@@ -20,7 +20,7 @@ MonoBehaviour:
     RotationSpeed: 11
     ShipMass: 3456
     HP: 300
-    Prediction: 480
+    Prediction: 2
     DurableForce: 31
     CollisionDamage: 10
     patrolPoint: {x: 0, y: 0, z: 0}

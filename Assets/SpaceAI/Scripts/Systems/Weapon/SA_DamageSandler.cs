@@ -1,8 +1,7 @@
 ﻿namespace SpaceAI.WeaponSystem
 {
     using SpaceAI.Core;
-    using System;
-    using System.Threading.Tasks;
+    using System.Collections;
     using UnityEngine;
 
     public class SA_DamageSandler : SA_DamageBase
@@ -33,7 +32,7 @@
 
             colliders = Owner.GetComponentsInChildren<Collider>();
 
-            Deactivate(gameObject, DestryAfterDuration);
+            StartCoroutine(Deactivate(gameObject, DestryAfterDuration));
 
             Physics.IgnoreCollision(GetComponent<Collider>(), Owner.GetComponent<Collider>());
 
@@ -45,6 +44,8 @@
 
         public void Active()
         {
+            if (!isActiveAndEnabled) return;
+
             if (explousionEffectPrefab)
             {
                 if (!storedEffect)
@@ -57,7 +58,7 @@
                     storedEffect.SetActive(true);
                 }
 
-                Deactivate(storedEffect, lifeTimeEffect);
+                StartCoroutine(Deactivate(storedEffect, lifeTimeEffect));
             }
 
             if (Explosive)
@@ -70,7 +71,7 @@
                 explosionSound.Play();
                 GetComponent<Renderer>().enabled = false;
                 GetComponent<Collider>().enabled = false;
-                Deactivate(gameObject, UnityEngine.Random.Range(1, explosionSound.clip.length));
+                StartCoroutine(Deactivate(gameObject, UnityEngine.Random.Range(1, explosionSound.clip.length)));
             }
             else
             {
@@ -83,15 +84,9 @@
             gameObject.SetActive(false);
         }
 
-        public async void Deactivate(GameObject gameObject, float time)
+        public IEnumerator Deactivate(GameObject gameObject, float time)
         {
-            if (!Application.isPlaying)
-                return;
-
-            await Task.Delay(TimeSpan.FromSeconds(time));
-
-            if (!Application.isPlaying)
-                return;
+            yield return new WaitForSeconds(time);
 
             gameObject.SetActive(false);
         }

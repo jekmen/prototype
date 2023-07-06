@@ -127,6 +127,16 @@ namespace SpaceAI.Guide
 
                 Application.OpenURL("file:///" + docsFile);
             }
+
+            if (GUILayout.Button("Support"))
+            {
+                if (EditorApplication.isPlaying)
+                {
+                    EditorApplication.ExitPlaymode();
+                }
+
+                Application.OpenURL("https://discord.gg/Sd2SryF8");
+            }
         }
     }
 }

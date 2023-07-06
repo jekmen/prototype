@@ -105,7 +105,9 @@ namespace SpaceAI.ShipSystems
 
             var owner = ship as SA_BaseShip;
 
-            if (!owner.GetComponent<Collider>().isTrigger)
+            Collider coll = owner.GetComponent<Collider>() ? owner.GetComponent<Collider>() : owner.GetComponentInChildren<Collider>();
+
+            if (!coll.isTrigger)
             {
                 if (collision.relativeVelocity.magnitude > ship.ShipConfiguration.MainConfig.DurableForce)
                 {

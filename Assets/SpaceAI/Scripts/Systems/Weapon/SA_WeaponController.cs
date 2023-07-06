@@ -20,10 +20,13 @@ namespace SpaceAI.WeaponSystem
         {
             WeaponLists = ownerShip.CurrentShipTransform.GetComponentsInChildren<SA_IWeapon>(true).ToList();
 
+            int id = -1;
+
             foreach (var weapon in WeaponLists)
             {
+                id++;
                 weapon.SetOwner(ownerShip);
-                weapon.SetFireShells(ownerShip.ShipConfiguration.Items.ShellPrefab);
+                weapon.SetFireShells(ownerShip.ShipConfiguration.Items.ShellPrefab, id);
             }
         }
 
@@ -117,7 +120,6 @@ namespace SpaceAI.WeaponSystem
                     {
                         turret.Target = target.gameObject;
                         turret.independent = true;
-                        turret.SetAimpoint(aimPoint);
                     }
                 }
             }

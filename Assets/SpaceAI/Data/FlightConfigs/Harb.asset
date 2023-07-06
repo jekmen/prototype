@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc1e724cfb231664fad975133b629e7e, type: 3}
+  m_Name: Harb
+  m_EditorClassIdentifier: 
+  MainConfig:
+    Speed: 245
+    SpeedMax: 245
+    SpeedMin: -10
+    MoveSpeedIncrease: 10
+    RotationSpeed: 0.1
+    RotationSpeedMain: 0.05
+    ShipMass: 398700
+    HP: 20000
+    Prediction: 1.5
+    DurableForce: 17
+    CollisionDamage: 3
+    patrolPoint: {x: 0, y: 0, z: 0}
+    flyDistance: 1200
+  AIConfig:
+    GroupType: 0
+    GroupTypesToAction: 01000000
+    ShipTargetScanRange: 2000
+    TargetRequestFrequency: 1
+  ShieldsConfiguration:
+    EnableShields: 0
+    CollisionEnter: 0
+    DecaySpeed: 2
+    ReactSpeed: 0.1
+    FixNonUniformScale: 0
+    ShieldPower: 0
+  Options:
+    useTurrets: 1
+    independentTurrets: 1
+  ShipSystems:
+    shipSystems:
+    - {fileID: 11500000, guid: 3ebc3ae6332d6b447bebb4d42dadb155, type: 3}
+    - {fileID: 11500000, guid: 491d790369ca21d4b990819b087f5e75, type: 3}
+    shipSystemsScripts:
+    - SpaceAI.ShipSystems.SA_ObstacleSystem
+    - SpaceAI.WeaponSystem.SA_WeaponController
+  Items: {fileID: 11400000, guid: 510e644624ab4c2429bd7e55a507f100, type: 2}
+  ItemDataPath: Items/Harb

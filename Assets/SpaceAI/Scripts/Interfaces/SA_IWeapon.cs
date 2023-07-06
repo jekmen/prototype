@@ -15,8 +15,14 @@ namespace SpaceAI.WeaponSystem
 
         SA_WeaponLaunchManager.Settings Settings { get; }
 
+        int WeaponId { get; }
+
+        float BulletSpeed { get; }
+
+        Vector3 BulletInitPos { get; }
+
         void SetOwner(SA_IShip ownerShip);
 
-        void SetFireShells(SA_DamageSandler[] shellPrefab);
+        void SetFireShells(SA_DamageSandler[] shellPrefab, int id);
     }
 }

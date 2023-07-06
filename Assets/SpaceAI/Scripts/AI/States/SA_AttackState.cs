@@ -98,13 +98,39 @@ namespace SpaceAI.FSM
 
         private Vector3 CalculatePrediction(SA_IShip ship)
         {
-            float bulletSpeed = owner.ShipConfiguration.MainConfig.Prediction;
+            // Get the current ship's speed
+            float ownerSpeed = owner.CurrentShipTransform.GetComponent<Rigidbody>().velocity.magnitude;
+
+                      // Get the bullet speed from the owner's weapon
+            float bulletSpeed = owner.WeaponControll.GetCurrentWeapon().BulletSpeed;
+
+            // Calculate the effective bullet speed including the owner's speed
+            float effectiveBulletSpeed = bulletSpeed + ownerSpeed;
+
+            // Calculate the distance to the target
             float distanceToTarget = Vector3.Distance(ship.CurrentShipTransform.position, ship.CurrentEnemy.transform.position);
-            float timeToIntercept = distanceToTarget / bulletSpeed;
-            Vector3 targetVelocity = ship.CurrentEnemy.GetComponent<Rigidbody>().velocity;
-            Vector3 targetFuturePos = ship.CurrentEnemy.transform.position + targetVelocity * timeToIntercept;
+
+            // Calculate the time to intercept using the effective bullet speed
+            float timeToIntercept = distanceToTarget / effectiveBulletSpeed;
+
+            // Get the target's rigidbody component
+            Rigidbody targetRigidbody = ship.CurrentEnemy.GetComponent<Rigidbody>();
+
+            if (targetRigidbody == null)
+            {
+                // Return a default position or handle the error case
+                return Vector3.zero;
+            }
+
+            // Get the target's velocity
+            Vector3 targetVelocity = targetRigidbody.velocity;
+
+            // Calculate the predicted future position of the target
+            Vector3 targetFuturePos = ship.CurrentEnemy.transform.position + targetVelocity * timeToIntercept / owner.ShipConfiguration.MainConfig.Prediction;
+
             return targetFuturePos;
         }
+
 
         public override void Reason()
         {

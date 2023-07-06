@@ -14,6 +14,7 @@
         [HideInInspector] public float SpeedMin;
         public float MoveSpeedIncrease;
         public float RotationSpeed;
+        public float RotationSpeedMain;
         public float ShipMass;
         [Header("Damage Settings")]
         public float HP;
@@ -26,11 +27,12 @@
 
         public SA_MainConfigs() { }
 
-        public SA_MainConfigs(float speed, float moveSpeedIncrease, float rotationSpeed, float shipMass, float hP, float prediction, float durableForce, float collisionDamage, float flyDistance)
+        public SA_MainConfigs(float speed, float moveSpeedIncrease, float rotationSpeed, float shipMass, float hP, float prediction, float durableForce, float collisionDamage, float flyDistance, float rotationSpeedMain)
         {
             Speed = speed;
             MoveSpeedIncrease = moveSpeedIncrease;
             RotationSpeed = rotationSpeed;
+            RotationSpeedMain = rotationSpeedMain;
             ShipMass = shipMass;
             HP = hP;
             Prediction = prediction;

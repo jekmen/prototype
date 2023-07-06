@@ -20,7 +20,7 @@ MonoBehaviour:
     RotationSpeed: 10
     ShipMass: 3293
     HP: 200
-    Prediction: 460
+    Prediction: 2
     DurableForce: 17
     CollisionDamage: 3
     patrolPoint: {x: 0, y: 0, z: 0}
@@ -50,4 +50,4 @@ MonoBehaviour:
     - SpaceAI.WeaponSystem.SA_WeaponController
     - SpaceAI.ShipSystems.SA_Shield
   Items: {fileID: 11400000, guid: 218bb3bcafb915a4ab06cce0ddb74caf, type: 2}
-  ItemDataPath: Items/ItemsStafFighter_red
+  ItemDataPath: Items/tiefigter

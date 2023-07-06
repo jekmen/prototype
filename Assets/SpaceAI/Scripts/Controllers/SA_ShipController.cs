@@ -27,11 +27,15 @@
 
             aIProvider.LoopStates();
 
+            obstacleSystem.OvoideObstacles();
+
             Move();
         }
 
         protected override void Move()
         {
+            if (GetCurrentTargetPosition == Vector3.zero) SetTarget(new Vector3(0.01F, 0.01F, 0.01F));
+
             Vector3 relativePoint = transform.InverseTransformPoint(GetCurrentTargetPosition).normalized;
 
             if (followTarget)
@@ -44,7 +48,10 @@
                 {
                     if (WayIsFree())
                     {
-                        ShipConfiguration.MainConfig.MainRot = Quaternion.LookRotation((GetCurrentTargetPosition + Vector3.left * ShipConfiguration.MainConfig.MoveSpeed) * 2 - transform.position);
+                        var targetDir = (GetCurrentTargetPosition + Vector3.left * ShipConfiguration.MainConfig.MoveSpeed) * 2 - transform.position;
+
+                        ShipConfiguration.MainConfig.MainRot = Quaternion.LookRotation(GetCurrentTargetPosition - transform.position);
+                        //ShipConfiguration.MainConfig.MainRot = Quaternion.LookRotation(targetDir);
                     }
                     else
                     {
@@ -54,7 +61,7 @@
 
                 var barelRotationSpeed = ShipConfiguration.MainConfig.RotationSpeed * Time.deltaTime * 1000;
                 var barelShipRotation = Quaternion.Euler(-relativePoint.y * Time.deltaTime * barelRotationSpeed, 0, -relativePoint.x * Time.deltaTime * barelRotationSpeed);
-                var shipRotation = Quaternion.Lerp(rb.rotation, ShipConfiguration.MainConfig.MainRot, Time.deltaTime);
+                var shipRotation = Quaternion.Lerp(rb.rotation, ShipConfiguration.MainConfig.MainRot, Time.deltaTime * ShipConfiguration.MainConfig.RotationSpeedMain);
 
                 rb.rotation = shipRotation;
                 rb.rotation *= barelShipRotation;

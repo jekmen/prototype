@@ -47,6 +47,11 @@
             this.ship = ship;
             wingSpan = ship.CurrentMesh.bounds.size.x * 2;
 
+            if (wingSpan > 100)
+            {
+                wingSpan = wingSpan / 10;
+            }
+
             if (wingSpan < 1)
             {
                 wingSpan = 4;
@@ -69,7 +74,16 @@
 
                     ship.ShipConfiguration.MainConfig.Speed = ship.ShipConfiguration.MainConfig.SpeedMax;
 
-                    ObstacleOvoidanceDeteсtor(ship.CurrentShipTransform.forward, 0);
+                    if(ship.CurrentShipSize < 50)
+                    {
+                        ObstacleOvoidanceDeteсtor(ship.CurrentShipTransform.forward, 0);
+                    }
+                    else
+                    {
+                        //ObstacleOvoidanceDeteсtor(ship.CurrentShipTransform.forward, 45);
+                        ObstacleOvoidanceDeteсtor(ship.CurrentShipTransform.forward, 0);
+                        //ObstacleOvoidanceDeteсtor(ship.CurrentShipTransform.forward, -45);
+                    }
 
                     break;
 
@@ -85,7 +99,7 @@
                         ReturnToTarget();
                     }
 
-                    if (ship.CurrentShipSize > 50 && timeForTarget < 2F)
+                    if (ship.CurrentShipSize > 50 && timeForTarget < 10F)
                     {
                         ReturnToTarget();
                     }
@@ -195,9 +209,11 @@
 
         private RaycastHit Rays(Vector3 direction, float offsetX)
         {
-            float loockAhead = ship.CurrentShipSize > 50 ? shipSpeed * 5 : shipSpeed * 2;
+            float loockAhead = ship.CurrentShipSize > 50 ? shipSpeed * 10 : shipSpeed * 2;
 
             Physics.Raycast(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction, out RaycastHit raycastHit, loockAhead);
+
+            //Debug.DrawRay(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction * loockAhead);
 
             return raycastHit;
         }

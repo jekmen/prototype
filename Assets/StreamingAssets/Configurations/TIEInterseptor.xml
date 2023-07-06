@@ -10,7 +10,7 @@
     <RotationSpeed>10</RotationSpeed>
     <ShipMass>3293</ShipMass>
     <HP>200</HP>
-    <Prediction>460</Prediction>
+    <Prediction>2</Prediction>
     <DurableForce>17</DurableForce>
     <CollisionDamage>3</CollisionDamage>
     <patrolPoint>

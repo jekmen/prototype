@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e140f08ea0308c143a8c8cb891ebc7bb, type: 3}
+  m_Name: Harb
+  m_EditorClassIdentifier: 
+  HitSounds: []
+  ExplousionEffect: {fileID: 1121192042590650, guid: 53594dc6b60d69b4fbe097028a678db7,
+    type: 3}
+  OnFireParticle: {fileID: 3177043057931044737, guid: fcead70fdad582142b7137a40e9afd68,
+    type: 3}
+  ShieldPrefab: {fileID: 0}
+  ShellPrefab:
+  - {fileID: 114700999166701996, guid: 69d17977579b6204fb3d5ba8cfbf8c99, type: 3}

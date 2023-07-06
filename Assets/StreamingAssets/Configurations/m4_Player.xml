@@ -3,14 +3,15 @@
   <name>m4_Player</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>134</Speed>
-    <SpeedMax>134</SpeedMax>
+    <Speed>87</Speed>
+    <SpeedMax>87</SpeedMax>
     <SpeedMin>-10</SpeedMin>
     <MoveSpeedIncrease>0.8</MoveSpeedIncrease>
     <RotationSpeed>6.8</RotationSpeed>
+    <RotationSpeedMain>2.05</RotationSpeedMain>
     <ShipMass>3456</ShipMass>
     <HP>300</HP>
-    <Prediction>250</Prediction>
+    <Prediction>2</Prediction>
     <DurableForce>31</DurableForce>
     <CollisionDamage>10</CollisionDamage>
     <patrolPoint>
@@ -51,7 +52,7 @@
   </ShieldsConfiguration>
   <Options>
     <useTurrets>true</useTurrets>
-    <independentTurrets>true</independentTurrets>
+    <independentTurrets>false</independentTurrets>
   </Options>
   <ShipSystems>
     <shipSystemsScripts>

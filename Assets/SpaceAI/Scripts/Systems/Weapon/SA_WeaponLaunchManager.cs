@@ -39,12 +39,20 @@
         private int currentOuter = 0;
         private float nextFireTime = 0;
         private bool Reloading;
+        private float bulletSpeed = 1;
         private GameObject muzzle;
 
         private int poolID;
         private SA_IShip owner;
+        private Vector3 bulletInitPos;
+        private int weaponId;
 
         Settings SA_IWeapon.Settings => settings;
+
+        public float BulletSpeed => bulletSpeed;
+        public Vector3 BulletInitPos => bulletInitPos;
+
+        public int WeaponId => weaponId;
 
         private void InitGuns()
         {
@@ -105,6 +113,8 @@
 
         public virtual void Shoot(Transform[] outShell)
         {
+            if (!isActiveAndEnabled) return;
+
             if (outShell == null || outShell.Length == 0)
             {
                 outShell = settings.shellOuter;
@@ -163,6 +173,8 @@
                             bullet.transform.SetPositionAndRotation(shellPosition, shellRotate);
                             bullet.gameObject.SetActive(true);
 
+                            bulletInitPos = shellPosition;
+
                             if (bullet.Rb)
                             {
                                 bullet.Rb.velocity = Vector3.zero;
@@ -173,6 +185,8 @@
                                 }
 
                                 bullet.Rb.AddForce(direction * settings.ForceShoot);
+
+                                bulletSpeed = bullet.Rb.velocity.magnitude;
                             }
                         }
                     }
@@ -196,8 +210,10 @@
             owner = ownerShip;
         }
 
-        public void SetFireShells(SA_DamageSandler[] shellPrefab)
+        public void SetFireShells(SA_DamageSandler[] shellPrefab, int id)
         {
+            weaponId = id;
+
             foreach (var shell in shellPrefab)
             {
                 if (shell.ShellType == settings.ShellType)
