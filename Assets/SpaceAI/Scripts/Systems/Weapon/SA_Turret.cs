@@ -146,14 +146,13 @@
                 return target.transform.position; // Return current position if no Rigidbody
             }
 
-            Vector3 targetVelocity = targetRigidbody.velocity * 1.5F; // Adjust for more accurate prediction
+            Vector3 targetVelocity = targetRigidbody.velocity; // Adjust for more accurate prediction
 
             // Predict the future position based on current position, velocity, and time to intercept
             Vector3 predictedPosition = target.transform.position + targetVelocity;
 
             return predictedPosition;
         }
-
 
         public void SetIdle(bool idle)
         {

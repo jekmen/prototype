@@ -9,7 +9,7 @@
     <MoveSpeedIncrease>0.8</MoveSpeedIncrease>
     <RotationSpeed>6.8</RotationSpeed>
     <RotationSpeedMain>2.05</RotationSpeedMain>
-    <ShipMass>3456</ShipMass>
+    <ShipMass>1</ShipMass>
     <HP>300</HP>
     <Prediction>2</Prediction>
     <DurableForce>31</DurableForce>
