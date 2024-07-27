@@ -3,23 +3,23 @@
   <name>m4_Player</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>87</Speed>
-    <SpeedMax>87</SpeedMax>
+    <Speed>50</Speed>
+    <SpeedMax>50</SpeedMax>
     <SpeedMin>-10</SpeedMin>
-    <MoveSpeedIncrease>0.8</MoveSpeedIncrease>
-    <RotationSpeed>6.8</RotationSpeed>
-    <RotationSpeedMain>2.05</RotationSpeedMain>
-    <ShipMass>1</ShipMass>
-    <HP>300</HP>
-    <Prediction>2</Prediction>
-    <DurableForce>31</DurableForce>
-    <CollisionDamage>10</CollisionDamage>
+    <MoveSpeedIncrease>1</MoveSpeedIncrease>
+    <RotationSpeed>1.2</RotationSpeed>
+    <RotationSpeedMain>2</RotationSpeedMain>
+    <ShipMass>2</ShipMass>
+    <HP>2000</HP>
+    <Prediction>800</Prediction>
+    <DurableForce>17</DurableForce>
+    <CollisionDamage>3</CollisionDamage>
     <patrolPoint>
       <x>0</x>
       <y>0</y>
       <z>0</z>
     </patrolPoint>
-    <flyDistance>800</flyDistance>
+    <flyDistance>2000</flyDistance>
     <MainRot>
       <x>0</x>
       <y>0</y>
@@ -31,7 +31,7 @@
         <z>0</z>
       </eulerAngles>
     </MainRot>
-    <HPmax>300</HPmax>
+    <HPmax>2000</HPmax>
     <MoveSpeed>0</MoveSpeed>
   </MainConfig>
   <AIConfig>
@@ -39,8 +39,8 @@
     <GroupTypesToAction>
       <GroupType>Enemy</GroupType>
     </GroupTypesToAction>
-    <ShipTargetScanRange>1600</ShipTargetScanRange>
-    <TargetRequestFrequency>1.5</TargetRequestFrequency>
+    <ShipTargetScanRange>2000</ShipTargetScanRange>
+    <TargetRequestFrequency>1</TargetRequestFrequency>
   </AIConfig>
   <ShieldsConfiguration>
     <EnableShields>false</EnableShields>
@@ -48,7 +48,7 @@
     <DecaySpeed>2</DecaySpeed>
     <ReactSpeed>0.1</ReactSpeed>
     <FixNonUniformScale>true</FixNonUniformScale>
-    <ShieldPower>100</ShieldPower>
+    <ShieldPower>0</ShieldPower>
   </ShieldsConfiguration>
   <Options>
     <useTurrets>true</useTurrets>
@@ -57,7 +57,6 @@
   <ShipSystems>
     <shipSystemsScripts>
       <string>SpaceAI.ShipSystems.SA_ObstacleSystem</string>
-      <string>SpaceAI.ShipSystems.SA_Shield</string>
       <string>SpaceAI.WeaponSystem.SA_WeaponController</string>
     </shipSystemsScripts>
   </ShipSystems>

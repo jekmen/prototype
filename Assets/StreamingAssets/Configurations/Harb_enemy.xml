@@ -3,13 +3,13 @@
   <name>Harb_enemy</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>245</Speed>
-    <SpeedMax>245</SpeedMax>
+    <Speed>45</Speed>
+    <SpeedMax>45</SpeedMax>
     <SpeedMin>-10</SpeedMin>
     <MoveSpeedIncrease>10</MoveSpeedIncrease>
     <RotationSpeed>0.1</RotationSpeed>
     <RotationSpeedMain>0.05</RotationSpeedMain>
-    <ShipMass>398700</ShipMass>
+    <ShipMass>5</ShipMass>
     <HP>20000</HP>
     <Prediction>1.5</Prediction>
     <DurableForce>17</DurableForce>
@@ -19,7 +19,7 @@
       <y>0</y>
       <z>0</z>
     </patrolPoint>
-    <flyDistance>1200</flyDistance>
+    <flyDistance>300</flyDistance>
     <MainRot>
       <x>0</x>
       <y>0</y>
@@ -35,9 +35,9 @@
     <MoveSpeed>0</MoveSpeed>
   </MainConfig>
   <AIConfig>
-    <GroupType>Player</GroupType>
+    <GroupType>Enemy</GroupType>
     <GroupTypesToAction>
-      <GroupType>Enemy</GroupType>
+      <GroupType>Player</GroupType>
     </GroupTypesToAction>
     <ShipTargetScanRange>2000</ShipTargetScanRange>
     <TargetRequestFrequency>1</TargetRequestFrequency>

@@ -55,6 +55,16 @@ namespace SpaceAI.WeaponSystem
             }
         }
 
+        public void LaunchWeapon(int index, Transform[] outShell,  Vector3 aimPoint)
+        {
+            CurrentWeapon = index;
+
+            if (CurrentWeapon < WeaponLists.Count && WeaponLists[index] != null)
+            {
+                WeaponLists[index].Shoot(outShell, aimPoint);
+            }
+        }
+
         public void SwitchWeapon()
         {
             CurrentWeapon = CurrentWeapon++ % WeaponLists.Count;
@@ -118,7 +128,7 @@ namespace SpaceAI.WeaponSystem
                 {
                     if (weapon is SA_Turret turret)
                     {
-                        turret.Target = target.gameObject;
+                        //turret.Target = target.gameObject;
                         turret.independent = true;
                     }
                 }

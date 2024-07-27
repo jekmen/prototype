@@ -34,8 +34,6 @@
 
         protected override void Move()
         {
-            if (GetCurrentTargetPosition == Vector3.zero) SetTarget(new Vector3(0.01F, 0.01F, 0.01F));
-
             Vector3 relativePoint = transform.InverseTransformPoint(GetCurrentTargetPosition).normalized;
 
             if (followTarget)

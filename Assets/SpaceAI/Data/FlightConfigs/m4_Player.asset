@@ -10,37 +10,37 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc1e724cfb231664fad975133b629e7e, type: 3}
-  m_Name: Harb_enemy
+  m_Name: m4_Player
   m_EditorClassIdentifier: 
   MainConfig:
-    Speed: 45
-    SpeedMax: 45
+    Speed: 50
+    SpeedMax: 50
     SpeedMin: -10
-    MoveSpeedIncrease: 10
-    RotationSpeed: 0.1
-    RotationSpeedMain: 0.05
-    ShipMass: 5
-    HP: 20000
-    Prediction: 1.5
+    MoveSpeedIncrease: 1
+    RotationSpeed: 1.2
+    RotationSpeedMain: 2
+    ShipMass: 2
+    HP: 2000
+    Prediction: 800
     DurableForce: 17
     CollisionDamage: 3
     patrolPoint: {x: 0, y: 0, z: 0}
-    flyDistance: 300
+    flyDistance: 2000
   AIConfig:
-    GroupType: 0
-    GroupTypesToAction: 01000000
+    GroupType: 1
+    GroupTypesToAction: 00000000
     ShipTargetScanRange: 2000
     TargetRequestFrequency: 1
   ShieldsConfiguration:
     EnableShields: 0
-    CollisionEnter: 0
+    CollisionEnter: 1
     DecaySpeed: 2
     ReactSpeed: 0.1
-    FixNonUniformScale: 0
+    FixNonUniformScale: 1
     ShieldPower: 0
   Options:
     useTurrets: 1
-    independentTurrets: 1
+    independentTurrets: 0
   ShipSystems:
     shipSystems:
     - {fileID: 11500000, guid: 3ebc3ae6332d6b447bebb4d42dadb155, type: 3}
@@ -48,5 +48,5 @@ MonoBehaviour:
     shipSystemsScripts:
     - SpaceAI.ShipSystems.SA_ObstacleSystem
     - SpaceAI.WeaponSystem.SA_WeaponController
-  Items: {fileID: 11400000, guid: 510e644624ab4c2429bd7e55a507f100, type: 2}
-  ItemDataPath: Items/Harb
+  Items: {fileID: 11400000, guid: b527c18f75e95e542ae126ebc5ea848b, type: 2}
+  ItemDataPath: Items/ItemsStafFighter_green

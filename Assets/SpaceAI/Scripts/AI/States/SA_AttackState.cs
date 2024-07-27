@@ -60,7 +60,7 @@ namespace SpaceAI.FSM
 
         public override void Act()
         {
-            if (!owner.CurrentEnemy || !owner.WayIsFree()) return;
+            if (!owner.CurrentEnemy || !owner.WayIsFree() || owner.WeaponControll.GetCurrentWeapon() == null) return;
 
             Vector3 targetFuturePos = CalculatePrediction(owner);
 

@@ -3,8 +3,8 @@
   <name>Harb</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>245</Speed>
-    <SpeedMax>245</SpeedMax>
+    <Speed>84</Speed>
+    <SpeedMax>84</SpeedMax>
     <SpeedMin>-10</SpeedMin>
     <MoveSpeedIncrease>10</MoveSpeedIncrease>
     <RotationSpeed>0.1</RotationSpeed>

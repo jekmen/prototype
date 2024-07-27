@@ -14,6 +14,7 @@
 
         private GameObject storedEffect;
         private Collider[] colliders;
+        private Coroutine deactivateCoroutine;
 
         private void OnEnable()
         {
@@ -28,11 +29,16 @@
                 GetComponent<Collider>().enabled = true;
             }
 
+            ReActivate(gameObject, DestryAfterDuration);
+
+            if (storedEffect)
+            {
+                storedEffect.SetActive(false);
+            }
+
             if (!Owner || !Owner.GetComponent<Collider>()) return;
 
             colliders = Owner.GetComponentsInChildren<Collider>();
-
-            StartCoroutine(Deactivate(gameObject, DestryAfterDuration));
 
             Physics.IgnoreCollision(GetComponent<Collider>(), Owner.GetComponent<Collider>());
 
@@ -58,7 +64,7 @@
                     storedEffect.SetActive(true);
                 }
 
-                StartCoroutine(Deactivate(storedEffect, lifeTimeEffect));
+                ReActivate(storedEffect);
             }
 
             if (Explosive)
@@ -71,7 +77,7 @@
                 explosionSound.Play();
                 GetComponent<Renderer>().enabled = false;
                 GetComponent<Collider>().enabled = false;
-                StartCoroutine(Deactivate(gameObject, UnityEngine.Random.Range(1, explosionSound.clip.length)));
+                ReActivate(gameObject, UnityEngine.Random.Range(1, explosionSound.clip.length));
             }
             else
             {
@@ -79,16 +85,16 @@
             }
         }
 
-        public void Deactivate(GameObject gameObject)
+        public void Deactivate(GameObject any)
         {
-            gameObject.SetActive(false);
+            any.SetActive(false);
         }
 
-        public IEnumerator Deactivate(GameObject gameObject, float time)
+        public IEnumerator DeactivateAfterTime(GameObject any, float time)
         {
             yield return new WaitForSeconds(time);
 
-            gameObject.SetActive(false);
+            any.SetActive(false);
         }
 
         private void ExplosionDamage()
@@ -112,10 +118,17 @@
             }
         }
 
-        /// <summary>
-        /// Aply damage 
-        /// </summary>
-        /// <param name="collision"></param>
+        private void ReActivate(GameObject gameObject, float time = 1)
+        {
+            if (deactivateCoroutine != null)
+            {
+                StopCoroutine(deactivateCoroutine);
+                deactivateCoroutine = null;
+            }
+
+            deactivateCoroutine = StartCoroutine(DeactivateAfterTime(gameObject, time));
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if (!Owner) return;
@@ -147,33 +160,5 @@
                 Active();
             }
         }
-
-        /// <summary>
-        /// Make pasible to aply damage to child gameobjects 
-        /// </summary>
-        /// <param name="other"></param>
-        //private void OnTriggerEnter(Collider other)
-        //{
-        //    if (Owner && other.gameObject == Owner.transform.root.gameObject)
-        //    {
-        //        foreach (Collider col in Owner.GetComponentsInChildren<Collider>())
-        //        {
-        //            Physics.IgnoreCollision(other.gameObject.GetComponent<Collider>(), col);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        var damagebleComponent = other.gameObject.GetComponentInParent(typeof(IDamage)) as IDamage;
-
-        //        if (damagebleComponent != null)
-        //        {
-        //            if (!Explosive)
-        //            {
-        //                damagebleComponent.ApplyDamage(Damage, Owner);
-        //            }
-        //            Active();
-        //        }
-        //    }
-        //}
     }
 }

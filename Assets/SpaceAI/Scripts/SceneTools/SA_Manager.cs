@@ -40,6 +40,7 @@
 
         private void OnEnable()
         {
+            SA_EventsBus.AddEventListener<SA_TurretTargetRequestEvent>(OnTurretTargetRequestEvent);
             SA_EventsBus.AddEventListener<SA_ShipRegistryEvent>(OnShipRegistryUpdate);
             SA_EventsBus.AddEventListener<SA_ShipUnRegisterEvent>(OnShipUnRegisterUpdate);
             SA_EventsBus.AddEventListener<SA_ShipTargetRequesEvent>(OnShipTargetUpdate);
@@ -47,9 +48,15 @@
 
         private void OnDisable()
         {
+            SA_EventsBus.RemoveEventListener<SA_TurretTargetRequestEvent>(OnTurretTargetRequestEvent);
             SA_EventsBus.RemoveEventListener<SA_ShipRegistryEvent>(OnShipRegistryUpdate);
             SA_EventsBus.RemoveEventListener<SA_ShipUnRegisterEvent>(OnShipUnRegisterUpdate);
             SA_EventsBus.RemoveEventListener<SA_ShipTargetRequesEvent>(OnShipTargetUpdate);
+        }
+
+        private void OnTurretTargetRequestEvent(SA_TurretTargetRequestEvent e)
+        {
+            e.Owner.Target = GetTarget(e.TurretPosition, e.RequestedTargets, e.Range);
         }
 
         private void OnShipTargetUpdate(SA_ShipTargetRequesEvent e)
@@ -161,6 +168,32 @@
             }
 
             return false;
+        }
+
+        public GameObject GetTarget(Transform ownerPos, GroupType[] groupTypes, float scanRange)
+        {
+            GameObject closestTarget = null;
+            float shortestDistance = scanRange;
+
+            foreach (var sharedTarget in SharedTargets)
+            {
+                foreach (var groupType in groupTypes)
+                {
+                    if (sharedTarget.Ship() == groupType)
+                    {
+                        Component targetObject = sharedTarget as Component;
+                        float distance = Vector3.Distance(ownerPos.position, targetObject.transform.position);
+
+                        if (distance < shortestDistance)
+                        {
+                            closestTarget = targetObject.gameObject;
+                            shortestDistance = distance;
+                        }
+                    }
+                }
+            }
+
+            return closestTarget;
         }
     }
 }

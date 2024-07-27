@@ -39,7 +39,7 @@
         private int currentOuter = 0;
         private float nextFireTime = 0;
         private bool Reloading;
-        private float bulletSpeed = 1;
+        [SerializeField] private float bulletSpeed = 60;
         private GameObject muzzle;
 
         private int poolID;
@@ -47,12 +47,12 @@
         private Vector3 bulletInitPos;
         private int weaponId;
 
-        Settings SA_IWeapon.Settings => settings;
-
         public float BulletSpeed => bulletSpeed;
         public Vector3 BulletInitPos => bulletInitPos;
 
         public int WeaponId => weaponId;
+
+        public Settings WeaponLaunchManagerSettings { get => settings; set => settings = value; }
 
         private void InitGuns()
         {
@@ -111,7 +111,7 @@
             }
         }
 
-        public virtual void Shoot(Transform[] outShell)
+        public virtual void Shoot(Transform[] outShell, Vector3 aimPoint)
         {
             if (!isActiveAndEnabled) return;
 
@@ -120,7 +120,8 @@
                 outShell = settings.shellOuter;
             }
 
-            Target = owner.CurrentEnemy;
+          
+            //Target = owner.CurrentEnemy;
 
             if (settings.InfinityAmmo)
             {
@@ -179,14 +180,14 @@
                             {
                                 bullet.Rb.velocity = Vector3.zero;
 
-                                if (Owner?.GetComponent<Rigidbody>() is Rigidbody rb)
+                                if (Owner.GetComponent<Rigidbody>())
                                 {
+                                    var rb = Owner.GetComponent<Rigidbody>();
                                     bullet.Rb.velocity = rb.velocity;
                                 }
 
-                                bullet.Rb.AddForce(direction * settings.ForceShoot);
-
-                                bulletSpeed = bullet.Rb.velocity.magnitude;
+                                Vector3 shootingDirection = (aimPoint - bulletInitPos).normalized;
+                                bullet.Rb.velocity += shootingDirection * bulletSpeed;
                             }
                         }
                     }

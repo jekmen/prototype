@@ -11,9 +11,9 @@ namespace SpaceAI.WeaponSystem
 
     public interface SA_IWeapon
     {
-        void Shoot(Transform[] outShell = null);
+        void Shoot(Transform[] outShell = null, Vector3 aimPoint = new Vector3());
 
-        SA_WeaponLaunchManager.Settings Settings { get; }
+        SA_WeaponLaunchManager.Settings WeaponLaunchManagerSettings { get; }
 
         int WeaponId { get; }
 

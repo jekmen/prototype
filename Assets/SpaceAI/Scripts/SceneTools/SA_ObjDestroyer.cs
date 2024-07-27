@@ -6,6 +6,7 @@ namespace SpaceAI.SceneTools
     public class SA_ObjDestroyer : MonoBehaviour
     {
         public float lifeTime;
+        public bool destroy;
 
         private void OnEnable()
         {
@@ -18,11 +19,18 @@ namespace SpaceAI.SceneTools
 
             if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Play();
 
-                await Task.Delay((int)time * 1000);
+            await Task.Delay((int)time * 1000);
 
             if (!Application.isPlaying) return;
 
-            gameObject.SetActive(false);
+            if (destroy)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

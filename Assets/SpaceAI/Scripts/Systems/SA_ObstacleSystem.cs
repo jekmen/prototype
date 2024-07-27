@@ -49,7 +49,6 @@
 
             if (wingSpan > 100)
             {
-                wingSpan = wingSpan / 10;
             }
 
             if (wingSpan < 1)
@@ -209,11 +208,11 @@
 
         private RaycastHit Rays(Vector3 direction, float offsetX)
         {
-            float loockAhead = ship.CurrentShipSize > 50 ? shipSpeed * 10 : shipSpeed * 2;
+            float loockAhead = ship.CurrentShipSize > 50 ? shipSpeed * 20 : shipSpeed * 2;
 
             Physics.Raycast(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction, out RaycastHit raycastHit, loockAhead);
 
-            //Debug.DrawRay(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction * loockAhead);
+            Debug.DrawRay(ship.CurrentShipTransform.position + new Vector3(offsetX, 0, 0), direction * loockAhead);
 
             return raycastHit;
         }

@@ -8,6 +8,7 @@
     <SpeedMin>-10</SpeedMin>
     <MoveSpeedIncrease>2</MoveSpeedIncrease>
     <RotationSpeed>11</RotationSpeed>
+    <RotationSpeedMain>0</RotationSpeedMain>
     <ShipMass>3456</ShipMass>
     <HP>300</HP>
     <Prediction>2</Prediction>

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Harb
   m_EditorClassIdentifier: 
   MainConfig:
-    Speed: 245
-    SpeedMax: 245
+    Speed: 84
+    SpeedMax: 84
     SpeedMin: -10
     MoveSpeedIncrease: 10
     RotationSpeed: 0.1
