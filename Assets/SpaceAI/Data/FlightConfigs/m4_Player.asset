@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: m4_Player
   m_EditorClassIdentifier: 
   MainConfig:
-    Speed: 50
-    SpeedMax: 50
+    Speed: 70
+    SpeedMax: 70
     SpeedMin: -10
     MoveSpeedIncrease: 1
-    RotationSpeed: 1.2
-    RotationSpeedMain: 2
-    ShipMass: 2
-    HP: 2000
+    RotationSpeed: 12
+    RotationSpeedMain: 0.2
+    ShipMass: 0
+    HP: 200
     Prediction: 800
     DurableForce: 17
     CollisionDamage: 3
     patrolPoint: {x: 0, y: 0, z: 0}
-    flyDistance: 2000
+    flyDistance: 1000
   AIConfig:
     GroupType: 1
     GroupTypesToAction: 00000000

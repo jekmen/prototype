@@ -104,7 +104,7 @@ namespace SpaceAI.WeaponSystem
             }
         }
 
-        public void TurretsControl(Vector3 target)
+        public void IndependenceTurretControll(bool isIndependent)
         {
             if (WeaponLists != null && WeaponLists.Count > 0)
             {
@@ -112,24 +112,11 @@ namespace SpaceAI.WeaponSystem
                 {
                     if (weapon is SA_Turret turret)
                     {
-                        turret.SetAimpoint(target);
-                    }
-                }
-
-                LaunchWeapons();
-            }
-        }
-
-        public void TurretsControl(Transform target, Vector3 aimPoint)
-        {
-            if (WeaponLists != null && WeaponLists.Count > 0)
-            {
-                foreach (var weapon in WeaponLists)
-                {
-                    if (weapon is SA_Turret turret)
-                    {
-                        //turret.Target = target.gameObject;
                         turret.independent = true;
+                    }
+                    else
+                    {
+                        weapon.Shoot();
                     }
                 }
             }

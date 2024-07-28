@@ -115,14 +115,13 @@
         {
             if (!isActiveAndEnabled) return;
 
+            Target = owner.CurrentEnemy;
+
             if (outShell == null || outShell.Length == 0)
             {
                 outShell = settings.shellOuter;
             }
-
           
-            //Target = owner.CurrentEnemy;
-
             if (settings.InfinityAmmo)
             {
                 settings.Ammo = 1;

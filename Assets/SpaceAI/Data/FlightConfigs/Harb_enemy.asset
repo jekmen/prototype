@@ -25,7 +25,7 @@ MonoBehaviour:
     DurableForce: 17
     CollisionDamage: 3
     patrolPoint: {x: 0, y: 0, z: 0}
-    flyDistance: 300
+    flyDistance: 3000
   AIConfig:
     GroupType: 0
     GroupTypesToAction: 01000000

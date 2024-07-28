@@ -194,6 +194,7 @@
                 else
                 {
                     SA_EventsBus.Publish(new SA_TurretTargetRequestEvent(this, transform, ship.ShipConfiguration.AIConfig.GroupTypesToAction, outOfRange));
+
                     RotateToIdle();
                 }
             }

@@ -3,12 +3,12 @@
   <name>TIEInterseptor</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>128</Speed>
-    <SpeedMax>128</SpeedMax>
+    <Speed>87</Speed>
+    <SpeedMax>87</SpeedMax>
     <SpeedMin>-10</SpeedMin>
     <MoveSpeedIncrease>2</MoveSpeedIncrease>
     <RotationSpeed>10</RotationSpeed>
-    <RotationSpeedMain>0</RotationSpeedMain>
+    <RotationSpeedMain>0.12</RotationSpeedMain>
     <ShipMass>3293</ShipMass>
     <HP>200</HP>
     <Prediction>2</Prediction>
@@ -39,7 +39,7 @@
     <GroupTypesToAction>
       <GroupType>Player</GroupType>
     </GroupTypesToAction>
-    <ShipTargetScanRange>850</ShipTargetScanRange>
+    <ShipTargetScanRange>2050</ShipTargetScanRange>
     <TargetRequestFrequency>1.5</TargetRequestFrequency>
   </AIConfig>
   <ShieldsConfiguration>
@@ -51,7 +51,7 @@
     <ShieldPower>100</ShieldPower>
   </ShieldsConfiguration>
   <Options>
-    <useTurrets>false</useTurrets>
+    <useTurrets>true</useTurrets>
     <independentTurrets>false</independentTurrets>
   </Options>
   <ShipSystems>

@@ -3,14 +3,14 @@
   <name>m4_Player</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>50</Speed>
-    <SpeedMax>50</SpeedMax>
+    <Speed>70</Speed>
+    <SpeedMax>70</SpeedMax>
     <SpeedMin>-10</SpeedMin>
     <MoveSpeedIncrease>1</MoveSpeedIncrease>
-    <RotationSpeed>1.2</RotationSpeed>
-    <RotationSpeedMain>2</RotationSpeedMain>
-    <ShipMass>2</ShipMass>
-    <HP>2000</HP>
+    <RotationSpeed>12</RotationSpeed>
+    <RotationSpeedMain>0.2</RotationSpeedMain>
+    <ShipMass>0</ShipMass>
+    <HP>200</HP>
     <Prediction>800</Prediction>
     <DurableForce>17</DurableForce>
     <CollisionDamage>3</CollisionDamage>
@@ -19,7 +19,7 @@
       <y>0</y>
       <z>0</z>
     </patrolPoint>
-    <flyDistance>2000</flyDistance>
+    <flyDistance>1000</flyDistance>
     <MainRot>
       <x>0</x>
       <y>0</y>
@@ -31,7 +31,7 @@
         <z>0</z>
       </eulerAngles>
     </MainRot>
-    <HPmax>2000</HPmax>
+    <HPmax>200</HPmax>
     <MoveSpeed>0</MoveSpeed>
   </MainConfig>
   <AIConfig>

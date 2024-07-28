@@ -34,7 +34,7 @@ namespace SpaceAI.FSM
         {
             turnTime = UnityEngine.Random.Range(3, 5);
             rollFrequency = UnityEngine.Random.Range(0.5F, 2);
-            makeManuver = UnityEngine.Random.Range(1, 3);
+            makeManuver = UnityEngine.Random.Range(1, 5);
             owner.SetTarget(owner.CurrentShipTransform.position - new Vector3(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100)) * 100);
         }
 
@@ -42,7 +42,7 @@ namespace SpaceAI.FSM
         {
             if (owner.CurrentShipSize > 50) return;
 
-            if (makeManuver >= 2)
+            if (makeManuver >= 4)
             {
                 float rollAmplitude = 10f; // adjust as needed
                 float rollOffset = Time.time * rollFrequency;

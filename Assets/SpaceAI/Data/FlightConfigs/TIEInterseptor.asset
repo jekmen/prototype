@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: TIEInterseptor
   m_EditorClassIdentifier: 
   MainConfig:
-    Speed: 128
-    SpeedMax: 128
+    Speed: 87
+    SpeedMax: 87
     SpeedMin: -10
     MoveSpeedIncrease: 2
     RotationSpeed: 10
+    RotationSpeedMain: 0.12
     ShipMass: 3293
     HP: 200
     Prediction: 2
@@ -28,7 +29,7 @@ MonoBehaviour:
   AIConfig:
     GroupType: 0
     GroupTypesToAction: 01000000
-    ShipTargetScanRange: 850
+    ShipTargetScanRange: 2050
     TargetRequestFrequency: 1.5
   ShieldsConfiguration:
     EnableShields: 0
@@ -38,7 +39,7 @@ MonoBehaviour:
     FixNonUniformScale: 1
     ShieldPower: 100
   Options:
-    useTurrets: 0
+    useTurrets: 1
     independentTurrets: 0
   ShipSystems:
     shipSystems:

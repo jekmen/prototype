@@ -40631,7 +40631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shipPrefabs:
   - {fileID: 3934667566716175980, guid: 7dd9e8f8b09935e498e9eeec0879f798, type: 3}
-  shipCount: 2
+  shipCount: 10
   initTime: 0.5
 --- !u!1 &1635597746
 GameObject:
@@ -50408,20 +50408,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1119285694, guid: 5a207dff2f562f84099816fec5ce4dbd, type: 3}
+      propertyPath: bulletSpeed
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 1119285694, guid: 5a207dff2f562f84099816fec5ce4dbd, type: 3}
+      propertyPath: settings.ReloadTime
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 707134734547756747, guid: 5a207dff2f562f84099816fec5ce4dbd,
         type: 3}
       propertyPath: m_Drag
-      value: 40
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 707134734547756747, guid: 5a207dff2f562f84099816fec5ce4dbd,
         type: 3}
       propertyPath: m_Constraints
-      value: 112
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2678020747528328569, guid: 5a207dff2f562f84099816fec5ce4dbd,
+        type: 3}
+      propertyPath: currFile
+      value: D:/MyProjects/prototype/Assets/StreamingAssets\Configurations\TIEInterseptor.xml
       objectReference: {fileID: 0}
     - target: {fileID: 2678020747528328569, guid: 5a207dff2f562f84099816fec5ce4dbd,
         type: 3}
       propertyPath: configFileName
-      value: m4_Enemy
+      value: TIEInterseptor
+      objectReference: {fileID: 0}
+    - target: {fileID: 2776457707294091945, guid: 5a207dff2f562f84099816fec5ce4dbd,
+        type: 3}
+      propertyPath: bulletSpeed
+      value: 260
       objectReference: {fileID: 0}
     - target: {fileID: 7372666666090020913, guid: 5a207dff2f562f84099816fec5ce4dbd,
         type: 3}
@@ -50431,7 +50449,7 @@ PrefabInstance:
     - target: {fileID: 7372666666090020913, guid: 5a207dff2f562f84099816fec5ce4dbd,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8412308530568377797, guid: 5a207dff2f562f84099816fec5ce4dbd,
         type: 3}
@@ -53720,7 +53738,7 @@ PrefabInstance:
     - target: {fileID: 3934667566716175980, guid: 7dd9e8f8b09935e498e9eeec0879f798,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4615341382454150224, guid: 7dd9e8f8b09935e498e9eeec0879f798,
         type: 3}
@@ -53801,6 +53819,11 @@ PrefabInstance:
         type: 3}
       propertyPath: showArcs
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8174773625119085736, guid: 7dd9e8f8b09935e498e9eeec0879f798,
+        type: 3}
+      propertyPath: bulletSpeed
+      value: 220
       objectReference: {fileID: 0}
     - target: {fileID: 8493924846046794532, guid: 7dd9e8f8b09935e498e9eeec0879f798,
         type: 3}

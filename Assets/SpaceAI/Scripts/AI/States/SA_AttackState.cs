@@ -46,7 +46,7 @@ namespace SpaceAI.FSM
 
                 if (enemySizeZ > CloseEnemyDistance)
                 {
-                    toClose = (int)(enemySizeZ + owner.CurrentEnemy.GetComponentInChildren<MeshFilter>().mesh.bounds.size.x + owner.ShipConfiguration.MainConfig.MoveSpeed);
+                    toClose = (int)(enemySizeZ + owner.CurrentEnemy.GetComponentInChildren<MeshFilter>().mesh.bounds.size.x + owner.ShipConfiguration.MainConfig.MoveSpeed) / 2;
                 }
                 else
                 {
@@ -85,14 +85,14 @@ namespace SpaceAI.FSM
 
                     if (owner.ShipConfiguration.Options.useTurrets && !owner.ShipConfiguration.Options.independentTurrets)
                     {
-                        owner.WeaponControll.TurretsControl(targetFuturePos);
+                        owner.WeaponControll.IndependenceTurretControll(false);
                     }
                 }
             }
 
             if (owner.ShipConfiguration.Options.useTurrets && owner.ShipConfiguration.Options.independentTurrets)
             {
-                owner.WeaponControll.TurretsControl(owner.CurrentEnemy.transform, targetFuturePos);
+                owner.WeaponControll.IndependenceTurretControll(true);
             }
         }
 
@@ -101,7 +101,7 @@ namespace SpaceAI.FSM
             // Get the current ship's speed
             float ownerSpeed = owner.CurrentShipTransform.GetComponent<Rigidbody>().velocity.magnitude;
 
-                      // Get the bullet speed from the owner's weapon
+            // Get the bullet speed from the owner's weapon
             float bulletSpeed = owner.WeaponControll.GetCurrentWeapon().BulletSpeed;
 
             // Calculate the effective bullet speed including the owner's speed
@@ -131,6 +131,10 @@ namespace SpaceAI.FSM
             return targetFuturePos;
         }
 
+        public float SqrDistance(Transform from, Transform target)
+        {
+            return (from.position - target.position).sqrMagnitude;
+        }
 
         public override void Reason()
         {

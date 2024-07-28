@@ -139,6 +139,8 @@
         /// <returns></returns>
         public bool GetTarget(SA_IShip shipController, float scanRange)
         {
+            var scanRangeSqr = scanRange * scanRange;   
+
             if (!shipController.CurrentEnemy && SharedTargets != null)
             {
                 for (int i = 0; i < SharedTargets.Count; i++)
@@ -151,7 +153,9 @@
                         {
                             Component targetObject = tar as Component;
 
-                            if (Vector3.Distance(shipController.CurrentShipTransform.position, targetObject.transform.position) < scanRange)
+                            var sqr = (shipController.CurrentShipTransform.position - targetObject.transform.position).sqrMagnitude;
+
+                            if (sqr < scanRangeSqr)
                             {
                                 shipController.SetCurrentEnemy(targetObject.gameObject);
                                 shipController.SetTarget(targetObject.gameObject);
