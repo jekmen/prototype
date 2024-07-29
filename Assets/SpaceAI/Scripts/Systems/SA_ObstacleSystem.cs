@@ -141,12 +141,8 @@
             // Additional emergency stop logic
         }
 
-        private async void ReturnToTarget()
+        private void ReturnToTarget()
         {
-            //ForceStop();
-
-            await Task.Delay(TimeSpan.FromSeconds(0.3F));
-
             ship.SetTarget(storeTarget);
             savePos = false;
             overrideTarget = false;
@@ -185,6 +181,13 @@
                             {
                                 storeTarget = ship.GetCurrentTargetPosition;
                                 savePos = true;
+                            }
+
+                            var Iship = hit.transform.GetComponent<SA_IShip>();
+
+                            if (hit.transform.GetComponent<SA_IDamageSendler>() != null || Iship != null && Iship.CurrentShipSize < 50)
+                            {
+                                return;
                             }
 
                             FindEscapeDirections(hit.collider);

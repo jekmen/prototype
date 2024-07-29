@@ -40631,7 +40631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shipPrefabs:
   - {fileID: 3934667566716175980, guid: 7dd9e8f8b09935e498e9eeec0879f798, type: 3}
-  shipCount: 10
+  shipCount: 5
   initTime: 0.5
 --- !u!1 &1635597746
 GameObject:
