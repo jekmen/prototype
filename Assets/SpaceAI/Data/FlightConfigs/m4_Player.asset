@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: m4_Player
   m_EditorClassIdentifier: 
   MainConfig:
-    Speed: 70
-    SpeedMax: 70
+    Speed: 98
+    SpeedMax: 98
     SpeedMin: -10
     MoveSpeedIncrease: 1
     RotationSpeed: 12
-    RotationSpeedMain: 0.5
-    ShipMass: 0
+    RotationSpeedMain: 1.5
+    ShipMass: 10
     HP: 200
     Prediction: 800
     DurableForce: 17

@@ -4,7 +4,6 @@
     using SpaceAI.Ship;
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
     using UnityEngine;
 
     [Serializable]
@@ -26,7 +25,6 @@
             Scan,
             GoToEscapeDirection,
             AdjustCourse,
-            EmergencyStop
         }
 
         private Vector3 storeTarget;
@@ -40,6 +38,7 @@
         private float maxStateTime = 3;
         private readonly List<EscapeDirections> escapeDirections = new List<EscapeDirections>();
         private readonly Dictionary<ObstacleState, Action> stateActions = new Dictionary<ObstacleState, Action>();
+        public event Action<SA_IShipSystem, object> OnEvent;
 
         public ObstacleState M_ObstacleState { get; private set; }
 
@@ -81,7 +80,6 @@
             stateActions[ObstacleState.Scan] = HandleScanState;
             stateActions[ObstacleState.GoToEscapeDirection] = HandleGoToEscapeDirectionState;
             stateActions[ObstacleState.AdjustCourse] = HandleAdjustCourseState;
-            stateActions[ObstacleState.EmergencyStop] = HandleEmergencyStopState;
         }
 
         #region Obstacles Functions
@@ -133,14 +131,6 @@
             // Logic for adjusting course slightly without drastic maneuvers
         }
 
-        private void HandleEmergencyStopState()
-        {
-            ship.SetTarget(ship.CurrentShipTransform.position);
-            ship.CanFollowTarget(false);
-            ship.ShipConfiguration.MainConfig.MoveSpeed = 0;
-            // Additional emergency stop logic
-        }
-
         private void ReturnToTarget()
         {
             ship.SetTarget(storeTarget);
@@ -155,6 +145,9 @@
         {
             float halfAngle = coneAngle / 2.0f;
             float lookAhead = ship.CurrentShipSize > 50 ? shipSpeed * 20 : shipSpeed * 2;
+
+            bool obstacleOnLeft = false;
+            bool obstacleOnRight = false;
 
             for (int i = 0; i < numberOfRays; i++)
             {
@@ -185,12 +178,24 @@
 
                             var Iship = hit.transform.GetComponent<SA_IShip>();
 
-                            if (hit.transform.GetComponent<SA_IDamageSendler>() != null || Iship != null && Iship.CurrentShipSize < 50)
+                            if (hit.transform.GetComponent<SA_IDamageSendler>() != null || (Iship != null && Iship.CurrentShipSize < 50))
                             {
                                 return;
                             }
 
                             FindEscapeDirections(hit.collider);
+
+                            // Determine which side the obstacle is on
+                            float angle = Vector3.SignedAngle(ship.CurrentShipTransform.forward, direction, ship.CurrentShipTransform.up);
+
+                            if (angle < 0)
+                            {
+                                obstacleOnLeft = true;
+                            }
+                            else
+                            {
+                                obstacleOnRight = true;
+                            }
                         }
                     }
                     else
@@ -216,6 +221,17 @@
                     overrideTarget = true;
                     M_ObstacleState = ObstacleState.GoToEscapeDirection;
                 }
+            }
+
+            // Debug output to see which side the obstacles are on
+            if (obstacleOnLeft)
+            {
+                //M_ObstacleState = ObstacleState.AdjustCourse;
+                OnEvent?.Invoke(this, obstacleOnLeft);
+            }
+            if (obstacleOnRight)
+            {
+                //M_ObstacleState = ObstacleState.AdjustCourse;
             }
         }
 
@@ -258,11 +274,6 @@
             }
 
             return closest;
-        }
-
-        private void ForceStop()
-        {
-            ship.ShipConfiguration.MainConfig.MoveSpeed /= 1.5F;
         }
 
         public override void ShipSystemEvent(Collision obj)

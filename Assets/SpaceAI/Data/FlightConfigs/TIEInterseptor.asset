@@ -17,8 +17,8 @@ MonoBehaviour:
     SpeedMax: 87
     SpeedMin: -10
     MoveSpeedIncrease: 2
-    RotationSpeed: 10
-    RotationSpeedMain: 0.12
+    RotationSpeed: 18
+    RotationSpeedMain: 2.5
     ShipMass: 3293
     HP: 200
     Prediction: 2
