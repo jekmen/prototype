@@ -3,11 +3,11 @@
   <name>m4_Player</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>98</Speed>
-    <SpeedMax>98</SpeedMax>
+    <Speed>130</Speed>
+    <SpeedMax>130</SpeedMax>
     <SpeedMin>-10</SpeedMin>
     <MoveSpeedIncrease>1</MoveSpeedIncrease>
-    <RotationSpeed>12</RotationSpeed>
+    <RotationSpeed>20</RotationSpeed>
     <RotationSpeedMain>1.5</RotationSpeedMain>
     <ShipMass>10</ShipMass>
     <HP>200</HP>
