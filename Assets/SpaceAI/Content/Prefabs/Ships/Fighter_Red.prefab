@@ -160,6 +160,7 @@ MonoBehaviour:
     SoundGun: []
     SoundReloading: {fileID: 0}
     SoundReloaded: {fileID: 0}
+  bulletSpeed: 60
 --- !u!1 &2776457707077933845
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,7 +259,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 7a52bf5ea53d85f4daa398fc0c20a2dc, type: 3}
     SoundReloading: {fileID: 0}
     SoundReloaded: {fileID: 0}
-  runRotationsInFixed: 0
+  bulletSpeed: 60
   turretBase:
   - {fileID: 2776457707616077176}
   turretBarrels:
@@ -272,8 +273,12 @@ MonoBehaviour:
   showArcs: 0
   showDebugRay: 0
   independent: 0
-  shellOut: []
   aimPoint: {x: 0, y: 0, z: 0}
+  outOfRange: 550
+  debug: 0
+  DebugTarget: {fileID: 0}
+  fireRate: 1
+  bullet: {fileID: 0}
 --- !u!82 &7569671443901002346
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5260,13 +5265,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -5524,8 +5531,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5341ef5cb3b79114c9c25f1502561f31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currFile: D:/MyProjects/prototype/Assets/StreamingAssets\Configurations\m4_Enemy.xml
-  configFileName: m4_Enemy
+  currFile: D:/MyProjects/prototype/Assets/StreamingAssets\Configurations\TIEInterseptor.xml
+  configFileName: TIEInterseptor
 --- !u!1 &7384421573447194452
 GameObject:
   m_ObjectHideFlags: 0
@@ -10351,13 +10358,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}

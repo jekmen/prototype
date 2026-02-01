@@ -177,16 +177,17 @@
 
                             if (bullet.Rb)
                             {
-                                bullet.Rb.velocity = Vector3.zero;
+                                Rigidbody ownerRb = Owner ? Owner.GetComponent<Rigidbody>() : null;
+                                Vector3 shooterVelocity = Vector3.zero;
 
-                                if (Owner.GetComponent<Rigidbody>())
+                                if (ownerRb)
                                 {
-                                    var rb = Owner.GetComponent<Rigidbody>();
-                                    bullet.Rb.velocity = rb.velocity;
+                                    Vector3 r = bulletInitPos - ownerRb.worldCenterOfMass;
+                                    shooterVelocity = ownerRb.velocity + Vector3.Cross(ownerRb.angularVelocity, r);
                                 }
 
                                 Vector3 shootingDirection = (aimPoint - bulletInitPos).normalized;
-                                bullet.Rb.velocity += shootingDirection * bulletSpeed;
+                                bullet.Rb.velocity = shooterVelocity + shootingDirection * bulletSpeed;
                             }
                         }
                     }

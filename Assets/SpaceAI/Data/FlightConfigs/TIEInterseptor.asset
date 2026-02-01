@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: TIEInterseptor
   m_EditorClassIdentifier: 
   MainConfig:
-    Speed: 87
-    SpeedMax: 87
+    Speed: 125
+    SpeedMax: 125
     SpeedMin: -10
-    MoveSpeedIncrease: 2
-    RotationSpeed: 18
-    RotationSpeedMain: 2.5
+    MoveSpeedIncrease: 1
+    RotationSpeed: 7.57
+    RotationSpeedMain: 1
     ShipMass: 3293
     HP: 200
     Prediction: 2

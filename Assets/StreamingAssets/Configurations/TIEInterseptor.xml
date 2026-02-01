@@ -3,12 +3,12 @@
   <name>TIEInterseptor</name>
   <hideFlags>None</hideFlags>
   <MainConfig>
-    <Speed>87</Speed>
-    <SpeedMax>87</SpeedMax>
+    <Speed>125</Speed>
+    <SpeedMax>125</SpeedMax>
     <SpeedMin>-10</SpeedMin>
-    <MoveSpeedIncrease>2</MoveSpeedIncrease>
-    <RotationSpeed>18</RotationSpeed>
-    <RotationSpeedMain>2.5</RotationSpeedMain>
+    <MoveSpeedIncrease>1</MoveSpeedIncrease>
+    <RotationSpeed>7.57</RotationSpeed>
+    <RotationSpeedMain>1</RotationSpeedMain>
     <ShipMass>3293</ShipMass>
     <HP>200</HP>
     <Prediction>2</Prediction>

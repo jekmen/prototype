@@ -8,9 +8,11 @@
     public class SA_Turret : SA_WeaponLaunchManager
     {
         private const float _attackDirection = 0.98F;
-
-        [Tooltip("Should turret rotate in the FixedUpdate rather than Update?")]
-        public bool runRotationsInFixed = false;
+        private const float _leadTimeEpsilon = 0.0001f;
+        private const float _maxLeadTime = 6.0f;
+        private const float _maxTargetAccel = 200.0f;
+        private const float _maxTurnRate = 120.0f; // deg/sec
+        private const float _accelLeadFactor = 0.5f;
 
         [Header("Objects")]
         [Tooltip("Transform used to provide the horizontal rotation of the turret.")]
@@ -43,11 +45,18 @@
         public bool showDebugRay = true;
         [Tooltip("If true, will aim for targets automatically")]
         public bool independent;
+        [Tooltip("Extra lead multiplier for fast angular targets.")]
+        [SerializeField] private float leadMultiplier = 1.15f;
+        [Tooltip("Minimum lead scale when target is turning fast.")]
+        [SerializeField] private float minLeadScale = 0.7f;
         public Vector3 aimPoint = new Vector3(0, 0, 100);
         [SerializeField] private float outOfRange = 550;
 
         private bool aiming = false;
         private SA_WeaponController weaponController;
+        private bool hasLastTargetVelocity = false;
+        private Vector3 lastTargetVelocity = Vector3.zero;
+        private int lastTargetInstanceId = -1;
 
         [Header("Debug")]
         public bool debug = false;
@@ -67,42 +76,22 @@
             }
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            if (!runRotationsInFixed)
+            if (debug)
             {
-                if (debug)
-                {
-                    DebugTargeting();
-                }
-                else
-                {
-                    IndependentShipTurret();
-                }
-
-                RotateTurret();
+                DebugTargeting();
             }
+            else
+            {
+                IndependentShipTurret();
+            }
+
+            RotateTurret();
 
 #if UNITY_EDITOR
             if (showDebugRay) DrawDebugRays();
 #endif
-        }
-
-        private void FixedUpdate()
-        {
-            if (runRotationsInFixed)
-            {
-                if (debug)
-                {
-                    DebugTargeting();
-                }
-                else
-                {
-                    IndependentShipTurret();
-                }
-
-                RotateTurret();
-            }
         }
 
         private void DebugTargeting()
@@ -121,53 +110,179 @@
 
         private void Predict()
         {
-            Vector3 displacement = Target.transform.position - transform.position;
-            Vector3 targetVelocity = Target.GetComponent<Rigidbody>().velocity;
+            Rigidbody targetRb = Target.GetComponentInParent<Rigidbody>();
+            if (!targetRb)
+            {
+                SetAimpoint(Target.transform.position);
+                return;
+            }
 
-            // Get the velocity of the ship that the turret is mounted on
-            Vector3 shipVelocity = Owner.GetComponent<Rigidbody>().velocity;
+            Rigidbody ownerRb = Owner ? Owner.GetComponent<Rigidbody>() : null;
+            Vector3 shipVelocity = Vector3.zero;
+            Vector3 targetVelocity = targetRb.velocity;
 
-            // Adjust the target velocity to consider the relative velocity between the ship and the target
+            Vector3 fireOrigin = GetFireOrigin();
+            if (ownerRb)
+            {
+                Vector3 angularVel = ownerRb.angularVelocity;
+                Vector3 r = fireOrigin - ownerRb.worldCenterOfMass;
+                shipVelocity = ownerRb.velocity + Vector3.Cross(angularVel, r);
+            }
+            Vector3 targetPos = Target.transform.position;
+            Vector3 displacement = targetPos - fireOrigin;
             Vector3 relativeVelocity = targetVelocity - shipVelocity;
 
             float a = Vector3.Dot(relativeVelocity, relativeVelocity) - BulletSpeed * BulletSpeed;
             float b = 2f * Vector3.Dot(relativeVelocity, displacement);
             float c = Vector3.Dot(displacement, displacement);
 
-            float d = b * b - 4f * a * c;
+            float distance = displacement.magnitude;
+            float t = SolveInterceptTime(a, b, c, distance);
+            Vector3 targetAccel = Vector3.zero;
+            float leadScale = 1f;
 
-            if (d >= 0)
+            int currentTargetId = Target.GetInstanceID();
+            if (currentTargetId != lastTargetInstanceId)
             {
-                float t1 = (-b - Mathf.Sqrt(d)) / (2f * a);
-                float t2 = (-b + Mathf.Sqrt(d)) / (2f * a);
-                float t;
+                hasLastTargetVelocity = false;
+                lastTargetInstanceId = currentTargetId;
+            }
 
-                // Use the smallest positive time
-                if (t1 > 0 && t2 > 0)
-                    t = Mathf.Min(t1, t2);
-                else
-                    t = Mathf.Max(t1, t2);
-
-                if (t > 0)
+            if (hasLastTargetVelocity && Time.fixedDeltaTime > 0f)
+            {
+                targetAccel = (targetVelocity - lastTargetVelocity) / Time.fixedDeltaTime;
+                if (targetAccel.sqrMagnitude > _maxTargetAccel * _maxTargetAccel)
                 {
-                    Vector3 predictedPosition = Target.transform.position + targetVelocity * t;
-                    Vector3 aimPoint = predictedPosition;
+                    targetAccel = targetAccel.normalized * _maxTargetAccel;
+                }
 
-                    SetAimpoint(aimPoint);
+                float turnRate = Vector3.Angle(lastTargetVelocity, targetVelocity) / Time.fixedDeltaTime;
+                leadScale = Mathf.Clamp01(1f - (turnRate / _maxTurnRate));
+                leadScale = Mathf.Max(leadScale, minLeadScale);
+            }
 
-                    Vector3 dir = (aimPoint - transform.position).normalized;
+            lastTargetVelocity = targetVelocity;
+            hasLastTargetVelocity = true;
 
-                    foreach (var barrel in turretBarrels)
-                    {
-                        float dot = Vector3.Dot(dir, barrel.transform.forward);
+            if (t <= 0f && BulletSpeed > 0.01f)
+            {
+                t = Mathf.Min(distance / BulletSpeed, _maxLeadTime);
+            }
 
-                        if (dot > _attackDirection)
-                        {
-                            Shoot(WeaponLaunchManagerSettings.shellOuter, aimPoint);
-                        }
-                    }
+            if (t > 0f)
+            {
+                t *= leadScale * leadMultiplier;
+            }
+
+            Vector3 aimPoint = t > 0f
+                ? targetPos + targetVelocity * t + 0.5f * targetAccel * t * t * _accelLeadFactor
+                : targetPos;
+
+            SetAimpoint(aimPoint);
+
+            foreach (var barrel in turretBarrels)
+            {
+                if (!barrel) continue;
+
+                Vector3 dir = (aimPoint - barrel.position).normalized;
+                float dot = Vector3.Dot(dir, barrel.transform.forward);
+
+                if (dot > _attackDirection)
+                {
+                    Shoot(WeaponLaunchManagerSettings.shellOuter, aimPoint);
                 }
             }
+        }
+
+        private Vector3 GetFireOrigin()
+        {
+            if (WeaponLaunchManagerSettings != null && WeaponLaunchManagerSettings.shellOuter != null && WeaponLaunchManagerSettings.shellOuter.Length > 0)
+            {
+                Vector3 sum = Vector3.zero;
+                int count = 0;
+
+                foreach (var shell in WeaponLaunchManagerSettings.shellOuter)
+                {
+                    if (!shell) continue;
+                    sum += shell.position;
+                    count++;
+                }
+
+                if (count > 0)
+                {
+                    return sum / count;
+                }
+            }
+
+            if (turretBarrels != null && turretBarrels.Length > 0)
+            {
+                Vector3 sum = Vector3.zero;
+                int count = 0;
+
+                foreach (var barrel in turretBarrels)
+                {
+                    if (!barrel) continue;
+                    sum += barrel.position;
+                    count++;
+                }
+
+                if (count > 0)
+                {
+                    return sum / count;
+                }
+            }
+
+            return transform.position;
+        }
+
+        private float SolveInterceptTime(float a, float b, float c, float distance)
+        {
+            float t;
+
+            if (Mathf.Abs(a) < _leadTimeEpsilon)
+            {
+                if (Mathf.Abs(b) < _leadTimeEpsilon)
+                {
+                    return 0f;
+                }
+
+                t = -c / b;
+            }
+            else
+            {
+                float d = b * b - 4f * a * c;
+
+                if (d < 0f)
+                {
+                    return 0f;
+                }
+
+                float sqrtD = Mathf.Sqrt(d);
+                float t1 = (-b - sqrtD) / (2f * a);
+                float t2 = (-b + sqrtD) / (2f * a);
+
+                t = SelectPositiveTime(t1, t2);
+            }
+
+            if (t <= 0f)
+            {
+                return 0f;
+            }
+
+            float maxLeadTime = Mathf.Min(distance / BulletSpeed * 1.5f, _maxLeadTime);
+            return Mathf.Clamp(t, 0f, maxLeadTime);
+        }
+
+        private float SelectPositiveTime(float t1, float t2)
+        {
+            bool t1Valid = t1 > 0f;
+            bool t2Valid = t2 > 0f;
+
+            if (t1Valid && t2Valid) return Mathf.Min(t1, t2);
+            if (t1Valid) return t1;
+            if (t2Valid) return t2;
+
+            return 0f;
         }
 
         private void IndependentShipTurret()
@@ -319,7 +434,6 @@
 
                 Quaternion rotationGoal = Quaternion.LookRotation(clampedLocalVec2Target);
                 Quaternion newRotation = Quaternion.RotateTowards(turrBase.localRotation, rotationGoal, turnRate * Time.deltaTime);
-
                 turrBase.localRotation = newRotation;
             }
         }

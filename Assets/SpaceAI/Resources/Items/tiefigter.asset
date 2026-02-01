@@ -21,4 +21,3 @@ MonoBehaviour:
     type: 3}
   ShellPrefab:
   - {fileID: 865237326849596402, guid: 69deb6cfbbcc8374eb22fbc7f0908d9e, type: 3}
-  - {fileID: 7409202132606032066, guid: dd5ffe1846b2c244e81631bd62677d9b, type: 3}

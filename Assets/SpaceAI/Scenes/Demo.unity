@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.010674475, g: 0.013390392, b: 0.033820648, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10532,6 +10531,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: starship_001_fin
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 09004ffb33d8d544e879763cae141a37,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1291346198844460737, guid: 09004ffb33d8d544e879763cae141a37,
         type: 3}
@@ -49077,7 +49081,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1892188933
 Transform:
   m_ObjectHideFlags: 0
@@ -50868,6 +50872,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2776457707294091945, guid: 5a207dff2f562f84099816fec5ce4dbd,
         type: 3}
+      propertyPath: showArcs
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2776457707294091945, guid: 5a207dff2f562f84099816fec5ce4dbd,
+        type: 3}
       propertyPath: bulletSpeed
       value: 260
       objectReference: {fileID: 0}
@@ -50879,7 +50888,7 @@ PrefabInstance:
     - target: {fileID: 7372666666090020913, guid: 5a207dff2f562f84099816fec5ce4dbd,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8412308530568377797, guid: 5a207dff2f562f84099816fec5ce4dbd,
         type: 3}

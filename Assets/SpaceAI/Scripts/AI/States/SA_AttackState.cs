@@ -62,7 +62,8 @@ namespace SpaceAI.FSM
         {
             if (!owner.CurrentEnemy || !owner.WayIsFree() || owner.WeaponControll.GetCurrentWeapon() == null) return;
 
-            Vector3 targetFuturePos = CalculatePrediction(owner);
+            Vector3 targetPos = owner.CurrentEnemy.transform.position;
+            Vector3 targetFuturePos = owner.ShipConfiguration.Options.useTurrets ? targetPos : CalculatePrediction(owner);
 
             owner.SetTarget(targetFuturePos);
 
