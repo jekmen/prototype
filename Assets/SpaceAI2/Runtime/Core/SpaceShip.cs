@@ -12,6 +12,7 @@ namespace SpaceAI2
         private ShipMotor motor;
 
         public event Action<SpaceShip, Collision> Collided;
+        public event Action<HitInfo> Hit;
 
         public int Team
         {
@@ -19,13 +20,16 @@ namespace SpaceAI2
             set => team = value;
         }
 
-        public ShipMotor Motor => motor;
+        // Other components may ask for the motor from their own Awake, before ours has run.
+        public ShipMotor Motor => motor != null ? motor : motor = GetComponent<ShipMotor>();
         public Vector3 Position => transform.position;
         public Vector3 Forward => transform.forward;
-        public Vector3 Velocity => motor.Velocity;
-        public float Radius => motor.Profile != null ? motor.Profile.Radius : 1f;
+        public Vector3 Velocity => Motor.Velocity;
+        public float Radius => Motor.Profile != null ? Motor.Profile.Radius : 1f;
 
         public bool IsEnemy(SpaceShip other) => other != null && other.team != team;
+
+        public void ReceiveHit(in HitInfo hit) => Hit?.Invoke(hit);
 
         private void Awake() => motor = GetComponent<ShipMotor>();
 

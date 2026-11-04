@@ -44,6 +44,14 @@ namespace SpaceAI2
         [SerializeField, Min(0f)] private float minManeuverTime = 0.5f;
         [SerializeField, Min(0.1f)] private float maxManeuverTime = 4f;
 
+        [Header("Gunnery")]
+        [Tooltip("Slow random aim wobble, degrees. Stands in for pilot skill until PilotProfile.")]
+        [SerializeField, Min(0f)] private float aimError = 0.3f;
+        [Tooltip("Fire when the predicted miss is within this many target radii.")]
+        [SerializeField, Min(0f)] private float fireTolerance = 1f;
+        [Tooltip("Open fire within this share of the weapon range.")]
+        [SerializeField, Range(0.1f, 1f)] private float fireRange = 0.9f;
+
         private const float RollFlipZone = 150f * Mathf.Deg2Rad;
         private const float EscapeAlignedAngle = 15f;
 
@@ -52,6 +60,8 @@ namespace SpaceAI2
 
         private SpaceShip ship;
         private ShipMotor motor;
+        private ShipGun gun;
+        private float noiseSeed;
         private float rollSign = 1f;
         private Order order;
         private Transform destination;
@@ -68,6 +78,21 @@ namespace SpaceAI2
         public Transform Destination => destination;
         public PursuitMode PursuitMode => pursuitMode;
         public Vector3 AimPoint { get; private set; }
+
+        /// <summary>Angle between the nose and the firing solution, degrees; negative when there is none.</summary>
+        public float GunAimAngle { get; private set; } = -1f;
+
+        public float AimError
+        {
+            get => aimError;
+            set => aimError = Mathf.Max(0f, value);
+        }
+
+        public float PursuitRange
+        {
+            get => pursuitRange;
+            set => pursuitRange = Mathf.Max(0f, value);
+        }
 
         public void FlyTo(Transform point)
         {
@@ -95,6 +120,8 @@ namespace SpaceAI2
         {
             ship = GetComponent<SpaceShip>();
             motor = GetComponent<ShipMotor>();
+            gun = GetComponent<ShipGun>();
+            noiseSeed = UnityEngine.Random.value * 100f;
         }
 
         private void OnEnable() => SpaceAIWorld.Instance.Add(this);
@@ -103,11 +130,14 @@ namespace SpaceAI2
         {
             if (SpaceAIWorld.TryGet(out SpaceAIWorld world)) world.Remove(this);
             motor.Input = default;
+            if (gun != null) gun.Trigger = false;
         }
 
         internal void Tick(float dt)
         {
             if (motor.Profile == null) return;
+            if (gun != null) gun.Trigger = false;
+            GunAimAngle = -1f;
             ShipInput input;
             switch (order)
             {
@@ -212,13 +242,55 @@ namespace SpaceAI2
         {
             Vector3 toTarget = target.Position - transform.position;
             float distance = toTarget.magnitude;
-            AimPoint = target.Position + AimOffset(distance);
+            AimPoint = TryAimGun(toTarget, distance, out Vector3 gunAim) ? gunAim : target.Position + AimOffset(distance);
 
             ShipInput input = Steer(AimPoint - transform.position);
             float closing = distance > 0.01f ? Vector3.Dot(target.Velocity - motor.Velocity, toTarget / distance) : 0f;
             input.Throttle = (distance - pursuitRange) / rangeTolerance + closing / 20f;
             input.Boost = distance > boostDistance && Vector3.Angle(transform.forward, toTarget) < 20f;
             return input;
+        }
+
+        private bool TryAimGun(Vector3 toTarget, float distance, out Vector3 aimPoint)
+        {
+            aimPoint = default;
+            WeaponProfile weapon = gun != null ? gun.Weapon : null;
+            if (weapon == null || distance > weapon.Range * 1.5f) return false;
+
+            Vector3 direction;
+            float time;
+            if (weapon.IsInstant)
+            {
+                direction = toTarget / Mathf.Max(distance, 0.001f);
+                time = 0f;
+            }
+            else if (!Ballistics.Intercept(toTarget, target.Velocity - motor.Velocity, target.Motor.Acceleration,
+                         weapon.MuzzleSpeed, out direction, out time))
+            {
+                return false;
+            }
+
+            direction = Wobble(direction);
+            GunAimAngle = Vector3.Angle(transform.forward, direction);
+            aimPoint = transform.position + direction * distance;
+            gun.AimDirection = direction;
+            gun.FuseTime = weapon.Kind == WeaponKind.Flak ? time : 0f;
+
+            float travel = weapon.IsInstant ? distance : weapon.MuzzleSpeed * time;
+            float angle = Vector3.Angle(gun.FireDirection, direction);
+            float miss = angle < 90f ? Mathf.Sin(angle * Mathf.Deg2Rad) * travel : float.MaxValue;
+            float tolerance = target.Radius * fireTolerance + (weapon.Kind == WeaponKind.Flak ? weapon.BlastRadius * 0.5f : 0f);
+            gun.Trigger = travel < weapon.Range * fireRange && miss < tolerance;
+            return true;
+        }
+
+        private Vector3 Wobble(Vector3 direction)
+        {
+            if (aimError <= 0f) return direction;
+            float t = Time.time * 0.8f;
+            float yaw = (Mathf.PerlinNoise(noiseSeed, t) * 2f - 1f) * aimError;
+            float pitch = (Mathf.PerlinNoise(t, noiseSeed) * 2f - 1f) * aimError;
+            return Quaternion.AngleAxis(yaw, transform.up) * Quaternion.AngleAxis(pitch, transform.right) * direction;
         }
 
         private Vector3 AimOffset(float distance)

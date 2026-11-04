@@ -7,9 +7,12 @@ namespace SpaceAI2
     {
         [SerializeField] private ShipProfile profile;
 
+        private const float AccelerationSmoothing = 0.15f;
+
         private Rigidbody body;
         private ShipInput input;
         private Vector3 localRates;
+        private Vector3 acceleration;
 
         public ShipProfile Profile
         {
@@ -26,6 +29,8 @@ namespace SpaceAI2
         public Rigidbody Body => body;
         public Vector3 Velocity => body.velocity;
         public float Speed => body.velocity.magnitude;
+        /// <summary>Smoothed acceleration, including the centripetal part of turns. Used for aim prediction.</summary>
+        public Vector3 Acceleration => acceleration;
         public float TargetSpeed => profile.TargetSpeed(input.Throttle, input.Boost);
 
         public Vector3 NormalizedTurn
@@ -60,8 +65,10 @@ namespace SpaceAI2
         {
             if (profile == null) return;
             float dt = Time.fixedDeltaTime;
+            Vector3 before = body.velocity;
             ApplyRotation(dt);
             ApplyVelocity(dt);
+            acceleration = Vector3.Lerp(acceleration, (body.velocity - before) / dt, 1f - Mathf.Exp(-dt / AccelerationSmoothing));
         }
 
         private void ApplyRotation(float dt)

@@ -10,7 +10,7 @@ namespace SpaceAI2
         private readonly Dictionary<Vector3Int, List<SpaceShip>> cells = new Dictionary<Vector3Int, List<SpaceShip>>();
         private readonly Stack<List<SpaceShip>> pool = new Stack<List<SpaceShip>>();
         private readonly List<SpaceShip> scratch = new List<SpaceShip>();
-        private readonly HashSet<int> shipColliders = new HashSet<int>();
+        private readonly Dictionary<int, SpaceShip> shipColliders = new Dictionary<int, SpaceShip>();
         private readonly List<Collider> colliderScratch = new List<Collider>();
 
         public ShipRegistry(float cellSize) => this.cellSize = Mathf.Max(1f, cellSize);
@@ -22,7 +22,7 @@ namespace SpaceAI2
             if (ships.Contains(ship)) return;
             ships.Add(ship);
             ship.GetComponentsInChildren(true, colliderScratch);
-            foreach (Collider collider in colliderScratch) shipColliders.Add(collider.GetInstanceID());
+            foreach (Collider collider in colliderScratch) shipColliders[collider.GetInstanceID()] = ship;
         }
 
         public void Remove(SpaceShip ship)
@@ -32,7 +32,9 @@ namespace SpaceAI2
             foreach (Collider collider in colliderScratch) shipColliders.Remove(collider.GetInstanceID());
         }
 
-        public bool IsShipCollider(int colliderInstanceId) => shipColliders.Contains(colliderInstanceId);
+        public bool IsShipCollider(int colliderInstanceId) => shipColliders.ContainsKey(colliderInstanceId);
+
+        public bool TryGetShipByCollider(int colliderInstanceId, out SpaceShip ship) => shipColliders.TryGetValue(colliderInstanceId, out ship);
 
         public void Rebuild()
         {
