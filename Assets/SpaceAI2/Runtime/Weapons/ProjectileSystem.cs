@@ -8,9 +8,10 @@ namespace SpaceAI2
 {
     /// <summary>
     /// Simulates all projectiles in plain arrays and checks hits with one batched raycast per physics step.
-    /// Runs after other FixedUpdates so shots fired this step are swept right away.
+    /// Runs after other FixedUpdates so shots fired this step are swept right away, and after the missiles so
+    /// projectiles meet them where they are.
     /// </summary>
-    [DefaultExecutionOrder(100)]
+    [DefaultExecutionOrder(110)]
     public class ProjectileSystem : MonoBehaviour
     {
         private struct Projectile
@@ -146,12 +147,22 @@ namespace SpaceAI2
             RaycastCommand.ScheduleBatch(commands.GetSubArray(0, count), results.GetSubArray(0, count * MaxHits), 32, MaxHits).Complete();
 
             ShipRegistry registry = SpaceAIWorld.Instance.Registry;
+            MissileSystem missiles = MissileSystem.TryGet(out MissileSystem system) && system.Count > 0 ? system : null;
             int stepped = count;
             int alive = 0;
             for (int i = 0; i < stepped; i++)
             {
                 Projectile p = projectiles[i];
-                if (TryGetHit(i, p.Owner, registry, out RaycastHit hit, out SpaceShip ship))
+                bool struck = TryGetHit(i, p.Owner, registry, out RaycastHit hit, out SpaceShip ship);
+                if (missiles != null && missiles.Sweep(p.Position, p.Velocity, Mathf.Min(dt, p.Fuse), p.Owner, out int missileId, out float time)
+                    && (!struck || time * p.Velocity.magnitude <= hit.distance))
+                {
+                    WeaponProfile weapon = weapons[p.Weapon];
+                    if (weapon.Kind == WeaponKind.Flak) Detonate(weapon, p.Owner, p.Position + p.Velocity * time, registry);
+                    else missiles.Damage(missileId, weapon.Damage, p.Owner);
+                    continue;
+                }
+                if (struck)
                 {
                     WeaponProfile weapon = weapons[p.Weapon];
                     if (weapon.Kind == WeaponKind.Flak) Detonate(weapon, p.Owner, hit.point, registry);
@@ -237,11 +248,13 @@ namespace SpaceAI2
                 float distance = Mathf.Max(0f, offset.magnitude - ship.Radius);
                 if (distance > weapon.BlastRadius) continue;
                 float damage = weapon.Damage * (1f - distance / Mathf.Max(weapon.BlastRadius, 0.01f));
-                Resolve(weapon, owner, ship, null, point, -offset.normalized, damage);
+                Resolve(weapon, owner, ship, null, point, -offset.normalized, damage, weapon.BlastRadius);
             }
+            if (MissileSystem.TryGet(out MissileSystem missiles) && missiles.Count > 0)
+                missiles.DamageInRadius(point, weapon.BlastRadius, weapon.Damage, owner);
         }
 
-        private void Resolve(WeaponProfile weapon, SpaceShip owner, SpaceShip ship, Collider collider, Vector3 point, Vector3 normal, float damage)
+        private void Resolve(WeaponProfile weapon, SpaceShip owner, SpaceShip ship, Collider collider, Vector3 point, Vector3 normal, float damage, float blastRadius = 0f)
         {
             var info = new HitInfo
             {
@@ -251,7 +264,8 @@ namespace SpaceAI2
                 Weapon = weapon,
                 Point = point,
                 Normal = normal,
-                Damage = damage
+                Damage = damage,
+                BlastRadius = blastRadius
             };
             if (ship != null) ship.ReceiveHit(info);
             Impact?.Invoke(info);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpaceAI2
@@ -10,6 +11,8 @@ namespace SpaceAI2
         [SerializeField] private int team;
 
         private ShipMotor motor;
+        private Subsystem[] subsystems = Array.Empty<Subsystem>();
+        private readonly Dictionary<int, Subsystem> subsystemColliders = new Dictionary<int, Subsystem>();
 
         public event Action<SpaceShip, Collision> Collided;
         public event Action<HitInfo> Hit;
@@ -27,11 +30,64 @@ namespace SpaceAI2
         public Vector3 Velocity => Motor.Velocity;
         public float Radius => Motor.Profile != null ? Motor.Profile.Radius : 1f;
 
+        public IReadOnlyList<Subsystem> Subsystems => subsystems;
+
         public bool IsEnemy(SpaceShip other) => other != null && other.team != team;
 
-        public void ReceiveHit(in HitInfo hit) => Hit?.Invoke(hit);
+        /// <summary>
+        /// Routes a hit through the subsystem whose hitbox it struck; a blast damages every subsystem in its radius
+        /// on top of the hull.
+        /// </summary>
+        public void ReceiveHit(in HitInfo hit)
+        {
+            HitInfo routed = hit;
+            if (hit.Collider != null && subsystemColliders.TryGetValue(hit.Collider.GetInstanceID(), out Subsystem struck) && !struck.IsDestroyed)
+            {
+                routed.Subsystem = struck;
+                routed.Damage = struck.Absorb(hit, hit.Damage);
+            }
+            else if (hit.BlastRadius > 0f)
+            {
+                foreach (Subsystem subsystem in subsystems)
+                {
+                    if (subsystem.IsDestroyed) continue;
+                    float distance = Vector3.Distance(subsystem.AimPoint, hit.Point);
+                    if (distance > hit.BlastRadius) continue;
+                    subsystem.Absorb(hit, hit.Damage * (1f - distance / hit.BlastRadius));
+                }
+            }
+            Hit?.Invoke(routed);
+        }
 
-        private void Awake() => motor = GetComponent<ShipMotor>();
+        public void RestoreSubsystems()
+        {
+            foreach (Subsystem subsystem in subsystems) subsystem.Restore();
+            UpdatePower();
+        }
+
+        private void Awake()
+        {
+            motor = GetComponent<ShipMotor>();
+            subsystems = GetComponentsInChildren<Subsystem>(true);
+            foreach (Subsystem subsystem in subsystems)
+            {
+                foreach (Collider collider in subsystem.Colliders) subsystemColliders[collider.GetInstanceID()] = subsystem;
+                subsystem.Destroyed += (_, _) => UpdatePower();
+            }
+        }
+
+        // Every lost engine takes its share of thrust and turn rate; with none left the ship drifts.
+        private void UpdatePower()
+        {
+            int engines = 0, working = 0;
+            foreach (Subsystem subsystem in subsystems)
+            {
+                if (subsystem.Kind != SubsystemKind.Engine) continue;
+                engines++;
+                if (!subsystem.IsDestroyed) working++;
+            }
+            if (engines > 0) Motor.Power = (float)working / engines;
+        }
 
         private void OnEnable() => SpaceAIWorld.Instance.Registry.Add(this);
 

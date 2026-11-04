@@ -71,5 +71,7 @@ namespace SpaceAI2
         public Color TrailColor = new Color(0.8f, 0.8f, 0.8f, 0.5f);
 
         public bool IsGuided => Guidance != MissileGuidance.Unguided;
+        /// <summary>How close a projectile has to pass to hit it.</summary>
+        public float HitRadius => Mathf.Max(Width, Length * 0.5f);
     }
 }

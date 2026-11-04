@@ -62,7 +62,7 @@ namespace SpaceAI2.Editor
 
         internal static MissileProfile[] LoadMissiles() => new[]
         {
-            LoadOrCreateMissile("MissileHeat", _ => { }),
+            LoadOrCreateMissile("MissileHeat", m => m.Hull = 6f),
             LoadOrCreateMissile("MissileRadar", m =>
             {
                 m.Guidance = MissileGuidance.Radar;
@@ -135,7 +135,7 @@ namespace SpaceAI2.Editor
             m.Damage = 600f;
             m.BlastRadius = 40f;
             m.ProximityFuse = 5f;
-            m.Hull = 40f;
+            m.Hull = 60f;
             m.Reload = 10f;
             m.BodyColor = new Color(0.5f, 0.55f, 0.6f, 1f);
             m.FlameColor = new Color(0.4f, 1f, 0.7f, 1f);
@@ -168,7 +168,7 @@ namespace SpaceAI2.Editor
             return missile;
         }
 
-        private static ShipProfile LoadOrCreateCruiser()
+        internal static ShipProfile LoadOrCreateCruiser()
         {
             string path = $"{Root}/Profiles/Cruiser.asset";
             var profile = AssetDatabase.LoadAssetAtPath<ShipProfile>(path);

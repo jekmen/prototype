@@ -80,6 +80,8 @@ namespace SpaceAI2
         /// <summary>Ran out of fuel or time, hit something before arming, or was shot down.</summary>
         public event Action<MissileTrack> Expired;
         public event Action<HitInfo> Impact;
+        /// <summary>Point defense destroyed the missile; the ship is the shooter, null when unknown.</summary>
+        public event Action<MissileTrack, SpaceShip> ShotDown;
 
         public static MissileSystem Instance
         {
@@ -150,18 +152,80 @@ namespace SpaceAI2
         }
 
         /// <summary>Point defense damage; returns true when the missile is destroyed.</summary>
-        public bool Damage(int id, float damage)
+        public bool Damage(int id, float damage, SpaceShip source = null)
+        {
+            for (int i = 0; i < count; i++)
+                if (missiles[i].Track.Id == id) return DamageAt(i, damage, source);
+            return false;
+        }
+
+        public bool TryGetTrack(int id, out MissileTrack track)
         {
             for (int i = 0; i < count; i++)
             {
-                if (missiles[i].Track.Id != id) continue;
-                if (missiles[i].Hull <= 0f) return false;
-                missiles[i].Hull -= damage;
-                if (missiles[i].Hull > 0f) return false;
-                AddFlash(missiles[i].Track.Position, profiles[missiles[i].Profile].Width * 8f, 0.25f, missiles[i].Profile);
+                if (missiles[i].Track.Id != id || (missiles[i].Hull <= 0f && profiles[missiles[i].Profile].Hull > 0f)) continue;
+                track = missiles[i].Track;
                 return true;
             }
+            track = default;
             return false;
+        }
+
+        /// <summary>True when the missile is a threat to the team: aimed at one of its ships by someone else.</summary>
+        public static bool Threatens(in MissileTrack track, int team) =>
+            track.Target != null && track.Target.Team == team && (track.Owner == null || track.Owner.Team != team);
+
+        /// <summary>
+        /// The first enemy missile a projectile meets during this step, by relative motion. Missiles have already
+        /// stepped, so they are moved back to where they were at the start of it.
+        /// </summary>
+        public bool Sweep(Vector3 origin, Vector3 velocity, float dt, SpaceShip shooter, out int id, out float time)
+        {
+            id = 0;
+            time = float.MaxValue;
+            for (int i = 0; i < count; i++)
+            {
+                Missile m = missiles[i];
+                MissileProfile profile = profiles[m.Profile];
+                if (m.Hull <= 0f || profile.Hull <= 0f) continue;
+                if (shooter != null && m.Track.Owner != null && !m.Track.Owner.IsEnemy(shooter)) continue;
+
+                Vector3 start = origin - (m.Track.Position - m.Track.Velocity * dt);
+                Vector3 relative = velocity - m.Track.Velocity;
+                float speed = relative.sqrMagnitude;
+                float t = speed > 0f ? Mathf.Clamp(-Vector3.Dot(start, relative) / speed, 0f, dt) : 0f;
+                if (t >= time || (start + relative * t).sqrMagnitude > profile.HitRadius * profile.HitRadius) continue;
+                time = t;
+                id = m.Track.Id;
+            }
+            return time < float.MaxValue;
+        }
+
+        /// <summary>Flak: damages every missile within the radius, falling off to zero at its edge.</summary>
+        public int DamageInRadius(Vector3 point, float radius, float damage, SpaceShip source)
+        {
+            int destroyed = 0;
+            for (int i = 0; i < count; i++)
+            {
+                Missile m = missiles[i];
+                if (m.Hull <= 0f || profiles[m.Profile].Hull <= 0f) continue;
+                if (source != null && m.Track.Owner != null && !m.Track.Owner.IsEnemy(source)) continue;
+                float distance = Mathf.Max(0f, Vector3.Distance(m.Track.Position, point) - profiles[m.Profile].HitRadius);
+                if (distance > radius) continue;
+                if (DamageAt(i, damage * (1f - distance / Mathf.Max(radius, 0.01f)), source)) destroyed++;
+            }
+            return destroyed;
+        }
+
+        private bool DamageAt(int index, float damage, SpaceShip source)
+        {
+            ref Missile m = ref missiles[index];
+            if (m.Hull <= 0f || profiles[m.Profile].Hull <= 0f) return false;
+            m.Hull -= damage;
+            if (m.Hull > 0f) return false;
+            AddFlash(m.Track.Position, profiles[m.Profile].Width * 8f, 0.25f, m.Profile);
+            ShotDown?.Invoke(m.Track, source);
+            return true;
         }
 
         /// <summary>A flare from this ship: heat seekers tracking it with the flare in view may lose it.</summary>
@@ -349,7 +413,8 @@ namespace SpaceAI2
                     Missile = profile,
                     Point = point,
                     Normal = -offset.normalized,
-                    Damage = damage
+                    Damage = damage,
+                    BlastRadius = profile.BlastRadius
                 };
                 ship.ReceiveHit(info);
                 Impact?.Invoke(info);

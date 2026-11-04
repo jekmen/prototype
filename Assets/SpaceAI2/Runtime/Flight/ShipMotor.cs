@@ -12,6 +12,7 @@ namespace SpaceAI2
         private Rigidbody body;
         private ShipInput input;
         private Vector3 localRates;
+        private float power = 1f;
         private Vector3 acceleration;
 
         public ShipProfile Profile
@@ -31,6 +32,12 @@ namespace SpaceAI2
         public float Speed => body.velocity.magnitude;
         /// <summary>Smoothed acceleration, including the centripetal part of turns. Used for aim prediction.</summary>
         public Vector3 Acceleration => acceleration;
+        /// <summary>Share of thrust and turn rate left, 0–1. Large ships lose it with their engines.</summary>
+        public float Power
+        {
+            get => power;
+            set => power = Mathf.Clamp01(value);
+        }
         public float TargetSpeed => profile.TargetSpeed(input.Throttle, input.Boost);
 
         public Vector3 NormalizedTurn
@@ -73,7 +80,7 @@ namespace SpaceAI2
 
         private void ApplyRotation(float dt)
         {
-            float factor = input.Boost ? profile.BoostTurnFactor : 1f;
+            float factor = (input.Boost ? profile.BoostTurnFactor : 1f) * power;
             Vector3 maxRates = new Vector3(profile.PitchRate, profile.YawRate, profile.RollRate) * (factor * Mathf.Deg2Rad);
             Vector3 target = new Vector3(-input.Pitch * maxRates.x, input.Yaw * maxRates.y, -input.Roll * maxRates.z);
 
@@ -93,9 +100,9 @@ namespace SpaceAI2
             float speed = velocity.magnitude;
             Vector3 direction = speed > 0.01f ? velocity / speed : forward;
 
-            direction = Vector3.Slerp(direction, forward, 1f - Mathf.Exp(-profile.Grip * dt));
+            direction = Vector3.Slerp(direction, forward, 1f - Mathf.Exp(-profile.Grip * power * dt));
             float target = TargetSpeed;
-            float rate = target > speed ? profile.Acceleration : profile.Deceleration;
+            float rate = (target > speed ? profile.Acceleration : profile.Deceleration) * power;
             speed = Mathf.MoveTowards(speed, target, rate * dt);
 
             body.velocity = direction * speed;

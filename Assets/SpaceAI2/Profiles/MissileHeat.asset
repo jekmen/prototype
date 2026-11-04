@@ -34,7 +34,7 @@ MonoBehaviour:
   Damage: 90
   BlastRadius: 15
   ProximityFuse: 6
-  Hull: 5
+  Hull: 6
   Salvo: 1
   SalvoSpread: 10
   Reload: 3

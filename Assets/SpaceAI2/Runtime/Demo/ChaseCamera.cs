@@ -18,6 +18,12 @@ namespace SpaceAI2.Demo
             set => target = value;
         }
 
+        public Vector3 Offset
+        {
+            get => offset;
+            set => offset = value;
+        }
+
         private void LateUpdate()
         {
             if (target == null) return;
