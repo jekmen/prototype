@@ -15,6 +15,7 @@ MonoBehaviour:
   AimError: 0.4
   FireTolerance: 1
   SprayAngle: 3.5
+  SubsystemPriority: 0
   TurnSkill: 0.85
   ReactionTime: 0.3
   Hysteresis: 0.15

@@ -11,6 +11,8 @@ namespace SpaceAI2
         public PilotProfile Profile;
 
         public SpaceShip Target;
+        /// <summary>Part of a large target to shoot at; null aims at the hull.</summary>
+        public Subsystem Subsystem;
         public Vector3 ToTarget;
         public float Distance;
         /// <summary>Angle between my nose and the line of sight to the target.</summary>
@@ -41,5 +43,6 @@ namespace SpaceAI2
         public float LastMerge = float.NegativeInfinity;
 
         public bool HasTarget => Target != null;
+        public Vector3 TargetPoint => Subsystem != null ? Subsystem.AimPoint : Target.Position;
     }
 }

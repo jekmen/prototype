@@ -117,6 +117,9 @@ namespace SpaceAI2
             set => fireTarget = value;
         }
 
+        /// <summary>Part of the fire target to aim at instead of its center. Ignored once destroyed or on another ship.</summary>
+        public Subsystem FireSubsystem { get; set; }
+
         public bool HasFiringSolution { get; private set; }
         public Vector3 FiringDirection => solutionDirection;
 
@@ -412,7 +415,7 @@ namespace SpaceAI2
             gun.AimDirection = Vector3.zero;
             if (!IsValid(fireTarget) || !ship.IsEnemy(fireTarget)) return;
 
-            Vector3 toTarget = fireTarget.Position - transform.position;
+            Vector3 toTarget = FirePoint(out _) - transform.position;
             float distance = toTarget.magnitude;
             if (distance > weapon.Range * 1.5f) return;
 
@@ -444,19 +447,31 @@ namespace SpaceAI2
             if (!HasFiringSolution) return;
 
             WeaponProfile weapon = gun.Weapon;
-            float distance = Vector3.Distance(fireTarget.Position, transform.position);
+            float distance = Vector3.Distance(FirePoint(out float radius), transform.position);
             float travel = weapon.IsInstant ? distance : weapon.MuzzleSpeed * solutionTime;
             if (travel > weapon.Range * fireRange * FireRangeScale) return;
 
             Vector3 fireDirection = gun.FireDirection;
             float angle = Vector3.Angle(fireDirection, solutionDirection);
             float miss = angle < 90f ? Mathf.Sin(angle * Mathf.Deg2Rad) * travel : float.MaxValue;
-            float tolerance = fireTarget.Radius * FireTolerance + travel * Mathf.Tan(SprayAngle * Mathf.Deg2Rad) +
+            float tolerance = radius * FireTolerance + travel * Mathf.Tan(SprayAngle * Mathf.Deg2Rad) +
                               (weapon.Kind == WeaponKind.Flak ? weapon.BlastRadius * 0.5f : 0f);
             if (miss > tolerance) return;
             if (checkFriendlyFire && AllyInLineOfFire(fireDirection, travel)) return;
             if (ObstacleInLineOfFire(fireDirection, travel - fireTarget.Radius * 2f)) return;
             gun.Trigger = true;
+        }
+
+        private Vector3 FirePoint(out float radius)
+        {
+            Subsystem part = FireSubsystem;
+            if (part != null && !part.IsDestroyed && part.Ship == fireTarget)
+            {
+                radius = part.Radius;
+                return part.AimPoint;
+            }
+            radius = fireTarget.Radius;
+            return fireTarget.Position;
         }
 
         private bool ObstacleInLineOfFire(Vector3 direction, float range)

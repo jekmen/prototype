@@ -40,6 +40,8 @@ namespace SpaceAI2
         public IReadOnlyList<CombatBrain> Members => members;
         public SquadOrder Order { get; private set; }
         public SpaceShip OrderTarget { get; private set; }
+        /// <summary>Subsystem priority for the whole wing; overrides the pilots' own when set.</summary>
+        public TargetPriority? Priority { get; set; }
         public Vector3 LeaderVelocity => leader != null ? leader.Velocity : Vector3.zero;
         public int BrokenCount => brokenSince.Count;
 
@@ -62,6 +64,12 @@ namespace SpaceAI2
         {
             if (target == null) HoldFormation();
             else SetOrder(SquadOrder.Attack, target);
+        }
+
+        public void Attack(SpaceShip target, TargetPriority priority)
+        {
+            Priority = priority;
+            Attack(target);
         }
 
         public Vector3 SlotPosition(int slot) => leader.Position + leader.transform.rotation * profile.Slot(slot);

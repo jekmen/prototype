@@ -13,6 +13,10 @@ namespace SpaceAI2
         [Tooltip("Extra cone around the firing solution the pilot still shoots into, degrees. Bursts and visible misses.")]
         [Range(0f, 15f)] public float SprayAngle = 3f;
 
+        [Header("Targeting")]
+        [Tooltip("Which subsystems of large ships to go for. A wing order or the brain's override replaces it.")]
+        public TargetPriority SubsystemPriority = TargetPriority.Utility;
+
         [Header("Flying")]
         [Tooltip("Share of the stick the pilot dares to use. Lower means wider turns, so better pilots win turn fights.")]
         [Range(0.3f, 1f)] public float TurnSkill = 0.85f;

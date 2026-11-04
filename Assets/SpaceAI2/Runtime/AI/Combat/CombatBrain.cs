@@ -16,6 +16,8 @@ namespace SpaceAI2
         [Tooltip("Area to patrol when there is nothing to fight. Defaults to the spawn point.")]
         [SerializeField] private Transform patrolCenter;
         [SerializeField, Min(10f)] private float patrolRadius = 800f;
+        [Tooltip("Attack large ships in runs from their turrets' dead zones instead of dogfighting them.")]
+        [SerializeField] private bool useAttackRuns = true;
 
         private const float ThreatCone = 25f;
         private const float RecentDamageTime = 2f;
@@ -63,6 +65,23 @@ namespace SpaceAI2
         /// <summary>Overrides target selection while it is alive.</summary>
         public SpaceShip ForcedTarget { get; set; }
 
+        /// <summary>Overrides subsystem selection while it is on the target and intact.</summary>
+        public Subsystem ForcedSubsystem { get; set; }
+
+        /// <summary>Overrides the wing's and the profile's subsystem priority when set.</summary>
+        public TargetPriority? PriorityOverride { get; set; }
+
+        public TargetPriority Priority =>
+            PriorityOverride ?? (Formation != null ? Formation.Priority : null) ?? context.Profile?.SubsystemPriority ?? TargetPriority.Utility;
+
+        public Subsystem TargetSubsystem => context.Subsystem;
+
+        public bool UseAttackRuns
+        {
+            get => useAttackRuns;
+            set => useAttackRuns = value;
+        }
+
         public Vector3 PatrolCenter => patrolCenter != null ? patrolCenter.position : spawnPoint;
         public float PatrolRadius => patrolRadius;
 
@@ -87,7 +106,7 @@ namespace SpaceAI2
             {
                 new PatrolBehavior(), new InterceptBehavior(), new PursuitBehavior(), new OvershootBehavior(),
                 new DefendBehavior(), new ExtendBehavior(), new HeadOnBehavior(), new MergeBehavior(), new FormationBehavior(),
-                new MissileEvadeBehavior()
+                new MissileEvadeBehavior(), new AttackRunBehavior()
             };
             launcher = GetComponent<MissileLauncher>();
             context.Brain = this;
@@ -101,6 +120,7 @@ namespace SpaceAI2
             if (health != null) health.Damaged += OnDamaged;
             current = null;
             context.Target = null;
+            context.Subsystem = null;
             context.Threat = null;
             context.HasMissile = false;
             context.TimeSinceFiringChance = 0f;
@@ -131,7 +151,12 @@ namespace SpaceAI2
             if (targetTimer <= 0f || lost)
             {
                 SelectTarget();
+                SelectSubsystem();
                 targetTimer = targetInterval;
+            }
+            else if (context.Subsystem != null && (context.Subsystem.IsDestroyed || context.Subsystem.Ship != context.Target))
+            {
+                SelectSubsystem();
             }
 
             int warned = context.HasMissile ? context.Missile.Id : 0;
@@ -153,6 +178,7 @@ namespace SpaceAI2
             bool joust = context.HasTarget && context.Aspect > JoustAspect;
             pilot.FireRangeScale = joust ? JoustFireRange : 1f;
             pilot.ExtraAimError = joust ? JoustAimError : 0f;
+            pilot.FireSubsystem = context.Subsystem;
             current.Execute(context, dt);
             UpdateLauncher();
         }
@@ -290,6 +316,76 @@ namespace SpaceAI2
             context.Target = best;
         }
 
+        /// <summary>
+        /// Picks the part of a large target to shoot by the priority, preferring damaged parts and spreading the wing
+        /// over parts allies are not already on.
+        /// </summary>
+        private void SelectSubsystem()
+        {
+            SpaceShip target = context.Target;
+            Subsystem forced = ForcedSubsystem;
+            if (target == null || target.Subsystems.Count == 0)
+            {
+                context.Subsystem = null;
+                return;
+            }
+            if (forced != null && !forced.IsDestroyed && forced.Ship == target)
+            {
+                context.Subsystem = forced;
+                return;
+            }
+
+            TargetPriority priority = Priority;
+            Subsystem best = null;
+            float bestScore = 0f;
+            if (priority != TargetPriority.Hull)
+            {
+                foreach (Subsystem part in target.Subsystems)
+                {
+                    if (part.IsDestroyed) continue;
+                    float score = SubsystemValue(part, priority);
+                    if (score <= 0f) continue;
+                    score += 0.4f * (1f - part.Health / part.MaxHealth);
+                    if (part == context.Subsystem) score += 0.2f;
+                    foreach (CombatBrain brain in active)
+                        if (brain != this && brain.context.Subsystem == part && !ship.IsEnemy(brain.ship)) score -= 0.5f;
+                    score -= 0.2f * Vector3.Distance(ship.Position, part.AimPoint) / sensorRange;
+                    if (score > bestScore)
+                    {
+                        best = part;
+                        bestScore = score;
+                    }
+                }
+            }
+            context.Subsystem = best;
+        }
+
+        private float SubsystemValue(Subsystem part, TargetPriority priority)
+        {
+            ShipTurret turret = part.Turret;
+            bool pointDefense = turret != null && turret.Role == TurretRole.PointDefense;
+            // A turret busy with an ally or with our missiles is the one hurting the wing right now.
+            bool hostile = turret != null && turret.HasTarget && (turret.TargetIsMissile || !ship.IsEnemy(turret.TargetShip));
+            float value;
+            switch (priority)
+            {
+                case TargetPriority.PointDefense:
+                    value = pointDefense ? 3f : turret != null ? 1f : 0.5f;
+                    break;
+                case TargetPriority.Turrets:
+                    value = turret != null ? 2f : 0.5f;
+                    break;
+                case TargetPriority.Engines:
+                    value = part.Kind == SubsystemKind.Engine ? 3f : turret != null ? 1f : 0.5f;
+                    break;
+                default:
+                    value = pointDefense ? 1.6f : turret != null ? 1f : part.Kind == SubsystemKind.Engine ? 1.2f : 0.5f;
+                    break;
+            }
+            if (hostile) value += 0.8f;
+            return value;
+        }
+
         /// <summary>Bonus for an enemy attacking an ally, penalty for one allies are already on, so a wing spreads out.</summary>
         private float AlliesInvolved(SpaceShip enemy)
         {
@@ -316,7 +412,8 @@ namespace SpaceAI2
             world.Registry.Query(ship.Position, range, scratch);
             foreach (SpaceShip enemy in scratch)
             {
-                if (!ship.IsEnemy(enemy) || !enemy.isActiveAndEnabled) continue;
+                // A large ship's nose says nothing about its turrets; attack runs deal with those.
+                if (!ship.IsEnemy(enemy) || !enemy.isActiveAndEnabled || enemy.Subsystems.Count > 0) continue;
                 Vector3 offset = ship.Position - enemy.Position;
                 float distance = offset.magnitude;
                 float angle = Vector3.Angle(enemy.Forward, offset);
@@ -330,7 +427,7 @@ namespace SpaceAI2
                 }
             }
 
-            if (Time.time - lastDamageTime < RecentDamageTime && IsAlive(lastAttacker) && context.ThreatLevel < 0.7f)
+            if (Time.time - lastDamageTime < RecentDamageTime && IsAlive(lastAttacker) && lastAttacker.Subsystems.Count == 0 && context.ThreatLevel < 0.7f)
             {
                 context.Threat = lastAttacker;
                 context.ThreatLevel = 0.7f;

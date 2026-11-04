@@ -6,11 +6,13 @@ namespace SpaceAI2.Demo
 {
     /// <summary>
     /// A cruiser with point defense, flak and a main gun under missile, torpedo and fighter attacks. Counts how many
-    /// missiles its defenses shoot down against how many hit, and how its turrets do against fighters.
+    /// missiles its defenses shoot down against how many hit, and how its turrets do against fighters. Fighters come
+    /// either head-on or in attack runs from the turrets' dead zones; every time they destroy the subsystems their
+    /// priority picks, the cruiser is repaired and the pass is counted, with the losses it took.
     /// </summary>
     public class TurretDemo : MonoBehaviour
     {
-        private enum Mode { Torpedoes, TorpedoSalvo, Missiles, Swarm, Fighters }
+        private enum Mode { Torpedoes, TorpedoSalvo, Missiles, Swarm, Fighters, AttackRuns }
 
         private const float RespawnDelay = 3f;
 
@@ -40,6 +42,9 @@ namespace SpaceAI2.Demo
         private float cooldown;
         private float elapsed;
         private int launched, shotDown, hits, kills, subsystemsLost;
+        private TargetPriority priority = TargetPriority.PointDefense;
+        private int cycles, cycleKills;
+        private float cycleStart, cycleTime;
         private GUIStyle style;
 
         public void Setup(SpaceShip cruiserShip, MissileProfile torpedoProfile, MissileProfile heatProfile, MissileProfile swarmProfile,
@@ -60,7 +65,7 @@ namespace SpaceAI2.Demo
             pilot = cruiser.GetComponent<AIPilot>();
             hull = cruiser.GetComponent<Collider>();
             foreach (ShipTurret turret in turrets) turret.Fired += OnTurretFired;
-            foreach (Subsystem subsystem in cruiser.Subsystems) subsystem.Destroyed += (_, _) => subsystemsLost++;
+            foreach (Subsystem subsystem in cruiser.Subsystems) subsystem.Destroyed += OnSubsystemDestroyed;
             foreach (SpaceShip fighter in fighters)
                 fighter.GetComponent<ShipHealth>().Destroyed += (health, _) => OnFighterDestroyed(health.GetComponent<SpaceShip>());
 
@@ -89,7 +94,8 @@ namespace SpaceAI2.Demo
             if (UnityEngine.Input.GetKeyDown(KeyCode.Tab)) ShowView((view + 1) % (fighters.Length + 1));
             if (UnityEngine.Input.GetKeyDown(KeyCode.R)) ResetStats();
             if (UnityEngine.Input.GetKeyDown(KeyCode.P)) SetDefense(!defense);
-            for (int i = 0; i <= (int)Mode.Fighters; i++)
+            if (UnityEngine.Input.GetKeyDown(KeyCode.O)) SetPriority((TargetPriority)(((int)priority + 1) % (int)TargetPriority.Hull));
+            for (int i = 0; i <= (int)Mode.AttackRuns; i++)
                 if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1 + i)) SetMode((Mode)i);
 
             pilot.Direct(cruiser.Forward);
@@ -100,7 +106,7 @@ namespace SpaceAI2.Demo
                 respawns.RemoveAt(i);
             }
 
-            if (mode == Mode.Fighters || inFlight.Count > 0) return;
+            if (FighterMode || inFlight.Count > 0) return;
             cooldown -= Time.deltaTime;
             if (cooldown <= 0f) Launch();
         }
@@ -165,6 +171,41 @@ namespace SpaceAI2.Demo
             gunnery[hit.Weapon] = stats + new Vector2Int(0, 1);
         }
 
+        private bool FighterMode => mode >= Mode.Fighters;
+
+        private void OnSubsystemDestroyed(Subsystem subsystem, HitInfo hit)
+        {
+            subsystemsLost++;
+            if (!FighterMode) return;
+            foreach (Subsystem part in cruiser.Subsystems)
+                if (Wanted(part) && !part.IsDestroyed) return;
+            cycles++;
+            cycleTime += elapsed - cycleStart;
+            cycleStart = elapsed;
+            cycleKills = kills;
+            cruiser.RestoreSubsystems();
+        }
+
+        /// <summary>Subsystems a pass has to destroy under the current priority.</summary>
+        private bool Wanted(Subsystem part)
+        {
+            ShipTurret turret = part.Turret;
+            switch (priority)
+            {
+                case TargetPriority.PointDefense: return turret != null && turret.Role == TurretRole.PointDefense;
+                case TargetPriority.Turrets: return turret != null;
+                case TargetPriority.Engines: return part.Kind == SubsystemKind.Engine;
+                default: return true;
+            }
+        }
+
+        private void SetPriority(TargetPriority next)
+        {
+            priority = next;
+            foreach (SpaceShip fighter in fighters) fighter.GetComponent<CombatBrain>().PriorityOverride = next;
+            ResetStats();
+        }
+
         private void OnFighterDestroyed(SpaceShip fighter)
         {
             kills++;
@@ -173,7 +214,7 @@ namespace SpaceAI2.Demo
 
         private void Respawn(SpaceShip fighter)
         {
-            if (mode != Mode.Fighters) return;
+            if (!FighterMode) return;
             Vector3 position = cruiser.Position + UnityEngine.Random.onUnitSphere * fighterSpawnDistance;
             fighter.transform.SetPositionAndRotation(position, Quaternion.LookRotation(cruiser.Position - position));
             fighter.GetComponent<ShipHealth>().Restore();
@@ -190,9 +231,12 @@ namespace SpaceAI2.Demo
             foreach (SpaceShip fighter in fighters)
             {
                 fighter.gameObject.SetActive(false);
-                if (mode == Mode.Fighters) Respawn(fighter);
+                var brain = fighter.GetComponent<CombatBrain>();
+                brain.UseAttackRuns = mode == Mode.AttackRuns;
+                brain.PriorityOverride = priority;
+                if (FighterMode) Respawn(fighter);
             }
-            if (view > 0 && mode != Mode.Fighters) ShowView(0);
+            if (view > 0 && !FighterMode) ShowView(0);
             ResetStats();
         }
 
@@ -216,6 +260,8 @@ namespace SpaceAI2.Demo
         {
             elapsed = 0f;
             launched = shotDown = hits = kills = subsystemsLost = 0;
+            cycles = cycleKills = 0;
+            cycleStart = cycleTime = 0f;
             gunnery.Clear();
             cruiser.RestoreSubsystems();
         }
@@ -224,9 +270,12 @@ namespace SpaceAI2.Demo
         {
             style ??= new GUIStyle(GUI.skin.label) { fontSize = 16 };
             string text = $"{mode} · defense {(defense ? "on" : "off")} · {elapsed:0} s\n";
-            if (mode == Mode.Fighters)
+            if (FighterMode)
             {
                 text += $"Fighters killed {kills}, cruiser subsystems lost {subsystemsLost}, power {cruiser.Motor.Power:P0}, speed {cruiser.Motor.Speed:0} m/s\n";
+                float perPass = cycles > 0 ? cycleTime / cycles : 0f;
+                float lossesPerPass = cycles > 0 ? (float)cycleKills / cycles : 0f;
+                text += $"Priority {priority}: done {cycles} times, {perPass:0} s and {lossesPerPass:0.0} fighters lost each\n";
                 foreach (KeyValuePair<WeaponProfile, Vector2Int> pair in gunnery)
                     text += $"{pair.Key.name}: shots {pair.Value.x}, hits {pair.Value.y}, accuracy {(pair.Value.x > 0 ? 100f * pair.Value.y / pair.Value.x : 0f):0}%\n";
             }
@@ -239,8 +288,10 @@ namespace SpaceAI2.Demo
             int alive = 0;
             foreach (ShipTurret turret in turrets) if (!turret.IsDestroyed) alive++;
             text += $"Turrets {alive}/{turrets.Length}\n";
-            text += "1 torpedo · 2 torpedo salvo · 3 heat missile · 4 swarm · 5 fighters · P defense · Tab view · R reset";
-            GUI.Label(new Rect(16, Screen.height - 40 - 22 * 8, 1100, 22 * 8 + 20), text, style);
+            if (view > 0 && fighters[view - 1].TryGetComponent(out CombatBrain watched) && watched.Current != null)
+                text += $"{watched.name}: {watched.Current.Name} → {(watched.TargetSubsystem != null ? watched.TargetSubsystem.name : "hull")}\n";
+            text += "1 torpedo · 2 torpedo salvo · 3 heat missile · 4 swarm · 5 fighters head-on · 6 attack runs · O priority · P defense · Tab view · R reset";
+            GUI.Label(new Rect(16, Screen.height - 40 - 22 * 10, 1300, 22 * 10 + 20), text, style);
         }
     }
 }

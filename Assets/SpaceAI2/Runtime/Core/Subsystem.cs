@@ -18,6 +18,8 @@ namespace SpaceAI2
         [SerializeField, Range(0f, 1f)] private float hullShare = 0.25f;
 
         private Collider[] colliders;
+        private ShipTurret turret;
+        private bool turretChecked;
 
         public event Action<Subsystem, HitInfo> Damaged;
         public event Action<Subsystem, HitInfo> Destroyed;
@@ -52,6 +54,30 @@ namespace SpaceAI2
             {
                 Collider[] hitboxes = Colliders;
                 return hitboxes.Length > 0 ? hitboxes[0].bounds.center : transform.position;
+            }
+        }
+
+        /// <summary>Rough size of the hitbox, for aiming tolerances.</summary>
+        public float Radius
+        {
+            get
+            {
+                Collider[] hitboxes = Colliders;
+                return hitboxes.Length > 0 ? hitboxes[0].bounds.extents.magnitude * 0.7f : 1f;
+            }
+        }
+
+        /// <summary>The turret this subsystem carries, if any.</summary>
+        public ShipTurret Turret
+        {
+            get
+            {
+                if (!turretChecked)
+                {
+                    turret = GetComponent<ShipTurret>();
+                    turretChecked = true;
+                }
+                return turret;
             }
         }
 

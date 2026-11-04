@@ -27,7 +27,6 @@ namespace SpaceAI2.Editor
             SpaceShip cruiser = CreateCruiser("Cruiser", cruiserProfile, fighter, Vector3.zero, Quaternion.identity, 0, guns[0], guns[1], guns[2]);
             cruiser.gameObject.AddComponent<AIPilot>();
 
-            var area = new GameObject("Arena").transform;
             var attackers = new SpaceShip[FighterCount];
             for (int i = 0; i < FighterCount; i++)
             {
@@ -40,7 +39,8 @@ namespace SpaceAI2.Editor
                 gun.Weapon = cannon;
                 gun.GimbalAngle = 6f;
                 ship.AddComponent<AIPilot>().Profile = pilots["Veteran"];
-                ship.AddComponent<CombatBrain>().PatrolArea = area;
+                // The cruiser keeps flying, so patrol around it rather than a fixed point.
+                ship.AddComponent<CombatBrain>().PatrolArea = cruiser.transform;
                 AddTrail(ship, new Color(1f, 0.35f, 0.3f));
             }
 
