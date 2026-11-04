@@ -108,13 +108,16 @@ namespace SpaceAI2.Editor
 
         internal static Dictionary<string, PilotProfile> LoadPilots() => new Dictionary<string, PilotProfile>
         {
-            ["Ace"] = LoadOrCreatePilot("Ace", p => Configure(p, 0.15f, 0.8f, 0.15f, 0.8f, 0.25f, 10f, 2f, 1f)),
-            ["Veteran"] = LoadOrCreatePilot("Veteran", p => Configure(p, 0.4f, 1f, 0.3f, 0.5f, 0.35f, 12f, 3.5f, 0.85f)),
-            ["Rookie"] = LoadOrCreatePilot("Rookie", p => Configure(p, 1.5f, 1.6f, 0.6f, 0.3f, 0.5f, 15f, 6f, 0.7f))
+            ["Ace"] = LoadOrCreatePilot("Ace", p => Configure(p, 0.15f, 0.8f, 0.15f, 0.8f, 0.25f, 10f, 2f, 1f, 0.3f, 0.15f)),
+            ["Veteran"] = LoadOrCreatePilot("Veteran", p => Configure(p, 0.4f, 1f, 0.3f, 0.5f, 0.35f, 12f, 3.5f, 0.85f, 0.8f, 0.4f)),
+            ["Rookie"] = LoadOrCreatePilot("Rookie", p => Configure(p, 1.5f, 1.6f, 0.6f, 0.3f, 0.5f, 15f, 6f, 0.7f, 2f, 1.2f))
         };
 
-        private static void Configure(PilotProfile p, float aimError, float fireTolerance, float reaction, float aggression, float caution, float patience, float spray, float turnSkill)
+        private static void Configure(PilotProfile p, float aimError, float fireTolerance, float reaction, float aggression, float caution, float patience, float spray, float turnSkill,
+            float missileWarning, float breakError)
         {
+            p.MissileWarningDelay = missileWarning;
+            p.BreakTimingError = breakError;
             p.AimError = aimError;
             p.FireTolerance = fireTolerance;
             p.ReactionTime = reaction;

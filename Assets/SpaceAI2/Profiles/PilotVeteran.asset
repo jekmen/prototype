@@ -19,6 +19,8 @@ MonoBehaviour:
   ReactionTime: 0.3
   Hysteresis: 0.15
   MinCommitTime: 1.5
+  MissileWarningDelay: 0.8
+  BreakTimingError: 0.4
   Aggression: 0.5
   Caution: 0.35
   Patience: 12

@@ -31,11 +31,13 @@ namespace SpaceAI2
 
         private readonly CombatContext context = new CombatContext();
         private readonly List<SpaceShip> scratch = new List<SpaceShip>();
+        private readonly List<MissileTrack> incoming = new List<MissileTrack>();
         private CombatBehavior[] behaviors;
         private CombatBehavior current;
         private AIPilot pilot;
         private SpaceShip ship;
         private ShipHealth health;
+        private MissileLauncher launcher;
         private Vector3 spawnPoint;
         private float decisionTimer;
         private float targetTimer;
@@ -84,8 +86,10 @@ namespace SpaceAI2
             behaviors = new CombatBehavior[]
             {
                 new PatrolBehavior(), new InterceptBehavior(), new PursuitBehavior(), new OvershootBehavior(),
-                new DefendBehavior(), new ExtendBehavior(), new HeadOnBehavior(), new MergeBehavior(), new FormationBehavior()
+                new DefendBehavior(), new ExtendBehavior(), new HeadOnBehavior(), new MergeBehavior(), new FormationBehavior(),
+                new MissileEvadeBehavior()
             };
+            launcher = GetComponent<MissileLauncher>();
             context.Brain = this;
             context.Pilot = pilot;
             context.Ship = ship;
@@ -98,6 +102,7 @@ namespace SpaceAI2
             current = null;
             context.Target = null;
             context.Threat = null;
+            context.HasMissile = false;
             context.TimeSinceFiringChance = 0f;
             lastAttacker = null;
             decisionTimer = UnityEngine.Random.value * 0.3f;
@@ -129,8 +134,12 @@ namespace SpaceAI2
                 targetTimer = targetInterval;
             }
 
+            int warned = context.HasMissile ? context.Missile.Id : 0;
+            SenseMissiles();
+            bool newMissile = context.HasMissile && context.Missile.Id != warned;
+
             decisionTimer -= dt;
-            bool decide = decisionTimer <= 0f || current == null || lost;
+            bool decide = decisionTimer <= 0f || current == null || lost || newMissile;
             if (decide) FindThreat();
             UpdateGeometry();
             UpdatePatience(dt);
@@ -145,6 +154,45 @@ namespace SpaceAI2
             pilot.FireRangeScale = joust ? JoustFireRange : 1f;
             pilot.ExtraAimError = joust ? JoustAimError : 0f;
             current.Execute(context, dt);
+            UpdateLauncher();
+        }
+
+        /// <summary>Picks the noticed missile closest to impact. Pilots notice a launch only after their warning delay.</summary>
+        private void SenseMissiles()
+        {
+            context.HasMissile = false;
+            if (!MissileSystem.TryGet(out MissileSystem system)) return;
+            system.GetIncoming(ship, incoming);
+            float soonest = float.PositiveInfinity;
+            foreach (MissileTrack missile in incoming)
+            {
+                if (missile.Age < context.Profile.MissileWarningDelay) continue;
+                Vector3 offset = ship.Position - missile.Position;
+                float distance = offset.magnitude;
+                float closing = Vector3.Dot(missile.Velocity - ship.Velocity, offset / Mathf.Max(distance, 0.01f));
+                float timeToGo = closing > 1f ? distance / closing : 60f;
+                if (context.HasMissile && timeToGo >= soonest) continue;
+                context.HasMissile = true;
+                context.Missile = missile;
+                soonest = timeToGo;
+            }
+            context.MissileTimeToGo = soonest;
+        }
+
+        private void UpdateLauncher()
+        {
+            if (launcher == null || launcher.Missile == null) return;
+            MissileProfile missile = launcher.Missile;
+            SpaceShip target = context.Target;
+            if (target != null && target.Radius < missile.MinTargetRadius) target = null;
+            launcher.LockTarget = target;
+            if (target == null || !launcher.CanLaunch) return;
+            if (context.Distance < missile.MinRange || context.Distance > missile.LockRange) return;
+            if (!missile.IsGuided && context.AngleOff > 3f) return;
+            // Long head-on shots are easy to beam; wait until the closure leaves less time to react.
+            if (context.Aspect > 120f && context.Distance > missile.LockRange * 0.5f) return;
+            if (MissileSystem.TryGet(out MissileSystem system) && system.IsTracking(ship, target)) return;
+            launcher.Launch();
         }
 
         private static bool IsAlive(SpaceShip other) => other != null && other.isActiveAndEnabled;

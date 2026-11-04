@@ -25,6 +25,12 @@ namespace SpaceAI2
         [Tooltip("Seconds a behavior is kept before a non-urgent one may replace it.")]
         [Min(0f)] public float MinCommitTime = 1.5f;
 
+        [Header("Missiles")]
+        [Tooltip("Seconds after a launch before the pilot notices the missile.")]
+        [Min(0f)] public float MissileWarningDelay = 0.8f;
+        [Tooltip("Random error of the last-moment break against a missile, seconds either way. Early or late breaks let it follow.")]
+        [Min(0f)] public float BreakTimingError = 0.5f;
+
         [Header("Temperament")]
         [Range(0f, 1f)] public float Aggression = 0.5f;
         [Tooltip("Hull share below which the pilot disengages.")]

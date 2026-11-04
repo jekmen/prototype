@@ -27,6 +27,12 @@ namespace SpaceAI2
         public Vector3 ToThreat;
         public float ThreatDistance;
 
+        /// <summary>The noticed missile closest to impact, valid while <see cref="HasMissile"/>.</summary>
+        public MissileTrack Missile;
+        public bool HasMissile;
+        /// <summary>Seconds until the missile reaches me at the current closing speed.</summary>
+        public float MissileTimeToGo;
+
         public float HullShare = 1f;
         public float WeaponRange;
         public float TurnRadius;
