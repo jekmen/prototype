@@ -10,6 +10,8 @@ namespace SpaceAI2
         private readonly Dictionary<Vector3Int, List<SpaceShip>> cells = new Dictionary<Vector3Int, List<SpaceShip>>();
         private readonly Stack<List<SpaceShip>> pool = new Stack<List<SpaceShip>>();
         private readonly List<SpaceShip> scratch = new List<SpaceShip>();
+        private readonly HashSet<int> shipColliders = new HashSet<int>();
+        private readonly List<Collider> colliderScratch = new List<Collider>();
 
         public ShipRegistry(float cellSize) => this.cellSize = Mathf.Max(1f, cellSize);
 
@@ -17,10 +19,20 @@ namespace SpaceAI2
 
         public void Add(SpaceShip ship)
         {
-            if (!ships.Contains(ship)) ships.Add(ship);
+            if (ships.Contains(ship)) return;
+            ships.Add(ship);
+            ship.GetComponentsInChildren(true, colliderScratch);
+            foreach (Collider collider in colliderScratch) shipColliders.Add(collider.GetInstanceID());
         }
 
-        public void Remove(SpaceShip ship) => ships.Remove(ship);
+        public void Remove(SpaceShip ship)
+        {
+            if (!ships.Remove(ship)) return;
+            ship.GetComponentsInChildren(true, colliderScratch);
+            foreach (Collider collider in colliderScratch) shipColliders.Remove(collider.GetInstanceID());
+        }
+
+        public bool IsShipCollider(int colliderInstanceId) => shipColliders.Contains(colliderInstanceId);
 
         public void Rebuild()
         {

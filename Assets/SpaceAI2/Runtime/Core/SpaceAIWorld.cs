@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace SpaceAI2
@@ -9,8 +10,13 @@ namespace SpaceAI2
         private static SpaceAIWorld instance;
 
         [SerializeField, Min(10f)] private float registryCellSize = 250f;
+        [Tooltip("Each pilot probes for obstacles once per this many frames; pilots are spread across frames.")]
+        [SerializeField, Min(1)] private int sensingInterval = 3;
+        [SerializeField] private LayerMask obstacleMask = Physics.DefaultRaycastLayers;
 
         private readonly List<AIPilot> pilots = new List<AIPilot>();
+        private readonly ObstacleSensing sensing = new ObstacleSensing();
+        private readonly Stopwatch stopwatch = new Stopwatch();
         private ShipRegistry registry;
 
         public static SpaceAIWorld Instance
@@ -31,6 +37,8 @@ namespace SpaceAI2
         }
 
         public ShipRegistry Registry => registry ??= new ShipRegistry(registryCellSize);
+        public int PilotCount => pilots.Count;
+        public double LastUpdateMs { get; private set; }
 
         internal void Add(AIPilot pilot)
         {
@@ -52,14 +60,22 @@ namespace SpaceAI2
         private void OnDestroy()
         {
             if (instance == this) instance = null;
+            sensing.Dispose();
         }
 
         private void Update()
         {
+            stopwatch.Restart();
             Registry.Rebuild();
+
+            sensing.Interval = sensingInterval;
+            sensing.Mask = obstacleMask;
+            sensing.Run(pilots, Registry, Time.frameCount);
+
             float dt = Time.deltaTime;
             for (int i = pilots.Count - 1; i >= 0; i--)
                 pilots[i].Tick(dt);
+            LastUpdateMs = stopwatch.Elapsed.TotalMilliseconds;
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

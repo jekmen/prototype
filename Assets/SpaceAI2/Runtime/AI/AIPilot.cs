@@ -32,7 +32,23 @@ namespace SpaceAI2
         [SerializeField, Min(0f)] private float maxLeadTime = 2f;
         [SerializeField, Min(0f)] private float lagTime = 0.6f;
 
+        [Header("Obstacle avoidance")]
+        [SerializeField] private bool avoidObstacles = true;
+        [Tooltip("Seconds of flight the forward probe covers, on top of the turn radius.")]
+        [SerializeField, Min(0.1f)] private float lookAheadTime = 2.5f;
+        [Tooltip("Probe radius in multiples of the ship radius.")]
+        [SerializeField, Min(1f)] private float clearance = 1.5f;
+        [Tooltip("Below this time to impact the pilot brakes hard instead of choosing a stylish maneuver.")]
+        [SerializeField, Min(0.05f)] private float emergencyTime = 0.8f;
+        [SerializeField, Range(0f, 1f)] private float maneuverRandomness = 0.3f;
+        [SerializeField, Min(0f)] private float minManeuverTime = 0.5f;
+        [SerializeField, Min(0.1f)] private float maxManeuverTime = 4f;
+
         private const float RollFlipZone = 150f * Mathf.Deg2Rad;
+        private const float EscapeAlignedAngle = 15f;
+
+        private readonly AvoidanceManeuver avoidance = new AvoidanceManeuver();
+        private ObstacleReading lastReading;
 
         private SpaceShip ship;
         private ShipMotor motor;
@@ -43,7 +59,10 @@ namespace SpaceAI2
         private PursuitMode pursuitMode;
 
         public event Action<AIPilot> Arrived;
+        public event Action<AIPilot, ManeuverKind, ProbeSide> ManeuverStarted;
 
+        public ManeuverKind Maneuver => avoidance.Kind;
+        public ProbeSide ManeuverSide => avoidance.Side;
         public SpaceShip Ship => ship;
         public SpaceShip Target => target;
         public Transform Destination => destination;
@@ -89,20 +108,83 @@ namespace SpaceAI2
         internal void Tick(float dt)
         {
             if (motor.Profile == null) return;
+            ShipInput input;
             switch (order)
             {
                 case Order.FlyTo when destination != null:
-                    motor.Input = FlyToDestination();
+                    input = FlyToDestination();
                     break;
                 case Order.Pursue when target != null && target.isActiveAndEnabled:
-                    motor.Input = PursueTarget();
+                    input = PursueTarget();
                     break;
                 default:
                     order = Order.None;
                     AimPoint = transform.position + transform.forward * 100f;
-                    motor.Input = Steer(transform.forward);
+                    input = Steer(transform.forward);
                     break;
             }
+
+            if (avoidance.Active)
+            {
+                avoidance.Elapsed += dt;
+                bool done = avoidance.Elapsed >= minManeuverTime && avoidance.ClearReadings >= 2;
+                if (done || avoidance.Elapsed >= maxManeuverTime || !avoidObstacles) avoidance.End();
+                else input = avoidance.Shape(Steer(avoidance.Escape));
+            }
+            motor.Input = input;
+        }
+
+        internal bool TryPrepareProbes(out ProbeSetup setup)
+        {
+            setup = default;
+            if (!avoidObstacles || motor.Profile == null) return false;
+
+            float speed = motor.Speed;
+            Vector3 forward = speed > 1f ? motor.Velocity / speed : transform.forward;
+            Vector3 up = Vector3.ProjectOnPlane(transform.up, forward);
+            if (up.sqrMagnitude < 0.0001f) up = Vector3.ProjectOnPlane(-transform.forward, forward);
+            up.Normalize();
+
+            setup = new ProbeSetup
+            {
+                Origin = transform.position,
+                Forward = forward,
+                Up = up,
+                Right = Vector3.Cross(up, forward),
+                Radius = ship.Radius * clearance,
+                Range = speed * lookAheadTime + motor.Profile.TurnRadius(speed) * 1.5f
+            };
+            return true;
+        }
+
+        internal void ReceiveReading(in ObstacleReading reading)
+        {
+            lastReading = reading;
+            float speed = motor.Speed;
+
+            if (!avoidance.Active)
+            {
+                if (reading.Blocked) StartManeuver(reading, speed);
+                return;
+            }
+
+            if (!reading.Blocked)
+            {
+                avoidance.ClearReadings++;
+                return;
+            }
+
+            avoidance.ClearReadings = 0;
+            bool urgent = reading.Distance / Mathf.Max(speed, 1f) < emergencyTime;
+            bool escalate = urgent && avoidance.Kind != ManeuverKind.EmergencyBrake && avoidance.Kind != ManeuverKind.Reverse;
+            bool exhausted = Vector3.Angle(reading.Probe.Forward, avoidance.Escape) < EscapeAlignedAngle;
+            if (escalate || exhausted) StartManeuver(reading, speed);
+        }
+
+        private void StartManeuver(in ObstacleReading reading, float speed)
+        {
+            avoidance.Choose(reading, speed, emergencyTime, maneuverRandomness);
+            ManeuverStarted?.Invoke(this, avoidance.Kind, avoidance.Side);
         }
 
         private ShipInput FlyToDestination()
@@ -191,10 +273,23 @@ namespace SpaceAI2
 
         private void OnDrawGizmosSelected()
         {
-            if (!Application.isPlaying || order == Order.None) return;
-            Gizmos.color = order == Order.Pursue ? Color.red : Color.cyan;
-            Gizmos.DrawLine(transform.position, AimPoint);
-            Gizmos.DrawWireSphere(AimPoint, 3f);
+            if (!Application.isPlaying) return;
+            if (order != Order.None)
+            {
+                Gizmos.color = order == Order.Pursue ? Color.red : Color.cyan;
+                Gizmos.DrawLine(transform.position, AimPoint);
+                Gizmos.DrawWireSphere(AimPoint, 3f);
+            }
+
+            ProbeSetup probe = lastReading.Probe;
+            if (probe.Range <= 0f) return;
+            Gizmos.color = lastReading.Blocked ? Color.yellow : Color.green;
+            Gizmos.DrawLine(probe.Origin, probe.Origin + probe.Forward * lastReading.Distance);
+            if (avoidance.Active)
+            {
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawLine(transform.position, transform.position + avoidance.Escape * 60f);
+            }
         }
     }
 }

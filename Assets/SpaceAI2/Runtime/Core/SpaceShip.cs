@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace SpaceAI2
@@ -9,6 +10,8 @@ namespace SpaceAI2
         [SerializeField] private int team;
 
         private ShipMotor motor;
+
+        public event Action<SpaceShip, Collision> Collided;
 
         public int Team
         {
@@ -32,5 +35,7 @@ namespace SpaceAI2
         {
             if (SpaceAIWorld.TryGet(out SpaceAIWorld world)) world.Registry.Remove(this);
         }
+
+        private void OnCollisionEnter(Collision collision) => Collided?.Invoke(this, collision);
     }
 }
