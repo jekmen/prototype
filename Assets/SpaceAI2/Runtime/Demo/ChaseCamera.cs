@@ -6,9 +6,11 @@ namespace SpaceAI2.Demo
     {
         [SerializeField] private Transform target;
         [SerializeField] private Vector3 offset = new Vector3(0f, 4f, -16f);
-        [SerializeField, Min(0.01f)] private float positionSharpness = 12f;
-        [SerializeField, Min(0.01f)] private float rotationSharpness = 8f;
+        [SerializeField, Min(0.01f)] private float rotationSharpness = 6f;
         [SerializeField] private float lookAhead = 30f;
+
+        private Quaternion smoothedRotation = Quaternion.identity;
+        private Transform smoothedFor;
 
         public Transform Target
         {
@@ -19,14 +21,18 @@ namespace SpaceAI2.Demo
         private void LateUpdate()
         {
             if (target == null) return;
-            float dt = Time.deltaTime;
+            if (smoothedFor != target)
+            {
+                smoothedFor = target;
+                smoothedRotation = target.rotation;
+            }
 
-            Vector3 desired = target.TransformPoint(offset);
-            transform.position = Vector3.Lerp(transform.position, desired, 1f - Mathf.Exp(-positionSharpness * dt));
+            // Position is derived from the target every frame; smoothing world position lags by v * dt and jitters with uneven frame times.
+            smoothedRotation = Quaternion.Slerp(smoothedRotation, target.rotation, 1f - Mathf.Exp(-rotationSharpness * Time.deltaTime));
+            transform.position = target.position + smoothedRotation * offset;
 
             Vector3 focus = target.position + target.forward * lookAhead;
-            Quaternion look = Quaternion.LookRotation(focus - transform.position, target.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, look, 1f - Mathf.Exp(-rotationSharpness * dt));
+            transform.rotation = Quaternion.LookRotation(focus - transform.position, smoothedRotation * Vector3.up);
         }
     }
 }

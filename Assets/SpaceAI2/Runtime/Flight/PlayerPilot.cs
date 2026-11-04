@@ -35,7 +35,11 @@ namespace SpaceAI2
 
         private void OnEnable() => LockCursor(true);
 
-        private void OnDisable() => LockCursor(false);
+        private void OnDisable()
+        {
+            LockCursor(false);
+            motor.Input = default;
+        }
 
         private void Update()
         {

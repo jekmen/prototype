@@ -32,7 +32,7 @@ namespace SpaceAI2
         {
             get
             {
-                Vector3 rates = transform.InverseTransformDirection(body.angularVelocity) * Mathf.Rad2Deg;
+                Vector3 rates = Quaternion.Inverse(body.rotation) * body.angularVelocity * Mathf.Rad2Deg;
                 return new Vector3(
                     profile.PitchRate > 0f ? -rates.x / profile.PitchRate : 0f,
                     profile.YawRate > 0f ? rates.y / profile.YawRate : 0f,
@@ -70,17 +70,18 @@ namespace SpaceAI2
             Vector3 maxRates = new Vector3(profile.PitchRate, profile.YawRate, profile.RollRate) * (factor * Mathf.Deg2Rad);
             Vector3 target = new Vector3(-input.Pitch * maxRates.x, input.Yaw * maxRates.y, -input.Roll * maxRates.z);
 
-            localRates = transform.InverseTransformDirection(body.angularVelocity);
+            Quaternion rotation = body.rotation;
+            localRates = Quaternion.Inverse(rotation) * body.angularVelocity;
             float step = dt / profile.TurnResponse;
             localRates.x = Mathf.MoveTowards(localRates.x, target.x, maxRates.x * step);
             localRates.y = Mathf.MoveTowards(localRates.y, target.y, maxRates.y * step);
             localRates.z = Mathf.MoveTowards(localRates.z, target.z, maxRates.z * step);
-            body.angularVelocity = transform.TransformDirection(localRates);
+            body.angularVelocity = rotation * localRates;
         }
 
         private void ApplyVelocity(float dt)
         {
-            Vector3 forward = transform.forward;
+            Vector3 forward = body.rotation * Vector3.forward;
             Vector3 velocity = body.velocity;
             float speed = velocity.magnitude;
             Vector3 direction = speed > 0.01f ? velocity / speed : forward;
