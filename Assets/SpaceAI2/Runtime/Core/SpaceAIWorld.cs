@@ -14,6 +14,8 @@ namespace SpaceAI2
         [SerializeField, Min(1)] private int sensingInterval = 3;
         [SerializeField] private LayerMask obstacleMask = Physics.DefaultRaycastLayers;
 
+        public LayerMask ObstacleMask => obstacleMask;
+
         private readonly List<AIPilot> pilots = new List<AIPilot>();
         private readonly ObstacleSensing sensing = new ObstacleSensing();
         private readonly Stopwatch stopwatch = new Stopwatch();

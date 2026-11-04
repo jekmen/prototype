@@ -99,7 +99,7 @@ namespace SpaceAI2.Editor
             return points;
         }
 
-        private static Material LoadOrCreateTracerMaterial()
+        internal static Material LoadOrCreateTracerMaterial()
         {
             string path = $"{Root}/Profiles/Tracer.mat";
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -112,7 +112,7 @@ namespace SpaceAI2.Editor
             return material;
         }
 
-        private static WeaponProfile LoadOrCreateWeapon(string name, Action<WeaponProfile> configure)
+        internal static WeaponProfile LoadOrCreateWeapon(string name, Action<WeaponProfile> configure)
         {
             string path = $"{Root}/Profiles/{name}.asset";
             var weapon = AssetDatabase.LoadAssetAtPath<WeaponProfile>(path);

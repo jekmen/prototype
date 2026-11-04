@@ -1,14 +1,30 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpaceAI2
 {
     public enum PursuitMode { Lead, Pure, Lag }
 
+    /// <summary>
+    /// Flies the ship through the same stick input as a player. Commands set an intent (direction, throttle, boost);
+    /// traffic separation and obstacle avoidance are layered on top, and the gun tracks its own fire target.
+    /// An optional <see cref="IPilotBrain"/> on the same object issues the commands every tick.
+    /// </summary>
     [RequireComponent(typeof(SpaceShip))]
     public class AIPilot : MonoBehaviour
     {
-        private enum Order { None, FlyTo, Pursue }
+        private enum Order { None, FlyTo, Pursue, Direct }
+
+        private struct Intent
+        {
+            public Vector3 Direction;
+            public float Throttle;
+            public bool Boost;
+        }
+
+        [Tooltip("Skill and temperament. Without one the gunnery fields below are used.")]
+        [SerializeField] private PilotProfile profile;
 
         [Header("Steering")]
         [Tooltip("Stick deflection per radian of error.")]
@@ -32,6 +48,12 @@ namespace SpaceAI2
         [SerializeField, Min(0f)] private float maxLeadTime = 2f;
         [SerializeField, Min(0f)] private float lagTime = 0.6f;
 
+        [Header("Traffic")]
+        [Tooltip("Steer clear of ships whose closest approach is less than this many seconds away.")]
+        [SerializeField, Min(0f)] private float trafficTime = 1.5f;
+        [Tooltip("Desired miss distance from other ships, in multiples of the combined radii.")]
+        [SerializeField, Min(1f)] private float trafficClearance = 3f;
+
         [Header("Obstacle avoidance")]
         [SerializeField] private bool avoidObstacles = true;
         [Tooltip("Seconds of flight the forward probe covers, on top of the turn radius.")]
@@ -45,28 +67,35 @@ namespace SpaceAI2
         [SerializeField, Min(0.1f)] private float maxManeuverTime = 4f;
 
         [Header("Gunnery")]
-        [Tooltip("Slow random aim wobble, degrees. Stands in for pilot skill until PilotProfile.")]
+        [Tooltip("Slow random aim wobble, degrees. Overridden by the pilot profile.")]
         [SerializeField, Min(0f)] private float aimError = 0.3f;
-        [Tooltip("Fire when the predicted miss is within this many target radii.")]
+        [Tooltip("Fire when the predicted miss is within this many target radii. Overridden by the pilot profile.")]
         [SerializeField, Min(0f)] private float fireTolerance = 1f;
         [Tooltip("Open fire within this share of the weapon range.")]
         [SerializeField, Range(0.1f, 1f)] private float fireRange = 0.9f;
+        [SerializeField] private bool checkFriendlyFire = true;
 
         private const float RollFlipZone = 150f * Mathf.Deg2Rad;
         private const float EscapeAlignedAngle = 15f;
 
         private readonly AvoidanceManeuver avoidance = new AvoidanceManeuver();
+        private readonly List<SpaceShip> scratch = new List<SpaceShip>();
         private ObstacleReading lastReading;
 
         private SpaceShip ship;
         private ShipMotor motor;
         private ShipGun gun;
+        private IPilotBrain brain;
         private float noiseSeed;
         private float rollSign = 1f;
         private Order order;
         private Transform destination;
         private SpaceShip target;
+        private SpaceShip fireTarget;
         private PursuitMode pursuitMode;
+        private Intent direct;
+        private Vector3 solutionDirection;
+        private float solutionTime;
 
         public event Action<AIPilot> Arrived;
         public event Action<AIPilot, ManeuverKind, ProbeSide> ManeuverStarted;
@@ -74,19 +103,45 @@ namespace SpaceAI2
         public ManeuverKind Maneuver => avoidance.Kind;
         public ProbeSide ManeuverSide => avoidance.Side;
         public SpaceShip Ship => ship;
+        public ShipGun Gun => gun;
         public SpaceShip Target => target;
         public Transform Destination => destination;
         public PursuitMode PursuitMode => pursuitMode;
         public Vector3 AimPoint { get; private set; }
 
+        /// <summary>Ship the gun shoots at whenever a firing solution lines up, whatever the pilot is doing.</summary>
+        public SpaceShip FireTarget
+        {
+            get => fireTarget;
+            set => fireTarget = value;
+        }
+
+        public bool HasFiringSolution { get; private set; }
+        public Vector3 FiringDirection => solutionDirection;
+
         /// <summary>Angle between the nose and the firing solution, degrees; negative when there is none.</summary>
         public float GunAimAngle { get; private set; } = -1f;
 
+        public PilotProfile Profile
+        {
+            get => profile;
+            set => profile = value;
+        }
+
         public float AimError
         {
-            get => aimError;
+            get => profile != null ? profile.AimError : aimError;
             set => aimError = Mathf.Max(0f, value);
         }
+
+        public float FireTolerance => profile != null ? profile.FireTolerance : fireTolerance;
+        public float SprayAngle => profile != null ? profile.SprayAngle : 0f;
+
+        /// <summary>Shrinks the open-fire range, e.g. to hold fire in a joust until the pass. Set per tick by a brain.</summary>
+        public float FireRangeScale { get; set; } = 1f;
+
+        /// <summary>Extra aim wobble in degrees on top of the profile, e.g. for hard shots like a joust. Set per tick by a brain.</summary>
+        public float ExtraAimError { get; set; }
 
         public float PursuitRange
         {
@@ -105,8 +160,18 @@ namespace SpaceAI2
         {
             order = targetShip != null ? Order.Pursue : Order.None;
             target = targetShip;
+            fireTarget = targetShip;
             pursuitMode = mode;
             destination = null;
+        }
+
+        /// <summary>Fly along a world direction. Meant to be refreshed every tick by a brain.</summary>
+        public void Direct(Vector3 direction, float throttle = 0f, bool boost = false)
+        {
+            order = Order.Direct;
+            direct = new Intent { Direction = direction, Throttle = throttle, Boost = boost };
+            destination = null;
+            target = null;
         }
 
         public void Stop()
@@ -114,6 +179,7 @@ namespace SpaceAI2
             order = Order.None;
             destination = null;
             target = null;
+            fireTarget = null;
         }
 
         private void Awake()
@@ -121,6 +187,7 @@ namespace SpaceAI2
             ship = GetComponent<SpaceShip>();
             motor = GetComponent<ShipMotor>();
             gun = GetComponent<ShipGun>();
+            brain = GetComponent<IPilotBrain>();
             noiseSeed = UnityEngine.Random.value * 100f;
         }
 
@@ -136,22 +203,39 @@ namespace SpaceAI2
         internal void Tick(float dt)
         {
             if (motor.Profile == null) return;
-            if (gun != null) gun.Trigger = false;
-            GunAimAngle = -1f;
-            ShipInput input;
+            brain?.Think(this, dt);
+            UpdateFiringSolution();
+
+            Intent intent;
             switch (order)
             {
                 case Order.FlyTo when destination != null:
-                    input = FlyToDestination();
+                    intent = FlyToDestination();
                     break;
-                case Order.Pursue when target != null && target.isActiveAndEnabled:
-                    input = PursueTarget();
+                case Order.Pursue when IsValid(target):
+                    intent = PursueTarget();
+                    break;
+                case Order.Direct:
+                    intent = direct;
+                    if (intent.Direction.sqrMagnitude < 0.0001f) intent.Direction = transform.forward;
+                    AimPoint = transform.position + intent.Direction.normalized * 100f;
                     break;
                 default:
                     order = Order.None;
+                    intent = new Intent { Direction = transform.forward };
                     AimPoint = transform.position + transform.forward * 100f;
-                    input = Steer(transform.forward);
                     break;
+            }
+
+            ShipInput input = Steer(AvoidTraffic(intent.Direction));
+            input.Throttle = intent.Throttle;
+            input.Boost = intent.Boost;
+            if (profile != null && profile.TurnSkill < 1f)
+            {
+                float limit = profile.TurnSkill;
+                input.Pitch = Mathf.Clamp(input.Pitch, -limit, limit);
+                input.Yaw = Mathf.Clamp(input.Yaw, -limit, limit);
+                input.Roll = Mathf.Clamp(input.Roll, -limit, limit);
             }
 
             if (avoidance.Active)
@@ -161,6 +245,8 @@ namespace SpaceAI2
                 if (done || avoidance.Elapsed >= maxManeuverTime || !avoidObstacles) avoidance.End();
                 else input = avoidance.Shape(Steer(avoidance.Escape));
             }
+
+            UpdateTrigger();
             motor.Input = input;
         }
 
@@ -217,17 +303,17 @@ namespace SpaceAI2
             ManeuverStarted?.Invoke(this, avoidance.Kind, avoidance.Side);
         }
 
-        private ShipInput FlyToDestination()
+        private static bool IsValid(SpaceShip other) => other != null && other.isActiveAndEnabled;
+
+        private Intent FlyToDestination()
         {
             AimPoint = destination.position;
             Vector3 offset = AimPoint - transform.position;
             float distance = offset.magnitude;
 
-            ShipInput input = Steer(offset);
-            input.Throttle = Mathf.Lerp(-0.5f, 1f, distance / slowdownDistance);
-
+            var intent = new Intent { Direction = offset, Throttle = Mathf.Lerp(-0.5f, 1f, distance / slowdownDistance) };
             float turnRadius = motor.Profile.TurnRadius(motor.Speed);
-            if (Vector3.Angle(transform.forward, offset) > 60f && distance < turnRadius * 2.5f) input.Throttle = -1f;
+            if (Vector3.Angle(transform.forward, offset) > 60f && distance < turnRadius * 2.5f) intent.Throttle = -1f;
 
             if (distance < Mathf.Max(arrivalRadius, ship.Radius * 2f))
             {
@@ -235,62 +321,24 @@ namespace SpaceAI2
                 Arrived?.Invoke(this);
                 if (destination == reached) order = Order.None;
             }
-            return input;
+            return intent;
         }
 
-        private ShipInput PursueTarget()
+        private Intent PursueTarget()
         {
             Vector3 toTarget = target.Position - transform.position;
             float distance = toTarget.magnitude;
-            AimPoint = TryAimGun(toTarget, distance, out Vector3 gunAim) ? gunAim : target.Position + AimOffset(distance);
+            AimPoint = HasFiringSolution && fireTarget == target
+                ? transform.position + solutionDirection * distance
+                : target.Position + AimOffset(distance);
 
-            ShipInput input = Steer(AimPoint - transform.position);
             float closing = distance > 0.01f ? Vector3.Dot(target.Velocity - motor.Velocity, toTarget / distance) : 0f;
-            input.Throttle = (distance - pursuitRange) / rangeTolerance + closing / 20f;
-            input.Boost = distance > boostDistance && Vector3.Angle(transform.forward, toTarget) < 20f;
-            return input;
-        }
-
-        private bool TryAimGun(Vector3 toTarget, float distance, out Vector3 aimPoint)
-        {
-            aimPoint = default;
-            WeaponProfile weapon = gun != null ? gun.Weapon : null;
-            if (weapon == null || distance > weapon.Range * 1.5f) return false;
-
-            Vector3 direction;
-            float time;
-            if (weapon.IsInstant)
+            return new Intent
             {
-                direction = toTarget / Mathf.Max(distance, 0.001f);
-                time = 0f;
-            }
-            else if (!Ballistics.Intercept(toTarget, target.Velocity - motor.Velocity, target.Motor.Acceleration,
-                         weapon.MuzzleSpeed, out direction, out time))
-            {
-                return false;
-            }
-
-            direction = Wobble(direction);
-            GunAimAngle = Vector3.Angle(transform.forward, direction);
-            aimPoint = transform.position + direction * distance;
-            gun.AimDirection = direction;
-            gun.FuseTime = weapon.Kind == WeaponKind.Flak ? time : 0f;
-
-            float travel = weapon.IsInstant ? distance : weapon.MuzzleSpeed * time;
-            float angle = Vector3.Angle(gun.FireDirection, direction);
-            float miss = angle < 90f ? Mathf.Sin(angle * Mathf.Deg2Rad) * travel : float.MaxValue;
-            float tolerance = target.Radius * fireTolerance + (weapon.Kind == WeaponKind.Flak ? weapon.BlastRadius * 0.5f : 0f);
-            gun.Trigger = travel < weapon.Range * fireRange && miss < tolerance;
-            return true;
-        }
-
-        private Vector3 Wobble(Vector3 direction)
-        {
-            if (aimError <= 0f) return direction;
-            float t = Time.time * 0.8f;
-            float yaw = (Mathf.PerlinNoise(noiseSeed, t) * 2f - 1f) * aimError;
-            float pitch = (Mathf.PerlinNoise(t, noiseSeed) * 2f - 1f) * aimError;
-            return Quaternion.AngleAxis(yaw, transform.up) * Quaternion.AngleAxis(pitch, transform.right) * direction;
+                Direction = AimPoint - transform.position,
+                Throttle = (distance - pursuitRange) / rangeTolerance + closing / 20f,
+                Boost = distance > boostDistance && Vector3.Angle(transform.forward, toTarget) < 20f
+            };
         }
 
         private Vector3 AimOffset(float distance)
@@ -308,6 +356,125 @@ namespace SpaceAI2
             }
         }
 
+        private Vector3 AvoidTraffic(Vector3 direction)
+        {
+            if (trafficTime <= 0f || !SpaceAIWorld.TryGet(out SpaceAIWorld world)) return direction;
+            world.Registry.Query(transform.position, motor.Speed * trafficTime * 2f + 50f, scratch);
+
+            Vector3 push = Vector3.zero;
+            foreach (SpaceShip other in scratch)
+            {
+                if (other == ship) continue;
+                Vector3 offset = other.Position - transform.position;
+                Vector3 relative = other.Velocity - motor.Velocity;
+                float relativeSq = relative.sqrMagnitude;
+                if (relativeSq < 1f) continue;
+
+                float time = -Vector3.Dot(offset, relative) / relativeSq;
+                if (time < 0f || time > trafficTime) continue;
+                Vector3 miss = offset + relative * time;
+                float safe = (ship.Radius + other.Radius) * trafficClearance;
+                float missDistance = miss.magnitude;
+                if (missDistance >= safe) continue;
+
+                Vector3 away = missDistance > 0.01f ? -miss / missDistance : transform.up;
+                push += away * ((1f - missDistance / safe) * (1f - time / trafficTime));
+            }
+
+            if (push.sqrMagnitude < 0.0001f) return direction;
+            return direction.normalized + push * 2f;
+        }
+
+        private void UpdateFiringSolution()
+        {
+            HasFiringSolution = false;
+            GunAimAngle = -1f;
+            WeaponProfile weapon = gun != null ? gun.Weapon : null;
+            if (weapon == null) return;
+            gun.AimDirection = Vector3.zero;
+            if (!IsValid(fireTarget) || !ship.IsEnemy(fireTarget)) return;
+
+            Vector3 toTarget = fireTarget.Position - transform.position;
+            float distance = toTarget.magnitude;
+            if (distance > weapon.Range * 1.5f) return;
+
+            Vector3 direction;
+            float time;
+            if (weapon.IsInstant)
+            {
+                direction = toTarget / Mathf.Max(distance, 0.001f);
+                time = 0f;
+            }
+            else if (!Ballistics.Intercept(toTarget, fireTarget.Velocity - motor.Velocity, fireTarget.Motor.Acceleration,
+                         weapon.MuzzleSpeed, out direction, out time))
+            {
+                return;
+            }
+
+            solutionDirection = Wobble(direction);
+            solutionTime = time;
+            HasFiringSolution = true;
+            GunAimAngle = Vector3.Angle(transform.forward, solutionDirection);
+            gun.AimDirection = solutionDirection;
+            gun.FuseTime = weapon.Kind == WeaponKind.Flak ? time : 0f;
+        }
+
+        private void UpdateTrigger()
+        {
+            if (gun == null) return;
+            gun.Trigger = false;
+            if (!HasFiringSolution) return;
+
+            WeaponProfile weapon = gun.Weapon;
+            float distance = Vector3.Distance(fireTarget.Position, transform.position);
+            float travel = weapon.IsInstant ? distance : weapon.MuzzleSpeed * solutionTime;
+            if (travel > weapon.Range * fireRange * FireRangeScale) return;
+
+            Vector3 fireDirection = gun.FireDirection;
+            float angle = Vector3.Angle(fireDirection, solutionDirection);
+            float miss = angle < 90f ? Mathf.Sin(angle * Mathf.Deg2Rad) * travel : float.MaxValue;
+            float tolerance = fireTarget.Radius * FireTolerance + travel * Mathf.Tan(SprayAngle * Mathf.Deg2Rad) +
+                              (weapon.Kind == WeaponKind.Flak ? weapon.BlastRadius * 0.5f : 0f);
+            if (miss > tolerance) return;
+            if (checkFriendlyFire && AllyInLineOfFire(fireDirection, travel)) return;
+            if (ObstacleInLineOfFire(fireDirection, travel - fireTarget.Radius * 2f)) return;
+            gun.Trigger = true;
+        }
+
+        private bool ObstacleInLineOfFire(Vector3 direction, float range)
+        {
+            if (range <= 0f || !SpaceAIWorld.TryGet(out SpaceAIWorld world)) return false;
+            // Ships have rigidbodies, static rocks do not.
+            return Physics.Raycast(transform.position, direction, out RaycastHit hit, range, world.ObstacleMask, QueryTriggerInteraction.Ignore) &&
+                   hit.rigidbody == null;
+        }
+
+        private bool AllyInLineOfFire(Vector3 direction, float range)
+        {
+            if (!SpaceAIWorld.TryGet(out SpaceAIWorld world)) return false;
+            Vector3 origin = transform.position;
+            world.Registry.Query(origin + direction * (range * 0.5f), range * 0.5f + 20f, scratch);
+            foreach (SpaceShip other in scratch)
+            {
+                if (other == ship || ship.IsEnemy(other)) continue;
+                Vector3 offset = other.Position - origin;
+                float along = Vector3.Dot(offset, direction);
+                if (along < 0f || along > range) continue;
+                if ((offset - direction * along).sqrMagnitude < other.Radius * other.Radius * 4f) return true;
+            }
+            return false;
+        }
+
+        private Vector3 Wobble(Vector3 direction)
+        {
+            float error = AimError + ExtraAimError;
+            if (error <= 0f) return direction;
+            float t = Time.time * 0.8f;
+            float yaw = (Mathf.PerlinNoise(noiseSeed, t) * 2f - 1f) * error;
+            float pitch = (Mathf.PerlinNoise(t, noiseSeed) * 2f - 1f) * error;
+            return Quaternion.AngleAxis(yaw, transform.up) * Quaternion.AngleAxis(pitch, transform.right) * direction;
+        }
+
         private ShipInput Steer(Vector3 direction)
         {
             if (direction.sqrMagnitude < 0.0001f) direction = transform.forward;
@@ -320,10 +487,10 @@ namespace SpaceAI2
             float rollError = StableRollError(Mathf.Atan2(local.x, local.y));
             float pull = Mathf.Clamp01(Mathf.Cos(rollError)) * angleOff;
 
-            ShipProfile profile = motor.Profile;
+            ShipProfile shipProfile = motor.Profile;
             Vector3 turn = motor.NormalizedTurn;
-            Vector3 rates = new Vector3(turn.x * profile.PitchRate, turn.y * profile.YawRate, turn.z * profile.RollRate) * Mathf.Deg2Rad;
-            float lead = profile.TurnResponse * anticipation;
+            Vector3 rates = new Vector3(turn.x * shipProfile.PitchRate, turn.y * shipProfile.YawRate, turn.z * shipProfile.RollRate) * Mathf.Deg2Rad;
+            float lead = shipProfile.TurnResponse * anticipation;
 
             return new ShipInput
             {
