@@ -54,6 +54,10 @@ namespace SpaceAI2
         public SpaceShip Ship => ship;
         public int Switches { get; private set; }
 
+        /// <summary>Squad this ship flies in as a wingman, set by the formation.</summary>
+        public Formation Formation { get; internal set; }
+        public int Slot { get; internal set; }
+
         /// <summary>Overrides target selection while it is alive.</summary>
         public SpaceShip ForcedTarget { get; set; }
 
@@ -80,7 +84,7 @@ namespace SpaceAI2
             behaviors = new CombatBehavior[]
             {
                 new PatrolBehavior(), new InterceptBehavior(), new PursuitBehavior(), new OvershootBehavior(),
-                new DefendBehavior(), new ExtendBehavior(), new HeadOnBehavior(), new MergeBehavior()
+                new DefendBehavior(), new ExtendBehavior(), new HeadOnBehavior(), new MergeBehavior(), new FormationBehavior()
             };
             context.Brain = this;
             context.Pilot = pilot;
@@ -200,6 +204,13 @@ namespace SpaceAI2
                 return;
             }
 
+            Formation formation = Formation;
+            if (formation != null && formation.Order == SquadOrder.Attack && IsAlive(formation.OrderTarget))
+            {
+                context.Target = formation.OrderTarget;
+                return;
+            }
+
             SpaceShip best = null;
             if (SpaceAIWorld.TryGet(out SpaceAIWorld world))
             {
@@ -209,6 +220,7 @@ namespace SpaceAI2
                 foreach (SpaceShip enemy in scratch)
                 {
                     if (!ship.IsEnemy(enemy) || !enemy.isActiveAndEnabled) continue;
+                    if (formation != null && !formation.MayEngage(enemy)) continue;
                     Vector3 offset = enemy.Position - ship.Position;
                     float distance = Mathf.Max(offset.magnitude, 0.01f);
 

@@ -80,6 +80,7 @@ namespace SpaceAI2
 
         private readonly AvoidanceManeuver avoidance = new AvoidanceManeuver();
         private readonly List<SpaceShip> scratch = new List<SpaceShip>();
+        private float trafficAhead;
         private ObstacleReading lastReading;
 
         private SpaceShip ship;
@@ -142,6 +143,9 @@ namespace SpaceAI2
 
         /// <summary>Extra aim wobble in degrees on top of the profile, e.g. for hard shots like a joust. Set per tick by a brain.</summary>
         public float ExtraAimError { get; set; }
+
+        /// <summary>Caps the throttle, e.g. so a formation leader leaves wingmen speed in reserve. No boost below 1.</summary>
+        public float MaxThrottle { get; set; } = 1f;
 
         public float PursuitRange
         {
@@ -229,7 +233,8 @@ namespace SpaceAI2
 
             ShipInput input = Steer(AvoidTraffic(intent.Direction));
             input.Throttle = intent.Throttle;
-            input.Boost = intent.Boost;
+            input.Boost = intent.Boost && MaxThrottle >= 1f;
+            input.Throttle = Mathf.Min(input.Throttle, MaxThrottle);
             if (profile != null && profile.TurnSkill < 1f)
             {
                 float limit = profile.TurnSkill;
@@ -243,7 +248,17 @@ namespace SpaceAI2
                 avoidance.Elapsed += dt;
                 bool done = avoidance.Elapsed >= minManeuverTime && avoidance.ClearReadings >= 2;
                 if (done || avoidance.Elapsed >= maxManeuverTime || !avoidObstacles) avoidance.End();
-                else input = avoidance.Shape(Steer(avoidance.Escape));
+                else
+                {
+                    input = avoidance.Shape(Steer(AvoidTraffic(avoidance.Escape)));
+                    // Escapes set the throttle outright; steering alone cannot clear a friendly braking or dodging
+                    // the same rock right ahead, so back off too. Outside escapes this would only stall chases.
+                    if (trafficAhead > 0.3f)
+                    {
+                        input.Throttle = Mathf.Min(input.Throttle, 1f - trafficAhead * 2f);
+                        input.Boost = false;
+                    }
+                }
             }
 
             UpdateTrigger();
@@ -358,6 +373,7 @@ namespace SpaceAI2
 
         private Vector3 AvoidTraffic(Vector3 direction)
         {
+            trafficAhead = 0f;
             if (trafficTime <= 0f || !SpaceAIWorld.TryGet(out SpaceAIWorld world)) return direction;
             world.Registry.Query(transform.position, motor.Speed * trafficTime * 2f + 50f, scratch);
 
@@ -378,7 +394,9 @@ namespace SpaceAI2
                 if (missDistance >= safe) continue;
 
                 Vector3 away = missDistance > 0.01f ? -miss / missDistance : transform.up;
-                push += away * ((1f - missDistance / safe) * (1f - time / trafficTime));
+                float urgency = (1f - missDistance / safe) * (1f - time / trafficTime);
+                push += away * urgency;
+                if (!ship.IsEnemy(other) && Vector3.Dot(offset, transform.forward) > 0f) trafficAhead = Mathf.Max(trafficAhead, urgency);
             }
 
             if (push.sqrMagnitude < 0.0001f) return direction;

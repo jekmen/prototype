@@ -40,12 +40,7 @@ namespace SpaceAI2.Editor
             if (!NewScene()) return;
             ShipProfile shipProfile = LoadOrCreateProfile();
             WeaponProfile cannon = GunneryTestSceneBuilder.LoadOrCreateWeapon("Cannon", _ => { });
-            var profiles = new Dictionary<string, PilotProfile>
-            {
-                ["Ace"] = LoadOrCreatePilot("Ace", p => Configure(p, 0.15f, 0.8f, 0.15f, 0.8f, 0.25f, 10f, 2f, 1f)),
-                ["Veteran"] = LoadOrCreatePilot("Veteran", p => Configure(p, 0.4f, 1f, 0.3f, 0.5f, 0.35f, 12f, 3.5f, 0.85f)),
-                ["Rookie"] = LoadOrCreatePilot("Rookie", p => Configure(p, 1.5f, 1.6f, 0.6f, 0.3f, 0.5f, 15f, 6f, 0.7f))
-            };
+            Dictionary<string, PilotProfile> profiles = LoadPilots();
 
             var arena = new GameObject("Arena").transform;
             var spawns = new Transform[2];
@@ -110,6 +105,13 @@ namespace SpaceAI2.Editor
                 placed++;
             }
         }
+
+        internal static Dictionary<string, PilotProfile> LoadPilots() => new Dictionary<string, PilotProfile>
+        {
+            ["Ace"] = LoadOrCreatePilot("Ace", p => Configure(p, 0.15f, 0.8f, 0.15f, 0.8f, 0.25f, 10f, 2f, 1f)),
+            ["Veteran"] = LoadOrCreatePilot("Veteran", p => Configure(p, 0.4f, 1f, 0.3f, 0.5f, 0.35f, 12f, 3.5f, 0.85f)),
+            ["Rookie"] = LoadOrCreatePilot("Rookie", p => Configure(p, 1.5f, 1.6f, 0.6f, 0.3f, 0.5f, 15f, 6f, 0.7f))
+        };
 
         private static void Configure(PilotProfile p, float aimError, float fireTolerance, float reaction, float aggression, float caution, float patience, float spray, float turnSkill)
         {

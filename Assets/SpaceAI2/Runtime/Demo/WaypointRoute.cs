@@ -17,6 +17,12 @@ namespace SpaceAI2.Demo
             set => points = value;
         }
 
+        public bool RandomOrder
+        {
+            get => randomOrder;
+            set => randomOrder = value;
+        }
+
         private void Awake() => pilot = GetComponent<AIPilot>();
 
         private void OnEnable() => pilot.Arrived += OnArrived;

@@ -44,6 +44,13 @@ namespace SpaceAI2
                 : Mathf.Lerp(CruiseSpeed, MinSpeed, -throttle);
         }
 
+        /// <summary>Throttle at which <see cref="TargetSpeed"/> returns this speed without boost.</summary>
+        public float ThrottleFor(float speed)
+        {
+            if (speed >= CruiseSpeed) return MaxSpeed > CruiseSpeed ? Mathf.Clamp01((speed - CruiseSpeed) / (MaxSpeed - CruiseSpeed)) : 0f;
+            return CruiseSpeed > MinSpeed ? -Mathf.Clamp01((CruiseSpeed - speed) / (CruiseSpeed - MinSpeed)) : 0f;
+        }
+
         private void OnValidate()
         {
             CruiseSpeed = Mathf.Max(CruiseSpeed, MinSpeed);
