@@ -16,6 +16,10 @@ namespace SpaceAI2
 
         public LayerMask ObstacleMask => obstacleMask;
 
+        private static readonly Unity.Profiling.ProfilerMarker RegistryMarker = new Unity.Profiling.ProfilerMarker("SpaceAI.Registry");
+        private static readonly Unity.Profiling.ProfilerMarker SensingMarker = new Unity.Profiling.ProfilerMarker("SpaceAI.Sensing");
+        private static readonly Unity.Profiling.ProfilerMarker PilotsMarker = new Unity.Profiling.ProfilerMarker("SpaceAI.Pilots");
+
         private readonly List<AIPilot> pilots = new List<AIPilot>();
         private readonly ObstacleSensing sensing = new ObstacleSensing();
         private readonly Stopwatch stopwatch = new Stopwatch();
@@ -68,15 +72,19 @@ namespace SpaceAI2
         private void Update()
         {
             stopwatch.Restart();
-            Registry.Rebuild();
+            using (RegistryMarker.Auto()) Registry.Rebuild();
 
-            sensing.Interval = sensingInterval;
-            sensing.Mask = obstacleMask;
-            sensing.Run(pilots, Registry, Time.frameCount);
+            using (SensingMarker.Auto())
+            {
+                sensing.Interval = sensingInterval;
+                sensing.Mask = obstacleMask;
+                sensing.Run(pilots, Registry, Time.frameCount);
+            }
 
             float dt = Time.deltaTime;
-            for (int i = pilots.Count - 1; i >= 0; i--)
-                pilots[i].Tick(dt);
+            using (PilotsMarker.Auto())
+                for (int i = pilots.Count - 1; i >= 0; i--)
+                    pilots[i].Tick(dt);
             LastUpdateMs = stopwatch.Elapsed.TotalMilliseconds;
         }
 

@@ -135,6 +135,12 @@ namespace SpaceAI2
             return IsClear(transform.position, point - transform.position, Vector3.Distance(transform.position, point));
         }
 
+        private void OnEnable() => SpaceAI.OriginShifted += OnOriginShifted;
+
+        private void OnDisable() => SpaceAI.OriginShifted -= OnOriginShifted;
+
+        private void OnOriginShifted(Vector3 offset) => aim.Position -= offset;
+
         private void Awake()
         {
             ship = GetComponentInParent<SpaceShip>();

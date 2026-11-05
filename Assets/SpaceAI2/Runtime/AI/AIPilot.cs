@@ -80,12 +80,20 @@ namespace SpaceAI2
 
         private readonly AvoidanceManeuver avoidance = new AvoidanceManeuver();
         private readonly List<SpaceShip> scratch = new List<SpaceShip>();
+        private const int TrafficInterval = 3;
         private float trafficAhead;
+        private Vector3 trafficPush;
+        private int trafficFrame = -100;
+        private int trafficPhase;
         private ObstacleReading lastReading;
 
         private SpaceShip ship;
         private ShipMotor motor;
         private ShipGun gun;
+        private static readonly Unity.Profiling.ProfilerMarker BrainMarker = new Unity.Profiling.ProfilerMarker("SpaceAI.Brain");
+        private static readonly Unity.Profiling.ProfilerMarker SolutionMarker = new Unity.Profiling.ProfilerMarker("SpaceAI.FiringSolution");
+        private static readonly Unity.Profiling.ProfilerMarker SteerMarker = new Unity.Profiling.ProfilerMarker("SpaceAI.Steer");
+
         private IPilotBrain brain;
         private float noiseSeed;
         private float rollSign = 1f;
@@ -191,6 +199,8 @@ namespace SpaceAI2
 
         private void Awake()
         {
+            // Spread the traffic checks of many pilots over frames.
+            trafficPhase = UnityEngine.Random.Range(0, TrafficInterval);
             ship = GetComponent<SpaceShip>();
             motor = GetComponent<ShipMotor>();
             gun = GetComponent<ShipGun>();
@@ -210,8 +220,9 @@ namespace SpaceAI2
         internal void Tick(float dt)
         {
             if (motor.Profile == null) return;
-            brain?.Think(this, dt);
-            UpdateFiringSolution();
+            using (BrainMarker.Auto()) brain?.Think(this, dt);
+            using (SolutionMarker.Auto()) UpdateFiringSolution();
+            using var steer = SteerMarker.Auto();
 
             Intent intent;
             switch (order)
@@ -376,34 +387,51 @@ namespace SpaceAI2
 
         private Vector3 AvoidTraffic(Vector3 direction)
         {
+            // Predictions look 1.5 s ahead, so refreshing them every few frames changes nothing visible.
+            int frame = Time.frameCount;
+            if (frame != trafficFrame && ((frame + trafficPhase) % TrafficInterval == 0 || frame - trafficFrame > TrafficInterval))
+            {
+                trafficFrame = frame;
+                UpdateTraffic();
+            }
+            if (trafficPush.sqrMagnitude < 0.0001f) return direction;
+            return direction.normalized + trafficPush * 2f;
+        }
+
+        private void UpdateTraffic()
+        {
             trafficAhead = 0f;
-            if (trafficTime <= 0f || !SpaceAIWorld.TryGet(out SpaceAIWorld world)) return direction;
-            world.Registry.Query(transform.position, motor.Speed * trafficTime * 2f + 50f, scratch);
+            trafficPush = Vector3.zero;
+            if (trafficTime <= 0f || !SpaceAIWorld.TryGet(out SpaceAIWorld world)) return;
+            Vector3 position = transform.position;
+            Vector3 velocity = motor.Velocity;
+            Vector3 forward = transform.forward;
+            float radius = ship.Radius;
+            world.Registry.Query(position, motor.Speed * trafficTime * 2f + 50f, scratch);
 
             Vector3 push = Vector3.zero;
             foreach (SpaceShip other in scratch)
             {
-                if (other == ship) continue;
-                Vector3 offset = other.Position - transform.position;
-                Vector3 relative = other.Velocity - motor.Velocity;
+                if (ReferenceEquals(other, ship)) continue;
+                ref readonly ShipSnapshot state = ref other.Snapshot;
+                Vector3 offset = state.Position - position;
+                Vector3 relative = state.Velocity - velocity;
                 float relativeSq = relative.sqrMagnitude;
                 if (relativeSq < 1f) continue;
 
                 float time = -Vector3.Dot(offset, relative) / relativeSq;
                 if (time < 0f || time > trafficTime) continue;
                 Vector3 miss = offset + relative * time;
-                float safe = (ship.Radius + other.Radius) * trafficClearance;
+                float safe = (radius + state.Radius) * trafficClearance;
                 float missDistance = miss.magnitude;
                 if (missDistance >= safe) continue;
 
                 Vector3 away = missDistance > 0.01f ? -miss / missDistance : transform.up;
                 float urgency = (1f - missDistance / safe) * (1f - time / trafficTime);
                 push += away * urgency;
-                if (!ship.IsEnemy(other) && Vector3.Dot(offset, transform.forward) > 0f) trafficAhead = Mathf.Max(trafficAhead, urgency);
+                if (other.Team == ship.Team && Vector3.Dot(offset, forward) > 0f) trafficAhead = Mathf.Max(trafficAhead, urgency);
             }
-
-            if (push.sqrMagnitude < 0.0001f) return direction;
-            return direction.normalized + push * 2f;
+            trafficPush = push;
         }
 
         private void UpdateFiringSolution()

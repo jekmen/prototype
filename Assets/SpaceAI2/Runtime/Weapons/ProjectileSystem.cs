@@ -50,6 +50,7 @@ namespace SpaceAI2
         private readonly Matrix4x4[] matrices = new Matrix4x4[BatchSize];
 
         private Projectile[] projectiles;
+        private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
         private int count;
         private NativeArray<RaycastCommand> commands;
         private NativeArray<RaycastHit> results;
@@ -75,6 +76,8 @@ namespace SpaceAI2
         }
 
         public int Count => count;
+        /// <summary>Main-thread time of the last physics step, in milliseconds.</summary>
+        public double LastUpdateMs { get; private set; }
 
         public Material TracerMaterial
         {
@@ -122,6 +125,22 @@ namespace SpaceAI2
             mesh = Resources.GetBuiltinResource<Mesh>("Cube.fbx");
         }
 
+        private void OnEnable() => SpaceAI.OriginShifted += OnOriginShifted;
+
+        private void OnDisable() => SpaceAI.OriginShifted -= OnOriginShifted;
+
+        private void OnOriginShifted(Vector3 offset)
+        {
+            for (int i = 0; i < count; i++) projectiles[i].Position -= offset;
+            for (int i = 0; i < beams.Count; i++)
+            {
+                Beam beam = beams[i];
+                beam.From -= offset;
+                beam.To -= offset;
+                beams[i] = beam;
+            }
+        }
+
         private void OnDestroy()
         {
             if (instance == this) instance = null;
@@ -131,6 +150,13 @@ namespace SpaceAI2
         }
 
         private void FixedUpdate()
+        {
+            stopwatch.Restart();
+            Step();
+            LastUpdateMs = stopwatch.Elapsed.TotalMilliseconds;
+        }
+
+        private void Step()
         {
             if (count == 0) return;
             float dt = Time.fixedDeltaTime;

@@ -69,6 +69,7 @@ namespace SpaceAI2
         private readonly Matrix4x4[] matrices = new Matrix4x4[BatchSize];
 
         private Missile[] missiles = new Missile[64];
+        private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
         private int count;
         private int nextId = 1;
         private Mesh bodyMesh;
@@ -101,6 +102,8 @@ namespace SpaceAI2
         }
 
         public int Count => count;
+        /// <summary>Main-thread time of the last physics step, in milliseconds.</summary>
+        public double LastUpdateMs { get; private set; }
 
         public Material TrailMaterial
         {
@@ -275,6 +278,28 @@ namespace SpaceAI2
         }
 
         private void FixedUpdate()
+        {
+            stopwatch.Restart();
+            Step();
+            LastUpdateMs = stopwatch.Elapsed.TotalMilliseconds;
+        }
+
+        private void OnEnable() => SpaceAI.OriginShifted += OnOriginShifted;
+
+        private void OnDisable() => SpaceAI.OriginShifted -= OnOriginShifted;
+
+        private void OnOriginShifted(Vector3 offset)
+        {
+            for (int i = 0; i < count; i++) missiles[i].Track.Position -= offset;
+            for (int i = 0; i < flashes.Count; i++)
+            {
+                Flash flash = flashes[i];
+                flash.Position -= offset;
+                flashes[i] = flash;
+            }
+        }
+
+        private void Step()
         {
             if (count == 0) return;
             float dt = Time.fixedDeltaTime;

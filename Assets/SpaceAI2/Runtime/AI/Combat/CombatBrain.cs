@@ -29,6 +29,10 @@ namespace SpaceAI2
         private const float JoustAimError = 2.5f;
 
         private static readonly List<CombatBrain> active = new List<CombatBrain>();
+        // Who is on whom, gathered once per frame so target selection does not loop over every brain per enemy.
+        private static readonly Dictionary<(int team, SpaceShip target), int> engaged = new Dictionary<(int, SpaceShip), int>();
+        private static readonly Dictionary<SpaceShip, CombatBrain> brainOf = new Dictionary<SpaceShip, CombatBrain>();
+        private static int engagedFrame = -1;
         private static PilotProfile fallbackProfile;
 
         private readonly CombatContext context = new CombatContext();
@@ -41,6 +45,10 @@ namespace SpaceAI2
         private ShipHealth health;
         private MissileLauncher launcher;
         private Vector3 spawnPoint;
+        private static readonly Unity.Profiling.ProfilerMarker TargetMarker = new Unity.Profiling.ProfilerMarker("SpaceAI.SelectTarget");
+        private static readonly Unity.Profiling.ProfilerMarker DecideMarker = new Unity.Profiling.ProfilerMarker("SpaceAI.Decide");
+        private static readonly Unity.Profiling.ProfilerMarker ExecuteMarker = new Unity.Profiling.ProfilerMarker("SpaceAI.Execute");
+
         private float decisionTimer;
         private float targetTimer;
         private float lastDamageTime = float.NegativeInfinity;
@@ -94,7 +102,13 @@ namespace SpaceAI2
         public void ResetPatience() => context.TimeSinceFiringChance = 0f;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => active.Clear();
+        private static void ResetStatics()
+        {
+            active.Clear();
+            engaged.Clear();
+            brainOf.Clear();
+            engagedFrame = -1;
+        }
 
         private void Awake()
         {
@@ -102,6 +116,7 @@ namespace SpaceAI2
             ship = GetComponent<SpaceShip>();
             health = GetComponent<ShipHealth>();
             spawnPoint = transform.position;
+            SpaceAI.OriginShifted += OnOriginShifted;
             behaviors = new CombatBehavior[]
             {
                 new PatrolBehavior(), new InterceptBehavior(), new PursuitBehavior(), new OvershootBehavior(),
@@ -129,6 +144,11 @@ namespace SpaceAI2
             targetTimer = 0f;
         }
 
+        private void OnDestroy() => SpaceAI.OriginShifted -= OnOriginShifted;
+
+        // Kept while disabled too: a destroyed ship can respawn at its spawn point.
+        private void OnOriginShifted(Vector3 offset) => spawnPoint -= offset;
+
         private void OnDisable()
         {
             active.Remove(this);
@@ -150,6 +170,7 @@ namespace SpaceAI2
             bool lost = context.Target != null && !IsAlive(context.Target);
             if (targetTimer <= 0f || lost)
             {
+                using var targetScope = TargetMarker.Auto();
                 SelectTarget();
                 SelectSubsystem();
                 targetTimer = targetInterval;
@@ -165,12 +186,14 @@ namespace SpaceAI2
 
             decisionTimer -= dt;
             bool decide = decisionTimer <= 0f || current == null || lost || newMissile;
-            if (decide) FindThreat();
+            if (decide)
+                using (DecideMarker.Auto()) FindThreat();
             UpdateGeometry();
             UpdatePatience(dt);
 
             if (decide)
             {
+                using var decideScope = DecideMarker.Auto();
                 Decide();
                 decisionTimer = context.Profile.ReactionTime;
             }
@@ -179,7 +202,7 @@ namespace SpaceAI2
             pilot.FireRangeScale = joust ? JoustFireRange : 1f;
             pilot.ExtraAimError = joust ? JoustAimError : 0f;
             pilot.FireSubsystem = context.Subsystem;
-            current.Execute(context, dt);
+            using (ExecuteMarker.Auto()) current.Execute(context, dt);
             UpdateLauncher();
         }
 
@@ -288,21 +311,26 @@ namespace SpaceAI2
             SpaceShip best = null;
             if (SpaceAIWorld.TryGet(out SpaceAIWorld world))
             {
-                world.Registry.Query(ship.Position, sensorRange, scratch);
+                Vector3 position = ship.Position;
+                Vector3 forward = ship.Forward;
+                world.Registry.Query(position, sensorRange, scratch);
+                RefreshEngagement();
                 float weaponRange = WeaponRange();
                 float bestScore = float.MinValue;
                 foreach (SpaceShip enemy in scratch)
                 {
                     if (!ship.IsEnemy(enemy) || !enemy.isActiveAndEnabled) continue;
                     if (formation != null && !formation.MayEngage(enemy)) continue;
-                    Vector3 offset = enemy.Position - ship.Position;
+                    ref readonly ShipSnapshot state = ref enemy.Snapshot;
+                    Vector3 offset = state.Position - position;
                     float distance = Mathf.Max(offset.magnitude, 0.01f);
 
                     float score = 1f - distance / sensorRange;
-                    score += 0.3f * Vector3.Dot(ship.Forward, offset / distance);
-                    if (distance < weaponRange * 1.3f && Vector3.Angle(enemy.Forward, -offset) < 30f) score += 0.8f;
+                    score += 0.3f * Vector3.Dot(forward, offset / distance);
+                    if (distance < weaponRange * 1.3f && Vector3.Angle(state.Forward, -offset) < 30f) score += 0.8f;
                     if (enemy == lastAttacker && Time.time - lastDamageTime < RecentDamageTime * 2f) score += 0.5f;
-                    if (enemy.TryGetComponent(out ShipHealth enemyHealth)) score += 0.3f * (1f - enemyHealth.Hull / enemyHealth.MaxHull);
+                    ShipHealth enemyHealth = enemy.Health;
+                    if (enemyHealth != null) score += 0.3f * (1f - enemyHealth.Hull / enemyHealth.MaxHull);
                     if (enemy == context.Target) score += 0.3f;
                     score += AlliesInvolved(enemy);
 
@@ -389,17 +417,28 @@ namespace SpaceAI2
         /// <summary>Bonus for an enemy attacking an ally, penalty for one allies are already on, so a wing spreads out.</summary>
         private float AlliesInvolved(SpaceShip enemy)
         {
-            float score = 0f;
-            CombatBrain enemyBrain = null;
-            foreach (CombatBrain brain in active)
-            {
-                if (brain == this) continue;
-                if (brain.ship == enemy) enemyBrain = brain;
-                else if (!ship.IsEnemy(brain.ship) && brain.Target == enemy) score -= 0.25f;
-            }
-            SpaceShip victim = enemyBrain != null ? enemyBrain.Target : null;
+            engaged.TryGetValue((ship.Team, enemy), out int allies);
+            if (ReferenceEquals(context.Target, enemy)) allies--;
+            float score = -0.25f * allies;
+            SpaceShip victim = brainOf.TryGetValue(enemy, out CombatBrain enemyBrain) && enemyBrain != null ? enemyBrain.Target : null;
             if (victim != null && victim != ship && !ship.IsEnemy(victim)) score += 0.4f;
             return score;
+        }
+
+        private static void RefreshEngagement()
+        {
+            if (engagedFrame == Time.frameCount) return;
+            engagedFrame = Time.frameCount;
+            engaged.Clear();
+            brainOf.Clear();
+            foreach (CombatBrain brain in active)
+            {
+                brainOf[brain.ship] = brain;
+                SpaceShip target = brain.Target;
+                if (target == null) continue;
+                engaged.TryGetValue((brain.ship.Team, target), out int count);
+                engaged[(brain.ship.Team, target)] = count + 1;
+            }
         }
 
         private void FindThreat()
@@ -409,14 +448,16 @@ namespace SpaceAI2
             if (!SpaceAIWorld.TryGet(out SpaceAIWorld world)) return;
 
             float range = WeaponRange() * 1.3f;
-            world.Registry.Query(ship.Position, range, scratch);
+            Vector3 position = ship.Position;
+            world.Registry.Query(position, range, scratch);
             foreach (SpaceShip enemy in scratch)
             {
                 // A large ship's nose says nothing about its turrets; attack runs deal with those.
                 if (!ship.IsEnemy(enemy) || !enemy.isActiveAndEnabled || enemy.Subsystems.Count > 0) continue;
-                Vector3 offset = ship.Position - enemy.Position;
+                ref readonly ShipSnapshot state = ref enemy.Snapshot;
+                Vector3 offset = position - state.Position;
                 float distance = offset.magnitude;
-                float angle = Vector3.Angle(enemy.Forward, offset);
+                float angle = Vector3.Angle(state.Forward, offset);
                 if (angle > ThreatCone) continue;
 
                 float level = (1f - angle / ThreatCone) * 0.6f + (1f - distance / range) * 0.4f;

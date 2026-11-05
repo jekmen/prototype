@@ -47,7 +47,10 @@ namespace SpaceAI2
 
             foreach (SpaceShip ship in ships)
             {
-                Vector3Int key = Cell(ship.Position);
+                if (ship == null) continue;
+                ship.TakeSnapshot();
+                if (!ship.Snapshot.Active) continue;
+                Vector3Int key = Cell(ship.Snapshot.Position);
                 if (!cells.TryGetValue(key, out List<SpaceShip> cell))
                 {
                     cell = pool.Count > 0 ? pool.Pop() : new List<SpaceShip>();
@@ -87,13 +90,14 @@ namespace SpaceAI2
 
         public SpaceShip FindNearestEnemy(SpaceShip self, float radius)
         {
-            Query(self.Position, radius, scratch);
+            Vector3 position = self.Position;
+            Query(position, radius, scratch);
             SpaceShip best = null;
             float bestSq = float.MaxValue;
             foreach (SpaceShip ship in scratch)
             {
                 if (!self.IsEnemy(ship)) continue;
-                float sq = (ship.Position - self.Position).sqrMagnitude;
+                float sq = (ship.Snapshot.Position - position).sqrMagnitude;
                 if (sq < bestSq)
                 {
                     bestSq = sq;
@@ -107,7 +111,7 @@ namespace SpaceAI2
         {
             foreach (SpaceShip ship in cell)
             {
-                if (ship != null && ship.isActiveAndEnabled && (ship.Position - center).sqrMagnitude <= radiusSq)
+                if ((ship.Snapshot.Position - center).sqrMagnitude <= radiusSq)
                     results.Add(ship);
             }
         }

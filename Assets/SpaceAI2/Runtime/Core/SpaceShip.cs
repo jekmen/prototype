@@ -4,6 +4,16 @@ using UnityEngine;
 
 namespace SpaceAI2
 {
+    /// <summary>A ship's state copied once per frame, so loops over many ships avoid native transform and body calls.</summary>
+    public struct ShipSnapshot
+    {
+        public Vector3 Position;
+        public Vector3 Forward;
+        public Vector3 Velocity;
+        public float Radius;
+        public bool Active;
+    }
+
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ShipMotor))]
     public class SpaceShip : MonoBehaviour
@@ -11,6 +21,9 @@ namespace SpaceAI2
         [SerializeField] private int team;
 
         private ShipMotor motor;
+        private ShipHealth health;
+        private bool healthSearched;
+        private ShipSnapshot snapshot;
         private Subsystem[] subsystems = Array.Empty<Subsystem>();
         private readonly Dictionary<int, Subsystem> subsystemColliders = new Dictionary<int, Subsystem>();
 
@@ -29,6 +42,36 @@ namespace SpaceAI2
         public Vector3 Forward => transform.forward;
         public Vector3 Velocity => Motor.Velocity;
         public float Radius => Motor.Profile != null ? Motor.Profile.Radius : 1f;
+
+        /// <summary>Null for ships without one.</summary>
+        public ShipHealth Health
+        {
+            get
+            {
+                if (!healthSearched)
+                {
+                    health = GetComponent<ShipHealth>();
+                    healthSearched = true;
+                }
+                return health;
+            }
+        }
+
+        /// <summary>
+        /// State as of the start of this frame's AI update (or the last origin shift). Use it in loops over many
+        /// ships; use <see cref="Position"/> and <see cref="Velocity"/> where the exact current value matters.
+        /// </summary>
+        public ref readonly ShipSnapshot Snapshot => ref snapshot;
+
+        internal void TakeSnapshot()
+        {
+            Transform t = transform;
+            snapshot.Position = t.position;
+            snapshot.Forward = t.forward;
+            snapshot.Velocity = Motor.Velocity;
+            snapshot.Radius = Radius;
+            snapshot.Active = isActiveAndEnabled;
+        }
 
         public IReadOnlyList<Subsystem> Subsystems => subsystems;
 

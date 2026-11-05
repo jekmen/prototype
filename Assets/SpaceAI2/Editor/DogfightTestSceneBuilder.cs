@@ -35,7 +35,23 @@ namespace SpaceAI2.Editor
             Build("Dogfight10v10Asteroids", wing, wing, AsteroidCount);
         }
 
-        private static void Build(string sceneName, string[] blue, string[] red, int asteroids = 0)
+        [MenuItem("Tools/SpaceAI2/Build Load Test 200 Scene")]
+        public static void BuildLoadTest()
+        {
+            var wing = new string[100];
+            for (int i = 0; i < wing.Length; i++) wing[i] = i % 10 < 2 ? "Ace" : i % 10 < 6 ? "Veteran" : "Rookie";
+            Build("LoadTest200", wing, wing, AsteroidCount);
+        }
+
+        /// <summary>The 10v10 fight 50 km from the origin, with a floating origin on the camera.</summary>
+        [MenuItem("Tools/SpaceAI2/Build Far Dogfight Scene")]
+        public static void BuildFar()
+        {
+            string[] wing = { "Ace", "Ace", "Veteran", "Veteran", "Veteran", "Veteran", "Rookie", "Rookie", "Rookie", "Rookie" };
+            Build("DogfightFar", wing, wing, 0, new Vector3(30000f, 10000f, 38730f));
+        }
+
+        private static void Build(string sceneName, string[] blue, string[] red, int asteroids = 0, Vector3 offset = default)
         {
             if (!NewScene()) return;
             ShipProfile shipProfile = LoadOrCreateProfile();
@@ -55,7 +71,8 @@ namespace SpaceAI2.Editor
                 string[] wing = teams[team];
                 for (int i = 0; i < wing.Length; i++)
                 {
-                    Vector3 slot = new Vector3((i % 5 - 2) * WingSpacing, (i / 5) * WingSpacing, 0f);
+                    int columns = wing.Length > 20 ? 10 : 5;
+                    Vector3 slot = new Vector3((i % columns - (columns - 1) * 0.5f) * WingSpacing, (i / columns) * WingSpacing, 0f);
                     Vector3 position = spawns[team].TransformPoint(slot);
                     GameObject ship = CreateShip($"{TeamNames[team]} {wing[i]} {i + 1}", shipProfile, position, spawns[team].rotation);
                     ship.AddComponent<SpaceShip>().Team = team;
@@ -80,6 +97,13 @@ namespace SpaceAI2.Editor
             new GameObject(nameof(ProjectileSystem)).AddComponent<ProjectileSystem>().TracerMaterial =
                 GunneryTestSceneBuilder.LoadOrCreateTracerMaterial();
             new GameObject("DogfightDemo").AddComponent<DogfightDemo>().Setup(brains.ToArray(), spawns, chase, hud);
+            chase.gameObject.AddComponent<PerformanceOverlay>();
+            if (offset != Vector3.zero)
+            {
+                chase.gameObject.AddComponent<FloatingOrigin>();
+                foreach (GameObject root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+                    root.transform.position += offset;
+            }
 
             SaveScene(sceneName);
             Selection.activeObject = brains[0].gameObject;
