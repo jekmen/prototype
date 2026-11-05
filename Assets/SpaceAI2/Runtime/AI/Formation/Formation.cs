@@ -72,6 +72,26 @@ namespace SpaceAI2
             Attack(target);
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            if (leader == null || profile == null) return;
+            int count = Mathf.Max(wingmen.Count, members.Count);
+            float size = leader.Radius;
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 slot = SlotPosition(i);
+                Gizmos.color = new Color(0.3f, 0.9f, 1f, 0.7f);
+                Gizmos.DrawWireCube(slot, Vector3.one * size);
+                Gizmos.DrawLine(leader.Position, slot);
+                CombatBrain wing = i < members.Count ? members[i] : i < wingmen.Count ? wingmen[i] : null;
+                if (wing == null) continue;
+                Gizmos.color = IsBroken(wing) ? Color.red : Color.green;
+                Gizmos.DrawLine(slot, wing.transform.position);
+            }
+            Gizmos.color = new Color(0.3f, 0.9f, 1f, 0.15f);
+            Gizmos.DrawWireSphere(leader.Position, coverRadius);
+        }
+
         public Vector3 SlotPosition(int slot) => leader.Position + leader.transform.rotation * profile.Slot(slot);
 
         public bool IsBroken(CombatBrain member) => brokenSince.ContainsKey(member);

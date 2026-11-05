@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace SpaceAI2
 {
@@ -14,11 +15,42 @@ namespace SpaceAI2
         public bool Active;
     }
 
+    public enum ShipControl
+    {
+        None,
+        AI,
+        Player
+    }
+
+    /// <summary>
+    /// The one component a ship needs. With a <see cref="Profile"/> assigned it adds and configures the rest itself
+    /// (motor, collider, health, gun, missiles, pilot); without one, the components are set up by hand.
+    /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ShipMotor))]
     public class SpaceShip : MonoBehaviour
     {
         [SerializeField] private int team;
+
+        [Tooltip("Assigning a profile turns on setup: the ship adds and configures the components below.")]
+        [SerializeField] private ShipProfile profile;
+        [SerializeField] private ShipControl control = ShipControl.AI;
+        [Tooltip("Skill of the AI pilot. Empty uses a default pilot.")]
+        [SerializeField] private PilotProfile pilot;
+        [Tooltip("Forward gun. Empty leaves the ship without one.")]
+        [SerializeField] private WeaponProfile weapon;
+        [Tooltip("Missile launcher. Empty leaves the ship without one.")]
+        [SerializeField] private MissileProfile missile;
+        [Tooltip("Adds hull and shield from the profile; the ship is disabled when the hull runs out.")]
+        [SerializeField] private bool destructible = true;
+
+        [SerializeField] private UnityEvent<SpaceShip> onDestroyed = new UnityEvent<SpaceShip>();
+        [Tooltip("The ship and the damage dealt.")]
+        [SerializeField] private UnityEvent<SpaceShip, float> onDamaged = new UnityEvent<SpaceShip, float>();
+        [Tooltip("The ship and its new target, raised by the AI.")]
+        [SerializeField] private UnityEvent<SpaceShip, SpaceShip> onTargetAcquired = new UnityEvent<SpaceShip, SpaceShip>();
+        [Tooltip("The ship and the locked target, null for unguided missiles.")]
+        [SerializeField] private UnityEvent<SpaceShip, SpaceShip> onMissileLaunched = new UnityEvent<SpaceShip, SpaceShip>();
 
         private ShipMotor motor;
         private ShipHealth health;
@@ -27,8 +59,52 @@ namespace SpaceAI2
         private Subsystem[] subsystems = Array.Empty<Subsystem>();
         private readonly Dictionary<int, Subsystem> subsystemColliders = new Dictionary<int, Subsystem>();
 
+        private CombatBrain brain;
+        private MissileLauncher launcher;
+
         public event Action<SpaceShip, Collision> Collided;
         public event Action<HitInfo> Hit;
+
+        public UnityEvent<SpaceShip> OnDestroyed => onDestroyed;
+        public UnityEvent<SpaceShip, float> OnDamaged => onDamaged;
+        public UnityEvent<SpaceShip, SpaceShip> OnTargetAcquired => onTargetAcquired;
+        public UnityEvent<SpaceShip, SpaceShip> OnMissileLaunched => onMissileLaunched;
+
+        public ShipProfile Profile
+        {
+            get => profile;
+            set => profile = value;
+        }
+
+        public ShipControl Control
+        {
+            get => control;
+            set => control = value;
+        }
+
+        public PilotProfile Pilot
+        {
+            get => pilot;
+            set => pilot = value;
+        }
+
+        public WeaponProfile Weapon
+        {
+            get => weapon;
+            set => weapon = value;
+        }
+
+        public MissileProfile Missile
+        {
+            get => missile;
+            set => missile = value;
+        }
+
+        public bool Destructible
+        {
+            get => destructible;
+            set => destructible = value;
+        }
 
         public int Team
         {
@@ -108,8 +184,41 @@ namespace SpaceAI2
             UpdatePower();
         }
 
+        /// <summary>
+        /// Adds the components the setup asks for and hands them their profiles. Does nothing without a
+        /// <see cref="Profile"/>; never removes components. Runs in Awake and from the inspector.
+        /// </summary>
+        public void ApplySetup()
+        {
+            if (profile == null) return;
+            Motor.Profile = profile;
+            if (GetComponentInChildren<Collider>() == null) gameObject.AddComponent<SphereCollider>().radius = profile.Radius;
+            if (destructible) Ensure<ShipHealth>();
+            if (weapon != null) Ensure<ShipGun>().Weapon = weapon;
+            if (missile != null) Ensure<MissileLauncher>().Missile = missile;
+            switch (control)
+            {
+                case ShipControl.AI:
+                    AIPilot ai = Ensure<AIPilot>();
+                    if (pilot != null) ai.Profile = pilot;
+                    Ensure<CombatBrain>();
+                    break;
+                case ShipControl.Player:
+                    Ensure<PlayerPilot>();
+                    break;
+            }
+            healthSearched = false;
+        }
+
+        private T Ensure<T>() where T : Component
+        {
+            T component = GetComponent<T>();
+            return component != null ? component : gameObject.AddComponent<T>();
+        }
+
         private void Awake()
         {
+            ApplySetup();
             motor = GetComponent<ShipMotor>();
             subsystems = GetComponentsInChildren<Subsystem>(true);
             foreach (Subsystem subsystem in subsystems)
@@ -132,11 +241,66 @@ namespace SpaceAI2
             if (engines > 0) Motor.Power = (float)working / engines;
         }
 
-        private void OnEnable() => SpaceAIWorld.Instance.Registry.Add(this);
+        private void OnEnable()
+        {
+            SpaceAIWorld.Instance.Registry.Add(this);
+            brain = GetComponent<CombatBrain>();
+            launcher = GetComponent<MissileLauncher>();
+            if (Health != null)
+            {
+                Health.Damaged += OnHealthDamaged;
+                Health.Destroyed += OnHealthDestroyed;
+            }
+            if (brain != null) brain.TargetChanged += OnTargetChanged;
+            if (launcher != null) launcher.Launched += OnLaunched;
+        }
 
         private void OnDisable()
         {
             if (SpaceAIWorld.TryGet(out SpaceAIWorld world)) world.Registry.Remove(this);
+            if (Health != null)
+            {
+                Health.Damaged -= OnHealthDamaged;
+                Health.Destroyed -= OnHealthDestroyed;
+            }
+            if (brain != null) brain.TargetChanged -= OnTargetChanged;
+            if (launcher != null) launcher.Launched -= OnLaunched;
+        }
+
+        private void OnHealthDamaged(ShipHealth _, HitInfo hit) => onDamaged.Invoke(this, hit.Damage);
+
+        private void OnHealthDestroyed(ShipHealth _, HitInfo hit) => onDestroyed.Invoke(this);
+
+        private void OnTargetChanged(CombatBrain _, SpaceShip target)
+        {
+            if (target != null) onTargetAcquired.Invoke(this, target);
+        }
+
+        private void OnLaunched(MissileLauncher source, int _) => onMissileLaunched.Invoke(this, source.LockTarget);
+
+        private void OnDrawGizmosSelected()
+        {
+            ShipMotor shipMotor = GetComponent<ShipMotor>();
+            ShipProfile shape = profile != null ? profile : shipMotor != null ? shipMotor.Profile : null;
+            if (shape == null) return;
+            Transform t = transform;
+            Gizmos.color = new Color(1f, 1f, 1f, 0.5f);
+            Gizmos.DrawWireSphere(t.position, shape.Radius);
+
+            // Tightest loop at cruise speed: bright in the pitch plane, faint in the yaw plane.
+            float turn = shape.TurnRadius(shape.CruiseSpeed);
+            Gizmos.color = new Color(0.3f, 0.8f, 1f, 0.8f);
+            GizmoUtils.DrawCircle(t.position + t.up * turn, t.right, t.forward, turn);
+            GizmoUtils.DrawCircle(t.position - t.up * turn, t.right, t.forward, turn);
+            Gizmos.color = new Color(0.3f, 0.8f, 1f, 0.3f);
+            GizmoUtils.DrawCircle(t.position + t.right * turn, t.up, t.forward, turn);
+            GizmoUtils.DrawCircle(t.position - t.right * turn, t.up, t.forward, turn);
+
+            ShipGun gun = GetComponent<ShipGun>();
+            WeaponProfile gunProfile = weapon != null ? weapon : gun != null ? gun.Weapon : null;
+            if (gunProfile == null) return;
+            Gizmos.color = new Color(1f, 0.6f, 0.2f, 0.8f);
+            Gizmos.DrawLine(t.position, t.position + t.forward * gunProfile.Range);
         }
 
         private void OnCollisionEnter(Collision collision) => Collided?.Invoke(this, collision);

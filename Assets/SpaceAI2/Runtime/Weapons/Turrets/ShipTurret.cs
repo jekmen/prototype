@@ -135,6 +135,28 @@ namespace SpaceAI2
             return IsClear(transform.position, point - transform.position, Vector3.Distance(transform.position, point));
         }
 
+        // Traverse sector: the yaw arc at the elevation limits, out to the weapon's range.
+        private void OnDrawGizmosSelected()
+        {
+            Transform t = transform;
+            float range = weapon != null ? weapon.Range : 500f;
+            float reach = Mathf.Min(range, 150f);
+            Gizmos.color = role == TurretRole.PointDefense ? new Color(0.3f, 1f, 1f, 0.6f) : new Color(1f, 0.5f, 0.2f, 0.6f);
+            foreach (float elevation in new[] { minPitch, maxPitch })
+            {
+                Vector3 start = t.rotation * (Quaternion.Euler(-elevation, -yawLimit, 0f) * Vector3.forward);
+                float radius = Mathf.Cos(elevation * Mathf.Deg2Rad) * reach;
+                Vector3 center = t.position + t.up * (Mathf.Sin(elevation * Mathf.Deg2Rad) * reach);
+                GizmoUtils.DrawArc(center, t.up, Vector3.ProjectOnPlane(start, t.up).normalized * radius, yawLimit * 2f);
+                if (yawLimit >= 180f) continue;
+                Gizmos.DrawLine(t.position, t.position + start * reach);
+                Gizmos.DrawLine(t.position, t.position + t.rotation * (Quaternion.Euler(-elevation, yawLimit, 0f) * Vector3.forward) * reach);
+            }
+            if (!Application.isPlaying) return;
+            Gizmos.color = HasTarget ? Color.red : Color.gray;
+            Gizmos.DrawLine(t.position, t.position + FireDirection * (HasTarget ? Vector3.Distance(t.position, aim.Position) : reach));
+        }
+
         private void OnEnable() => SpaceAI.OriginShifted += OnOriginShifted;
 
         private void OnDisable() => SpaceAI.OriginShifted -= OnOriginShifted;

@@ -31,6 +31,13 @@ namespace SpaceAI2
             set => gimbalAngle = Mathf.Clamp(value, 0f, 30f);
         }
 
+        /// <summary>Barrel points, fired in turn; empty fires from the nose. Read in Awake.</summary>
+        public Transform[] Muzzles
+        {
+            get => muzzles;
+            set => muzzles = value;
+        }
+
         public SpaceShip Ship => ship;
         public bool Trigger { get; set; }
         /// <summary>World direction the gun should fire along; zero means straight along the nose.</summary>

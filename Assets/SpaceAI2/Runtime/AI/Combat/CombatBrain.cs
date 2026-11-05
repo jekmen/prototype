@@ -57,6 +57,8 @@ namespace SpaceAI2
         private float noticedSince;
 
         public event Action<CombatBrain, CombatBehavior, CombatBehavior> BehaviorChanged;
+        /// <summary>Raised when the brain picks a new target; the target is null when it has none.</summary>
+        public event Action<CombatBrain, SpaceShip> TargetChanged;
 
         public static IReadOnlyList<CombatBrain> Active => active;
         public IReadOnlyList<CombatBehavior> Behaviors => behaviors;
@@ -155,6 +157,18 @@ namespace SpaceAI2
             if (health != null) health.Damaged -= OnDamaged;
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = new Color(1f, 1f, 0.3f, 0.25f);
+            Gizmos.DrawWireSphere(transform.position, sensorRange);
+            Gizmos.color = new Color(0.4f, 1f, 0.4f, 0.25f);
+            Gizmos.DrawWireSphere(Application.isPlaying ? PatrolCenter : patrolCenter != null ? patrolCenter.position : transform.position, patrolRadius);
+            if (!Application.isPlaying || context.Target == null) return;
+            Gizmos.color = Color.red;
+            Vector3 aim = context.Subsystem != null ? context.Subsystem.AimPoint : context.Target.Position;
+            Gizmos.DrawLine(transform.position, aim);
+        }
+
         private void OnDamaged(ShipHealth _, HitInfo hit)
         {
             lastDamageTime = Time.time;
@@ -171,9 +185,11 @@ namespace SpaceAI2
             if (targetTimer <= 0f || lost)
             {
                 using var targetScope = TargetMarker.Auto();
+                SpaceShip previous = context.Target;
                 SelectTarget();
                 SelectSubsystem();
                 targetTimer = targetInterval;
+                if (context.Target != previous) TargetChanged?.Invoke(this, context.Target);
             }
             else if (context.Subsystem != null && (context.Subsystem.IsDestroyed || context.Subsystem.Ship != context.Target))
             {

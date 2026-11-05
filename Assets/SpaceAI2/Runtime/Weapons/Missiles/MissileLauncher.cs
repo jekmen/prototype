@@ -42,6 +42,13 @@ namespace SpaceAI2
             set => ammo = value;
         }
 
+        /// <summary>Launch rails, used in turn; empty uses two under the hull. Read in Awake.</summary>
+        public Transform[] Hardpoints
+        {
+            get => hardpoints;
+            set => hardpoints = value;
+        }
+
         public SpaceShip Ship => ship;
 
         /// <summary>The ship the seeker tries to lock; changing it restarts the lock.</summary>
