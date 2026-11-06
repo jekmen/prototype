@@ -10,6 +10,8 @@ namespace SpaceAI2.Editor
         public const string Root = "Assets/SpaceAI2";
         private const string ProfilePath = Root + "/Profiles/Fighter.asset";
         public const string ModelPath = Root + "/Content/Models/SM_Ship_Fighter_05.fbx";
+        private const string ModelMaterialPath = Root + "/Content/Materials/SciFiSpace.mat";
+        private const string EnemyMaterialPath = Root + "/Content/Materials/SciFiSpace_Red.mat";
 
         public static bool NewScene()
         {
@@ -21,6 +23,7 @@ namespace SpaceAI2.Editor
         public static void SaveScene(string name)
         {
             EnsureFolder(Root + "/Scenes");
+            foreach (SpaceShip ship in Object.FindObjectsOfType<SpaceShip>(true)) PaintTeam(ship);
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), $"{Root}/Scenes/{name}.unity");
         }
 
@@ -54,6 +57,28 @@ namespace SpaceAI2.Editor
                 ship.AddComponent<ShipBank>().Visual = visual.transform;
             }
             return ship;
+        }
+
+        /// <summary>Gives the fighter model the red livery on any team but the first.</summary>
+        public static void PaintTeam(SpaceShip ship)
+        {
+            var standard = AssetDatabase.LoadAssetAtPath<Material>(ModelMaterialPath);
+            var enemy = AssetDatabase.LoadAssetAtPath<Material>(EnemyMaterialPath);
+            if (standard == null || enemy == null) return;
+            Material from = ship.Team == 0 ? enemy : standard;
+            Material to = ship.Team == 0 ? standard : enemy;
+            foreach (Renderer renderer in ship.GetComponentsInChildren<Renderer>(true))
+            {
+                Material[] materials = renderer.sharedMaterials;
+                bool changed = false;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    if (materials[i] != from) continue;
+                    materials[i] = to;
+                    changed = true;
+                }
+                if (changed) renderer.sharedMaterials = materials;
+            }
         }
 
         public static void AddTrail(GameObject ship, Color color)

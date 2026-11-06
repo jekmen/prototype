@@ -116,6 +116,7 @@ namespace SpaceAI2.Editor
             ship.Weapon = weapon;
             ship.Missile = missile;
             ship.ApplySetup();
+            SceneBuilderUtils.PaintTeam(ship);
             if (bank) root.AddComponent<ShipBank>().Visual = visual;
 
             if (weapon != null) root.GetComponent<ShipGun>().Muzzles = CreatePoints(root.transform, "Muzzle", muzzles, bounds, PointKind.Muzzle);

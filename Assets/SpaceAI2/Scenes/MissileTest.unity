@@ -3591,6 +3591,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!96 &411701575
 TrailRenderer:
   serializedVersion: 3
@@ -4411,6 +4429,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!96 &565033492
 TrailRenderer:
   serializedVersion: 3
@@ -12786,6 +12822,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!96 &1584129195
 TrailRenderer:
   serializedVersion: 3
@@ -12915,6 +12969,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 433692018}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1584129197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13293,6 +13348,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!96 &1598481154
 TrailRenderer:
   serializedVersion: 3
@@ -13422,6 +13495,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 793577219}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1598481156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14300,6 +14374,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!96 &1669088725
 TrailRenderer:
   serializedVersion: 3
@@ -14429,6 +14521,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 912084866}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1669088727
 MonoBehaviour:
   m_ObjectHideFlags: 0

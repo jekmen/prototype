@@ -1870,6 +1870,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &29229269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1959,6 +1977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -1971,6 +1990,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -1978,6 +1999,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &30181875
 GameObject:
   m_ObjectHideFlags: 0
@@ -6277,6 +6302,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &82145478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6366,6 +6409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -6378,6 +6422,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -6385,6 +6431,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1001 &83686581
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9214,6 +9264,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &132382894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9303,6 +9371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -9315,6 +9384,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -9322,6 +9393,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &139858717
 GameObject:
   m_ObjectHideFlags: 0
@@ -10335,6 +10410,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &157256766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10424,6 +10517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -10436,6 +10530,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -10443,6 +10539,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &157762261
 GameObject:
   m_ObjectHideFlags: 0
@@ -12222,6 +12322,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &191970191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12311,6 +12429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -12323,6 +12442,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -12330,6 +12451,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &192327802
 GameObject:
   m_ObjectHideFlags: 0
@@ -14603,6 +14728,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &224459569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14692,6 +14835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -14704,6 +14848,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -14711,6 +14857,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &238933104
 GameObject:
   m_ObjectHideFlags: 0
@@ -17353,6 +17503,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &271517277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17442,6 +17610,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -17454,6 +17623,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -17461,6 +17632,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &273212223
 GameObject:
   m_ObjectHideFlags: 0
@@ -20574,6 +20749,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &329337098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20663,6 +20856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -20675,6 +20869,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -20682,6 +20878,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &329744013
 GameObject:
   m_ObjectHideFlags: 0
@@ -22461,6 +22661,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &355975907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22550,6 +22768,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -22562,6 +22781,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -22569,6 +22790,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &358382715
 GameObject:
   m_ObjectHideFlags: 0
@@ -23718,6 +23943,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &373541722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23807,6 +24050,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -23819,6 +24063,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -23826,6 +24072,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &374447865
 GameObject:
   m_ObjectHideFlags: 0
@@ -24629,6 +24879,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &386621570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24718,6 +24986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -24730,6 +24999,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -24737,6 +25008,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &388897015
 GameObject:
   m_ObjectHideFlags: 0
@@ -30241,6 +30516,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &466924419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30330,6 +30623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -30342,6 +30636,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -30349,6 +30645,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &468217823
 GameObject:
   m_ObjectHideFlags: 0
@@ -30553,6 +30853,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &468217828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30642,6 +30960,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -30654,6 +30973,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -30661,6 +30982,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &469794323
 GameObject:
   m_ObjectHideFlags: 0
@@ -36535,6 +36860,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &553410166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36624,6 +36967,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -36636,6 +36980,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -36643,6 +36989,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &553567981
 GameObject:
   m_ObjectHideFlags: 0
@@ -38675,6 +39025,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &588246605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38764,6 +39132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -38776,6 +39145,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -38783,6 +39154,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &588304797
 GameObject:
   m_ObjectHideFlags: 0
@@ -39197,6 +39572,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &589547969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39286,6 +39679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -39298,6 +39692,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -39305,6 +39701,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1001 &593400069
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42387,6 +42787,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &663083777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42476,6 +42894,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -42488,6 +42907,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -42495,6 +42916,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &664266803
 GameObject:
   m_ObjectHideFlags: 0
@@ -43497,6 +43922,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &678064346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43586,6 +44029,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -43598,6 +44042,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -43605,6 +44051,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &679574515
 GameObject:
   m_ObjectHideFlags: 0
@@ -47749,6 +48199,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &747449540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47838,6 +48306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -47850,6 +48319,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -47857,6 +48328,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &749983497
 GameObject:
   m_ObjectHideFlags: 0
@@ -49216,6 +49691,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &779225955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49305,6 +49798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -49317,6 +49811,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -49324,6 +49820,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &779235636
 GameObject:
   m_ObjectHideFlags: 0
@@ -49843,6 +50343,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &783925295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49932,6 +50450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -49944,6 +50463,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -49951,6 +50472,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &786765551
 GameObject:
   m_ObjectHideFlags: 0
@@ -50754,6 +51279,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &795829957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50843,6 +51386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -50855,6 +51399,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -50862,6 +51408,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &796237021
 GameObject:
   m_ObjectHideFlags: 0
@@ -52956,6 +53506,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &827668198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53045,6 +53613,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -53057,6 +53626,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -53064,6 +53635,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &829201701
 GameObject:
   m_ObjectHideFlags: 0
@@ -53478,6 +54053,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &833847383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53567,6 +54160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -53579,6 +54173,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -53586,6 +54182,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1001 &836283633
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60954,6 +61554,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &960776962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61043,6 +61661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -61055,6 +61674,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -61062,6 +61683,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &964217261
 GameObject:
   m_ObjectHideFlags: 0
@@ -64280,6 +64905,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1035970853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64369,6 +65012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -64381,6 +65025,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -64388,6 +65034,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1001 &1036010304
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -66451,6 +67101,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1062922618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66540,6 +67208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -66552,6 +67221,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -66559,6 +67230,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1066432563
 GameObject:
   m_ObjectHideFlags: 0
@@ -66763,6 +67438,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1066432568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66852,6 +67545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -66864,6 +67558,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -66871,6 +67567,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1068172933
 GameObject:
   m_ObjectHideFlags: 0
@@ -69459,6 +70159,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1112766941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69548,6 +70266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -69560,6 +70279,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -69567,6 +70288,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1112823610
 GameObject:
   m_ObjectHideFlags: 0
@@ -72365,6 +73090,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1165137378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72454,6 +73197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -72466,6 +73210,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -72473,6 +73219,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1165427285
 GameObject:
   m_ObjectHideFlags: 0
@@ -74703,6 +75453,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1201024523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74792,6 +75560,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -74804,6 +75573,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -74811,6 +75582,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1201334537
 GameObject:
   m_ObjectHideFlags: 0
@@ -75688,6 +76463,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1207264231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75777,6 +76570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -75789,6 +76583,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -75796,6 +76592,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1211504412
 GameObject:
   m_ObjectHideFlags: 0
@@ -77637,6 +78437,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1237167578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77726,6 +78544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -77738,6 +78557,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -77745,6 +78566,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1238918248
 GameObject:
   m_ObjectHideFlags: 0
@@ -83156,6 +83981,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1366012618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83245,6 +84088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -83257,6 +84101,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -83264,6 +84110,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1368586418
 GameObject:
   m_ObjectHideFlags: 0
@@ -83888,6 +84738,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1372023607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83977,6 +84845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -83989,6 +84858,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -83996,6 +84867,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1373302411
 GameObject:
   m_ObjectHideFlags: 0
@@ -85040,6 +85915,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1387599298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85129,6 +86022,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -85141,6 +86035,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -85148,6 +86044,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1396451765
 GameObject:
   m_ObjectHideFlags: 0
@@ -87273,6 +88173,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1437803973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87362,6 +88280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -87374,6 +88293,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -87381,6 +88302,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1441493300
 GameObject:
   m_ObjectHideFlags: 0
@@ -89759,6 +90684,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1487319822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89848,6 +90791,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -89860,6 +90804,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -89867,6 +90813,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1488528732
 GameObject:
   m_ObjectHideFlags: 0
@@ -90732,6 +91682,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1506168319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90821,6 +91789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -90833,6 +91802,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -90840,6 +91811,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1506615871
 GameObject:
   m_ObjectHideFlags: 0
@@ -93428,6 +94403,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1541288752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93517,6 +94510,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -93529,6 +94523,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -93536,6 +94532,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1541481067
 GameObject:
   m_ObjectHideFlags: 0
@@ -96996,6 +97996,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1601233817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97085,6 +98103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -97097,6 +98116,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -97104,6 +98125,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1603019571
 GameObject:
   m_ObjectHideFlags: 0
@@ -98568,6 +99593,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1627742002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98657,6 +99700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -98669,6 +99713,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -98676,6 +99722,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1630802262
 GameObject:
   m_ObjectHideFlags: 0
@@ -99300,6 +100350,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1640117139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99389,6 +100457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -99401,6 +100470,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -99408,6 +100479,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1640250700
 GameObject:
   m_ObjectHideFlags: 0
@@ -102150,6 +103225,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1689183538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102239,6 +103332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -102251,6 +103345,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -102258,6 +103354,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1691229829
 GameObject:
   m_ObjectHideFlags: 0
@@ -103932,6 +105032,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1713557228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104021,6 +105139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -104033,6 +105152,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -104040,6 +105161,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1718701165
 GameObject:
   m_ObjectHideFlags: 0
@@ -105084,6 +106209,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1737811156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105173,6 +106316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -105185,6 +106329,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -105192,6 +106338,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1737826040
 GameObject:
   m_ObjectHideFlags: 0
@@ -108997,6 +110147,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1802571014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109086,6 +110254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -109098,6 +110267,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -109105,6 +110276,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1803678415
 GameObject:
   m_ObjectHideFlags: 0
@@ -110149,6 +111324,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1814507821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110238,6 +111431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -110250,6 +111444,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -110257,6 +111453,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1819828875
 GameObject:
   m_ObjectHideFlags: 0
@@ -112351,6 +113551,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1859092949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112440,6 +113658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -112452,6 +113671,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -112459,6 +113680,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1859235990
 GameObject:
   m_ObjectHideFlags: 0
@@ -119481,6 +120706,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1988650386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119570,6 +120813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578a20ea32ebb1a40b4a22731b72c52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profile: {fileID: 0}
   steerGain: 2.5
   anticipation: 0.4
   bankTurnStart: 10
@@ -119582,6 +120826,8 @@ MonoBehaviour:
   boostDistance: 1000
   maxLeadTime: 2
   lagTime: 0.6
+  trafficTime: 1.5
+  trafficClearance: 3
   avoidObstacles: 1
   lookAheadTime: 2.5
   clearance: 1.5
@@ -119589,6 +120835,10 @@ MonoBehaviour:
   maneuverRandomness: 0.3
   minManeuverTime: 0.5
   maxManeuverTime: 4
+  aimError: 0.3
+  fireTolerance: 1
+  fireRange: 0.9
+  checkFriendlyFire: 1
 --- !u!1 &1992334813
 GameObject:
   m_ObjectHideFlags: 0

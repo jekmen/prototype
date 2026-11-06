@@ -20204,7 +20204,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1182905228}
   offset: {x: 0, y: 4, z: -16}
-  positionSharpness: 12
   rotationSharpness: 8
   lookAhead: 30
 --- !u!81 &1179246255

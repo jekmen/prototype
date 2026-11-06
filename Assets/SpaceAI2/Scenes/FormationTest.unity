@@ -4032,6 +4032,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &124723619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4125,6 +4143,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!1 &134091091
 GameObject:
   m_ObjectHideFlags: 0
@@ -7479,6 +7498,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &221299761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7572,6 +7609,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!1 &224620469
 GameObject:
   m_ObjectHideFlags: 0
@@ -9100,6 +9138,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &260492973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9293,6 +9332,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &260492978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12653,6 +12710,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &325098151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12846,6 +12904,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &325098156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15099,6 +15175,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &387846555
 GameObject:
   m_ObjectHideFlags: 0
@@ -18898,6 +18992,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -19027,6 +19126,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -32483,6 +32587,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -37773,6 +37882,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1210480222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37966,6 +38076,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1210480227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43274,6 +43402,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1357749410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43367,6 +43513,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!1 &1367603460
 GameObject:
   m_ObjectHideFlags: 0
@@ -45195,6 +45342,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1417811000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45645,6 +45810,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1420933274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45838,6 +46004,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1420933279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47894,6 +48078,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1468475379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48087,6 +48272,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1468475384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51986,6 +52189,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1581473733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52179,6 +52383,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1581473738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55675,6 +55897,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1721065099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55868,6 +56091,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1721065104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57261,6 +57502,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1773747757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57354,6 +57613,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!1 &1776395497
 GameObject:
   m_ObjectHideFlags: 0
@@ -60037,6 +60297,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -60846,6 +61111,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1866710000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61039,6 +61305,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1866710005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61578,6 +61862,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1875884049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61771,6 +62056,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1875884054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62326,6 +62629,7 @@ MonoBehaviour:
   targetInterval: 1
   patrolCenter: {fileID: 0}
   patrolRadius: 800
+  useAttackRuns: 1
 --- !u!114 &1890036020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62519,6 +62823,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1890036025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70711,6 +71033,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2124708273
 GameObject:
   m_ObjectHideFlags: 0

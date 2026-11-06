@@ -463,6 +463,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &5447070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -792,6 +810,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6146110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1394,6 +1430,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -2455,6 +2496,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &145467112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3810,6 +3869,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -5291,6 +5355,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &475273428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5620,6 +5702,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &483427857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5949,6 +6049,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &484175745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6775,6 +6893,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -7833,6 +7956,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &729386337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8719,6 +8860,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -9045,6 +9191,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &870224154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9374,6 +9538,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &870906578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11636,6 +11818,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1014185227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12070,6 +12270,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1018531820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13869,6 +14087,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1139230735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14594,6 +14830,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -14951,6 +15192,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1226048590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15805,6 +16064,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1298770949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17604,6 +17881,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1498312750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18038,6 +18333,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1531042449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18189,6 +18502,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -19596,6 +19914,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1717159540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20272,6 +20608,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -20629,6 +20970,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1754929015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21032,6 +21391,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1761788494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21393,6 +21770,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -21992,6 +22374,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -22475,6 +22862,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 5f6b5489702c8e14d91890db7fbe3efd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e000c8cb5c9acdd4d88de6b4471981f2, type: 2}
     - target: {fileID: -927199367670048503, guid: 5f6b5489702c8e14d91890db7fbe3efd,
         type: 3}
       propertyPath: m_Name
@@ -23237,6 +23629,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  profile: {fileID: 0}
+  control: 1
+  pilot: {fileID: 0}
+  weapon: {fileID: 0}
+  missile: {fileID: 0}
+  destructible: 1
+  onDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetAcquired:
+    m_PersistentCalls:
+      m_Calls: []
+  onMissileLaunched:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2009357649
 MonoBehaviour:
   m_ObjectHideFlags: 0
