@@ -9,7 +9,7 @@ namespace SpaceAI2.Editor
     {
         public const string Root = "Assets/SpaceAI2";
         private const string ProfilePath = Root + "/Profiles/Fighter.asset";
-        public const string ModelPath = "Assets/SpaceAI/Content/Models/Other/SM_Ship_Fighter_05.fbx";
+        public const string ModelPath = Root + "/Content/Models/SM_Ship_Fighter_05.fbx";
 
         public static bool NewScene()
         {
