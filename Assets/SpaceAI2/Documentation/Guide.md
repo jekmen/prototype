@@ -204,7 +204,7 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 | `SpaceAI Systems` | `SpaceAIWorld`, `ProjectileSystem`, `MissileSystem`, `CombatEffects`, one per scene |
 | `Fighter`, `Fighter Red` | AI fighter with a cannon, veteran pilot; the red variant is team 1 with the red livery |
 | `Player Fighter` | Fighter flown with `PlayerPilot`, cannon and heat seekers; the model has a cockpit interior and a `Cockpit Eye` point for the camera |
-| `Cruiser` | 52 m cruiser with point defense turrets, two flak and a twin main gun turret on turret models, and three engines, each a subsystem |
+| `Cruiser` | 52 m cruiser with point defense, two flak and a twin main gun turrets, and three engines, each a subsystem |
 | `Transport` | 137 m freighter of the traders faction with four point defense turrets and an engine subsystem, `Passive` |
 
 | Scene | Shows | Keys |
