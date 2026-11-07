@@ -27,6 +27,8 @@ namespace SpaceAI2
         [Header("Handling")]
         [Tooltip("How fast velocity follows the nose, 1/s. Lower values drift more.")]
         [Min(0.01f)] public float Grip = 3f;
+        [Tooltip("Sideways speed at full strafe, m/s; reached at the ship's acceleration.")]
+        [Min(0f)] public float StrafeSpeed = 25f;
 
         [Header("Durability")]
         [Min(1f)] public float Hull = 100f;

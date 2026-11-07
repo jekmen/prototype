@@ -14,6 +14,7 @@ namespace SpaceAI2
         private Vector3 localRates;
         private float power = 1f;
         private Vector3 acceleration;
+        private float strafe;
 
         public ShipProfile Profile
         {
@@ -65,6 +66,7 @@ namespace SpaceAI2
 
         private void OnEnable()
         {
+            strafe = 0f;
             if (profile != null) body.velocity = transform.forward * profile.CruiseSpeed;
         }
 
@@ -96,7 +98,9 @@ namespace SpaceAI2
         private void ApplyVelocity(float dt)
         {
             Vector3 forward = body.rotation * Vector3.forward;
-            Vector3 velocity = body.velocity;
+            Vector3 right = body.rotation * Vector3.right;
+            // Strafe is kept apart from the main velocity, or grip would swing it back onto the nose.
+            Vector3 velocity = body.velocity - right * strafe;
             float speed = velocity.magnitude;
             Vector3 direction = speed > 0.01f ? velocity / speed : forward;
 
@@ -105,7 +109,8 @@ namespace SpaceAI2
             float rate = (target > speed ? profile.Acceleration : profile.Deceleration) * power;
             speed = Mathf.MoveTowards(speed, target, rate * dt);
 
-            body.velocity = direction * speed;
+            strafe = Mathf.MoveTowards(strafe, input.Strafe * profile.StrafeSpeed * power, profile.Acceleration * power * dt);
+            body.velocity = direction * speed + right * strafe;
         }
     }
 }

@@ -43,7 +43,7 @@ All tuning lives in ScriptableObjects (**Create > SpaceAI2 > …**). Examples ar
 
 | Profile | What it sets |
 |---|---|
-| `ShipProfile` | Speeds (min, cruise, max, boost), acceleration, pitch/yaw/roll rates, turn response, grip (how fast velocity follows the nose), hull, shield, radius. |
+| `ShipProfile` | Speeds (min, cruise, max, boost), acceleration, pitch/yaw/roll rates, turn response, grip (how fast velocity follows the nose), strafe speed, hull, shield, radius. |
 | `PilotProfile` | Skill: aim error, fire tolerance, spray, turn skill, reaction time, hysteresis and commit time between behaviors, missile warning delay, break timing, aggression, caution, patience, subsystem priority. `PilotAce`, `PilotVeteran`, `PilotRookie` are tuned presets. |
 | `WeaponProfile` | Gun or turret weapon: damage, blast radius (flak), fire rate, muzzle speed, range, spread, tracer look, or a hitscan beam. |
 | `MissileProfile` | Missiles and torpedoes: guidance (heat, radar, unguided), lock time and cone, salvo, speed, turn, fuel, countermeasure resistance, warhead, whether point defense can shoot it, and the model drawn for it (a box without one). |
@@ -219,7 +219,7 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 | Dogfight | 10 v 10 among 300 asteroids, aces with radar missiles and veterans with heat seekers, stats and cost overlay | Tab, R |
 | Dogfight Player | The same fight with you in one of the blue seats, starting in the cockpit, and a red cruiser whose subsystems are marked on the HUD: point the nose at one to lock missiles on it | C, R |
 
-`PlayerPilot` flies with a mouse stick (W/S throttle, Shift boost, A/D yaw, Q/E roll, Space recenters, Esc frees
+`PlayerPilot` flies with a mouse stick (W/S throttle, Shift boost, A/D strafe, Q/E roll, Space recenters, Esc frees
 the cursor), fires the guns on the left button and launches a missile on the right. The seeker picks the enemy
 closest to the nose within twice the missile's lock angle and locks once it is inside the lock cone for the lock
 time; `FlightHud` frames that target, yellow while locking and red when locked, and draws a lead ring ahead of every enemy within 1.5 gun ranges: put it on the crosshair and the guns hit (the ring turns red there; it is dim beyond gun range). `ChaseCamera` switches to the view

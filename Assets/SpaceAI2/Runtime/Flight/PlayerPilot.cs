@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SpaceAI2
 {
@@ -19,8 +20,10 @@ namespace SpaceAI2
         [Header("Keys")]
         [SerializeField] private KeyCode throttleUp = KeyCode.W;
         [SerializeField] private KeyCode throttleDown = KeyCode.S;
-        [SerializeField] private KeyCode yawLeft = KeyCode.A;
-        [SerializeField] private KeyCode yawRight = KeyCode.D;
+        [FormerlySerializedAs("yawLeft")]
+        [SerializeField] private KeyCode strafeLeft = KeyCode.A;
+        [FormerlySerializedAs("yawRight")]
+        [SerializeField] private KeyCode strafeRight = KeyCode.D;
         [SerializeField] private KeyCode rollLeft = KeyCode.Q;
         [SerializeField] private KeyCode rollRight = KeyCode.E;
         [SerializeField] private KeyCode boost = KeyCode.LeftShift;
@@ -77,9 +80,9 @@ namespace SpaceAI2
             Vector2 axes = ApplyDeadZone(stick);
 
             float pitch = invertPitch ? -axes.y : axes.y;
-            float yaw = Axis(yawLeft, yawRight);
+            float yaw = 0f;
             float roll = Axis(rollLeft, rollRight);
-            if (mouseHorizontal == MouseHorizontal.Yaw) yaw += axes.x;
+            if (mouseHorizontal == MouseHorizontal.Yaw) yaw = axes.x;
             else roll += axes.x;
 
             motor.Input = new ShipInput
@@ -88,6 +91,7 @@ namespace SpaceAI2
                 Yaw = yaw,
                 Roll = roll,
                 Throttle = Axis(throttleDown, throttleUp),
+                Strafe = Axis(strafeLeft, strafeRight),
                 Boost = UnityEngine.Input.GetKey(boost)
             };
 

@@ -42,7 +42,7 @@ namespace SpaceAI2.Demo
                 $"Speed {speed:0} / {motor.TargetSpeed:0} m/s\n" +
                 $"Turn radius {profile.TurnRadius(speed):0} m, 180° in {profile.HalfTurnTime:0.0} s\n" +
                 $"Slip {slip:0}°\n" +
-                "Mouse stick · W/S throttle · Shift boost · A/D yaw · Q/E roll · Space center · Esc cursor" +
+                "Mouse stick · W/S throttle · Shift boost · A/D strafe · Q/E roll · Space center · Esc cursor" +
                 (pilot != null ? "\nLMB guns · RMB missile · C cockpit" : "");
             GUI.Label(new Rect(16, 16, 700, 140), text, style);
 
