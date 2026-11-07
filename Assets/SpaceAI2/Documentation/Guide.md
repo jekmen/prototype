@@ -54,7 +54,7 @@ All tuning lives in ScriptableObjects (**Create > SpaceAI2 > …**). Examples ar
 - `AIPilot` flies: it steers toward an aim point with lead and lag pursuit, keeps a firing solution, avoids
   obstacles with a forward probe and evasive maneuvers, and keeps clear of friendly traffic.
 - `CombatBrain` decides: every tick it scores behaviors — patrol, intercept, pursuit, yo-yo, defend, extend, head-on,
-  merge, formation, missile evasion, attack runs on large ships — and switches with hysteresis. Target selection
+  merge, formation, missile evasion, attack runs on large ships, orders, flee — and switches with hysteresis. Target selection
   weighs distance, angle, threat, damage and how many allies already engage that target.
 - `Formation` leads a squad: wingmen hold slots, break off to engage and rejoin. Orders: `HoldFormation()`,
   `Cover()`, `Attack(target)`, `Attack(target, priority)`, `Return()`.
@@ -98,6 +98,28 @@ Factions.MarkHostile(playerShip, patrol);               // wanted by the patrol
 Factions.RelationChanged += (a, b, stance) => Debug.Log($"{a.name} and {b.name} are now {stance}");
 bool fight = ship.IsEnemy(other), ally = ship.IsAlly(other);
 ```
+
+### Orders
+
+What an AI ship does between fights is its order, set in the **Orders** section of its `CombatBrain` or from code.
+Patrol is the default: the ship wanders around its patrol area. A **Route** makes it fly a `ShipRoute` (an object
+with the **Ship Route** component; its children in order are the waypoints, and one route serves any number of
+ships). An **Escort** keeps station behind its charge. Combat interrupts an order, and the ship resumes it after.
+
+**Engagement** decides when the ship fights. `Attack` takes on any enemy (an escort only those near its charge or
+attacking it). `Defend` fights only ships that attack it or its charge. `Flee` never fights: it runs at full boost
+from enemies hunting it inside the **Flee Range** (or any enemy at close range), weaving under fire, and returns to
+its route once clear. The traders in Quickstart fly a loop with `Flee`, and one patrol fighter escorts a trader.
+
+```csharp
+brain.FollowRoute(tradeRoute);          // from the nearest waypoint
+brain.MoveTo(station.transform);        // OrderCompleted fires on arrival, then the ship patrols there
+brain.Escort(freighter);
+brain.Engagement = Engagement.Defend;
+brain.OrderCompleted += (b, order) => b.FollowRoute(homeRoute);
+```
+
+A formation follows its leader, so a route or move order on the leader moves the whole squad.
 
 ### Events
 
@@ -185,7 +207,7 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 
 | Scene | Shows | Keys |
 |---|---|---|
-| Quickstart | Patrol, pirates and traders as three factions, UnityEvents and faction changes feeding an event log, respawns, AI overlay | Tab, F3 |
+| Quickstart | Patrol, pirates and traders as three factions, traders on a route that flee, an escort, UnityEvents and faction changes feeding an event log, respawns, AI overlay | Tab, F3 |
 | Dogfight | 10 v 10 among 300 asteroids, aces with radar missiles and veterans with heat seekers, stats and cost overlay | Tab, R |
 | Dogfight Player | The same fight with you in one of the blue seats, starting in the cockpit | C, R |
 

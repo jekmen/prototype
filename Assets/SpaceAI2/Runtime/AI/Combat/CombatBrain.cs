@@ -9,7 +9,7 @@ namespace SpaceAI2
     /// best-scoring behavior, with hysteresis, a minimum commit time and fatigue for behaviors that run too long.
     /// </summary>
     [RequireComponent(typeof(AIPilot))]
-    public class CombatBrain : MonoBehaviour, IPilotBrain
+    public partial class CombatBrain : MonoBehaviour, IPilotBrain
     {
         [SerializeField, Min(100f)] private float sensorRange = 4000f;
         [SerializeField, Min(0.1f)] private float targetInterval = 1f;
@@ -99,7 +99,7 @@ namespace SpaceAI2
             set => useAttackRuns = value;
         }
 
-        public Vector3 PatrolCenter => patrolCenter != null ? patrolCenter.position : spawnPoint;
+        public Vector3 PatrolCenter => patrolCenter != null ? patrolCenter.position : hasPatrolPoint ? patrolPoint : spawnPoint;
         public float PatrolRadius => patrolRadius;
 
         public Transform PatrolArea
@@ -130,12 +130,13 @@ namespace SpaceAI2
             {
                 new PatrolBehavior(), new InterceptBehavior(), new PursuitBehavior(), new OvershootBehavior(),
                 new DefendBehavior(), new ExtendBehavior(), new HeadOnBehavior(), new MergeBehavior(), new FormationBehavior(),
-                new MissileEvadeBehavior(), new AttackRunBehavior()
+                new MissileEvadeBehavior(), new AttackRunBehavior(), new OrderBehavior(), new FleeBehavior()
             };
             launcher = GetComponent<MissileLauncher>();
             context.Brain = this;
             context.Pilot = pilot;
             context.Ship = ship;
+            InitOrders();
         }
 
         private void OnEnable()
@@ -146,6 +147,7 @@ namespace SpaceAI2
             context.Target = null;
             context.Subsystem = null;
             context.Threat = null;
+            context.Danger = null;
             context.HasMissile = false;
             context.TimeSinceFiringChance = 0f;
             lastAttacker = null;
@@ -156,7 +158,11 @@ namespace SpaceAI2
         private void OnDestroy() => SpaceAI.OriginShifted -= OnOriginShifted;
 
         // Kept while disabled too: a destroyed ship can respawn at its spawn point.
-        private void OnOriginShifted(Vector3 offset) => spawnPoint -= offset;
+        private void OnOriginShifted(Vector3 offset)
+        {
+            spawnPoint -= offset;
+            ShiftOrders(offset);
+        }
 
         private void OnDisable()
         {
@@ -170,6 +176,7 @@ namespace SpaceAI2
             Gizmos.DrawWireSphere(transform.position, sensorRange);
             Gizmos.color = new Color(0.4f, 1f, 0.4f, 0.25f);
             Gizmos.DrawWireSphere(Application.isPlaying ? PatrolCenter : patrolCenter != null ? patrolCenter.position : transform.position, patrolRadius);
+            DrawOrderGizmos();
             if (!Application.isPlaying || context.Target == null) return;
             Gizmos.color = Color.red;
             Vector3 aim = context.Subsystem != null ? context.Subsystem.AimPoint : context.Target.Position;
@@ -212,10 +219,15 @@ namespace SpaceAI2
             SenseMissiles();
             bool newMissile = context.HasMissile && context.Missile.Id != warned;
 
+            UpdateOrder();
             decisionTimer -= dt;
             bool decide = decisionTimer <= 0f || current == null || lost || newMissile;
             if (decide)
-                using (DecideMarker.Auto()) FindThreat();
+            {
+                using var senseScope = DecideMarker.Auto();
+                FindThreat();
+                FindDanger();
+            }
             UpdateGeometry();
             UpdatePatience(dt);
 
@@ -322,6 +334,12 @@ namespace SpaceAI2
 
         private void SelectTarget()
         {
+            if (engagement == Engagement.Flee)
+            {
+                context.Target = null;
+                return;
+            }
+
             SpaceShip forced = ForcedTarget;
             if (IsAlive(forced) && ship.IsEnemy(forced))
             {
@@ -351,6 +369,7 @@ namespace SpaceAI2
                 {
                     if (!ship.IsEnemy(enemy) || !enemy.isActiveAndEnabled) continue;
                     if (formation != null && !formation.MayEngage(enemy)) continue;
+                    if (!MayFight(enemy)) continue;
                     ref readonly ShipSnapshot state = ref enemy.Snapshot;
                     Vector3 offset = state.Position - position;
                     float distance = Mathf.Max(offset.magnitude, 0.01f);
@@ -536,6 +555,13 @@ namespace SpaceAI2
             {
                 context.ToThreat = context.Threat.Position - ship.Position;
                 context.ThreatDistance = context.ToThreat.magnitude;
+            }
+
+            if (!IsAlive(context.Danger)) context.Danger = null;
+            if (context.Danger != null)
+            {
+                context.ToDanger = context.Danger.Position - ship.Position;
+                context.DangerDistance = context.ToDanger.magnitude;
             }
 
             SpaceShip target = context.Target;

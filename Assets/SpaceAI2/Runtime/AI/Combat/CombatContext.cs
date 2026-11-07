@@ -29,6 +29,11 @@ namespace SpaceAI2
         public Vector3 ToThreat;
         public float ThreatDistance;
 
+        /// <summary>The enemy a fleeing pilot runs from; null unless the brain's engagement is Flee.</summary>
+        public SpaceShip Danger;
+        public Vector3 ToDanger;
+        public float DangerDistance;
+
         /// <summary>The noticed missile closest to impact, valid while <see cref="HasMissile"/>.</summary>
         public MissileTrack Missile;
         public bool HasMissile;
