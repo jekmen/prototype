@@ -60,9 +60,20 @@ namespace SpaceAI2.Demo
         {
             foreach (SpaceShip ship in FindObjectsOfType<SpaceShip>()) spawns[ship] = new Pose(ship.transform.position, ship.transform.rotation);
             SpaceAI.OriginShifted += OnOriginShifted;
+            Factions.RelationChanged += OnRelationChanged;
+            Factions.ShipMarkedHostile += OnShipMarkedHostile;
         }
 
-        private void OnDestroy() => SpaceAI.OriginShifted -= OnOriginShifted;
+        private void OnDestroy()
+        {
+            SpaceAI.OriginShifted -= OnOriginShifted;
+            Factions.RelationChanged -= OnRelationChanged;
+            Factions.ShipMarkedHostile -= OnShipMarkedHostile;
+        }
+
+        private void OnRelationChanged(Faction a, Faction b, Stance stance) => Add($"{a.name} and {b.name} are now {stance.ToString().ToLowerInvariant()}");
+
+        private void OnShipMarkedHostile(SpaceShip ship, Faction faction) => Add($"{faction.name} now hunt {ship.name}");
 
         private void OnOriginShifted(Vector3 offset)
         {
