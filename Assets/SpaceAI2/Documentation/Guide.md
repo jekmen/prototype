@@ -170,7 +170,8 @@ closest to the nose within twice the missile's lock angle and locks once it is i
 time; `FlightHud` frames that target, yellow while locking and red when locked. `ChaseCamera` switches to the view
 from its **Cockpit** transform with C.
 
-The asteroids use six low-poly rock meshes and three materials from `Content/Asteroids`; the scenes use the
-`Content/Skybox/SpaceSky` panorama.
+The asteroids use six low-poly rock meshes and three materials from `Content/Asteroids`. The sky is `Content/Skybox/SpaceSky.mat`: a
+nebula panorama with stars drawn by its shader (`SpaceAI2/Skybox/Space`), so they stay one pixel sharp at any
+resolution; density, brightness, size and rotation are material settings.
 
 Moving from SpaceAI 1.x? See [Migration.md](Migration.md).
