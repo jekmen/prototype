@@ -64,6 +64,10 @@ namespace SpaceAI2
         [Min(0f)] public float Reload = 3f;
 
         [Header("Visual")]
+        [Tooltip("Model of the missile, its long side scaled to Length with the nose at its far end. Empty draws a box.")]
+        public Mesh Model;
+        [Tooltip("Material of the model; empty draws it in Body Color.")]
+        public Material ModelMaterial;
         public Color BodyColor = new Color(0.85f, 0.85f, 0.85f, 1f);
         public Color FlameColor = new Color(1f, 0.6f, 0.25f, 1f);
         [Min(0.1f)] public float Length = 2.5f;

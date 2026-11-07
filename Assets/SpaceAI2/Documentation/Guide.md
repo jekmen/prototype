@@ -46,7 +46,7 @@ All tuning lives in ScriptableObjects (**Create > SpaceAI2 > …**). Examples ar
 | `ShipProfile` | Speeds (min, cruise, max, boost), acceleration, pitch/yaw/roll rates, turn response, grip (how fast velocity follows the nose), hull, shield, radius. |
 | `PilotProfile` | Skill: aim error, fire tolerance, spray, turn skill, reaction time, hysteresis and commit time between behaviors, missile warning delay, break timing, aggression, caution, patience, subsystem priority. `PilotAce`, `PilotVeteran`, `PilotRookie` are tuned presets. |
 | `WeaponProfile` | Gun or turret weapon: damage, blast radius (flak), fire rate, muzzle speed, range, spread, tracer look, or a hitscan beam. |
-| `MissileProfile` | Missiles and torpedoes: guidance (heat, radar, unguided), lock time and cone, salvo, speed, turn, fuel, countermeasure resistance, warhead, and whether point defense can shoot it. |
+| `MissileProfile` | Missiles and torpedoes: guidance (heat, radar, unguided), lock time and cone, salvo, speed, turn, fuel, countermeasure resistance, warhead, whether point defense can shoot it, and the model drawn for it (a box without one). |
 | `FormationProfile` | Wedge, echelon, diamond or custom slots, spacing, break-up and rejoin rules. |
 
 ## How the AI works
@@ -204,7 +204,7 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 | `SpaceAI Systems` | `SpaceAIWorld`, `ProjectileSystem`, `MissileSystem`, `CombatEffects`, one per scene |
 | `Fighter`, `Fighter Red` | AI fighter with a cannon, veteran pilot; the red variant is team 1 with the red livery |
 | `Player Fighter` | Fighter flown with `PlayerPilot`, cannon and heat seekers; the model has a cockpit interior and a `Cockpit Eye` point for the camera |
-| `Cruiser` | 52 m cruiser with point defense, flak and main gun turrets and three engines, each a subsystem |
+| `Cruiser` | 52 m cruiser with point defense turrets, two flak and a twin main gun turret on turret models, and three engines, each a subsystem |
 | `Transport` | 137 m freighter of the traders faction with four point defense turrets and an engine subsystem, `Passive` |
 
 | Scene | Shows | Keys |

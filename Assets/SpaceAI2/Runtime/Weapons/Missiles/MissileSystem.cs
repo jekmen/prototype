@@ -45,6 +45,10 @@ namespace SpaceAI2
 
         private struct ProfileVisual
         {
+            public Mesh Mesh;
+            /// <summary>Fits the mesh to a missile one unit long pointing along +Z.</summary>
+            public Matrix4x4 Fit;
+            public Vector3 Scale;
             public Material Body;
             public Material Flame;
         }
@@ -530,11 +534,11 @@ namespace SpaceAI2
                     MissileTrack t = missiles[i].Track;
                     Vector3 position = t.Position + t.Velocity * behind;
                     Quaternion rotation = Quaternion.LookRotation(t.Velocity.sqrMagnitude > 0.01f ? t.Velocity : Vector3.forward);
-                    matrices[batch++] = Matrix4x4.TRS(position, rotation, new Vector3(profile.Width, profile.Width, profile.Length));
+                    matrices[batch++] = Matrix4x4.TRS(position, rotation, visuals[p].Scale) * visuals[p].Fit;
                     if (missiles[i].Trail != null) missiles[i].Trail.transform.position = position - rotation * Vector3.forward * (profile.Length * 0.5f);
-                    if (batch == BatchSize) batch = Flush(bodyMesh, visuals[p].Body, batch);
+                    if (batch == BatchSize) batch = Flush(visuals[p].Mesh, visuals[p].Body, batch);
                 }
-                Flush(bodyMesh, visuals[p].Body, batch);
+                Flush(visuals[p].Mesh, visuals[p].Body, batch);
                 if (!DrawFlames) continue;
 
                 for (int i = 0; i < count; i++)
@@ -573,12 +577,29 @@ namespace SpaceAI2
             index = profiles.Count;
             profiles.Add(profile);
             profileIndex.Add(profile, index);
+            Mesh model = profile.Model;
+            Material body = profile.ModelMaterial != null && model != null
+                ? new Material(profile.ModelMaterial)
+                : new Material(Shader.Find("Standard")) { color = profile.BodyColor };
+            body.enableInstancing = true;
             visuals.Add(new ProfileVisual
             {
-                Body = new Material(Shader.Find("Standard")) { color = profile.BodyColor, enableInstancing = true },
+                Mesh = model != null ? model : bodyMesh,
+                Fit = model != null ? FitAlongZ(model.bounds) : Matrix4x4.identity,
+                Scale = model != null ? Vector3.one * profile.Length : new Vector3(profile.Width, profile.Width, profile.Length),
+                Body = body,
                 Flame = new Material(Shader.Find("SpaceAI2/Tracer")) { color = profile.FlameColor * 3f, enableInstancing = true }
             });
             return index;
+        }
+
+        // Turns the mesh's longest side to +Z and scales it to one unit, centred on the origin.
+        private static Matrix4x4 FitAlongZ(Bounds bounds)
+        {
+            Vector3 size = bounds.size;
+            Vector3 axis = size.x >= size.y && size.x >= size.z ? Vector3.right : size.y >= size.z ? Vector3.up : Vector3.forward;
+            float length = Vector3.Dot(size, axis);
+            return Matrix4x4.Rotate(Quaternion.FromToRotation(axis, Vector3.forward)) * Matrix4x4.Scale(Vector3.one / length) * Matrix4x4.Translate(-bounds.center);
         }
 
         private TrailRenderer RentTrail(MissileProfile profile, Vector3 position)

@@ -38,6 +38,8 @@ MonoBehaviour:
   Salvo: 6
   SalvoSpread: 12
   Reload: 6
+  Model: {fileID: 3175972289894925177, guid: 2f8b2bc44c00bad43b1b0bdc8fb6b2da, type: 3}
+  ModelMaterial: {fileID: 2100000, guid: 086784b534168d04490978529724136e, type: 2}
   BodyColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
   FlameColor: {r: 1, g: 0.85, b: 0.4, a: 1}
   Length: 1.4
