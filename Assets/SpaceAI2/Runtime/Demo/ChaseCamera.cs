@@ -9,8 +9,18 @@ namespace SpaceAI2.Demo
         [SerializeField, Min(0.01f)] private float rotationSharpness = 6f;
         [SerializeField] private float lookAhead = 30f;
 
+        [Header("Cockpit")]
+        [SerializeField] private Transform cockpit;
+        [SerializeField] private bool inCockpit;
+        [SerializeField] private KeyCode toggleView = KeyCode.C;
+        [SerializeField, Min(0.01f)] private float cockpitNearClip = 0.05f;
+        [SerializeField, Range(30f, 110f)] private float cockpitFieldOfView = 70f;
+
         private Quaternion smoothedRotation = Quaternion.identity;
         private Transform smoothedFor;
+        private Camera view;
+        private float chaseNearClip;
+        private float chaseFieldOfView;
 
         public Transform Target
         {
@@ -24,8 +34,36 @@ namespace SpaceAI2.Demo
             set => offset = value;
         }
 
+        /// <summary>Eye point inside the target's cockpit; null disables the cockpit view.</summary>
+        public Transform Cockpit
+        {
+            get => cockpit;
+            set => cockpit = value;
+        }
+
+        public bool InCockpit => inCockpit && cockpit != null;
+
+        private void Awake()
+        {
+            view = GetComponent<Camera>();
+            if (view == null) return;
+            chaseNearClip = view.nearClipPlane;
+            chaseFieldOfView = view.fieldOfView;
+        }
+
         private void LateUpdate()
         {
+            if (UnityEngine.Input.GetKeyDown(toggleView)) inCockpit = !inCockpit;
+            if (view != null)
+            {
+                view.nearClipPlane = InCockpit ? cockpitNearClip : chaseNearClip;
+                view.fieldOfView = InCockpit ? cockpitFieldOfView : chaseFieldOfView;
+            }
+            if (InCockpit)
+            {
+                transform.SetPositionAndRotation(cockpit.position, cockpit.rotation);
+                return;
+            }
             if (target == null) return;
             if (smoothedFor != target)
             {

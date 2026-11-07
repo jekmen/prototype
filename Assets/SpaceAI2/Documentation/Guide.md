@@ -155,12 +155,22 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 |---|---|
 | `SpaceAI Systems` | `SpaceAIWorld`, `ProjectileSystem`, `MissileSystem`, `CombatEffects`, one per scene |
 | `Fighter`, `Fighter Red` | AI fighter with a cannon, veteran pilot; the red variant is team 1 with the red livery |
-| `Player Fighter` | Fighter flown with `PlayerPilot` (mouse, WASD, Shift boost), cannon and heat seekers |
+| `Player Fighter` | Fighter flown with `PlayerPilot`, cannon and heat seekers; the model has a cockpit interior and a `Cockpit Eye` point for the camera |
 | `Cruiser` | Capital ship with point defense, flak and main gun turrets and three engines, each a subsystem |
 
 | Scene | Shows | Keys |
 |---|---|---|
 | Quickstart | Two wings of four, UnityEvents feeding an event log, respawns, AI overlay | Tab, F3 |
 | Dogfight | 10 v 10 among 300 asteroids, aces with radar missiles and veterans with heat seekers, stats and cost overlay | Tab, R |
+| Dogfight Player | The same fight with you in one of the blue seats, starting in the cockpit | C, R |
+
+`PlayerPilot` flies with a mouse stick (W/S throttle, Shift boost, A/D yaw, Q/E roll, Space recenters, Esc frees
+the cursor), fires the guns on the left button and launches a missile on the right. The seeker picks the enemy
+closest to the nose within twice the missile's lock angle and locks once it is inside the lock cone for the lock
+time; `FlightHud` frames that target, yellow while locking and red when locked. `ChaseCamera` switches to the view
+from its **Cockpit** transform with C.
+
+The asteroids use six low-poly rock meshes and three materials from `Content/Asteroids`; the scenes use the
+`Content/Skybox/SpaceSky` panorama.
 
 Moving from SpaceAI 1.x? See [Migration.md](Migration.md).

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpaceAI2
@@ -24,14 +25,37 @@ namespace SpaceAI2
         [SerializeField] private KeyCode rollRight = KeyCode.E;
         [SerializeField] private KeyCode boost = KeyCode.LeftShift;
         [SerializeField] private KeyCode centerStick = KeyCode.Space;
+        [SerializeField] private KeyCode fire = KeyCode.Mouse0;
+        [SerializeField] private KeyCode launchMissile = KeyCode.Mouse1;
+
+        [Header("Missile lock")]
+        [Tooltip("Enemies within this many lock angles of the nose become the seeker's target.")]
+        [SerializeField, Min(1f)] private float targetCone = 2f;
 
         private ShipMotor motor;
         private Vector2 stick;
+        private SpaceShip ship;
+        private ShipGun gun;
+        private MissileLauncher launcher;
+        private float nextTargetSearch;
+        private readonly List<SpaceShip> nearby = new List<SpaceShip>();
 
         public Vector2 Stick => stick;
         public float DeadZone => deadZone;
 
-        private void Awake() => motor = GetComponent<ShipMotor>();
+        public MissileLauncher Launcher => launcher;
+
+        private void Awake()
+        {
+            motor = GetComponent<ShipMotor>();
+            ship = GetComponent<SpaceShip>();
+        }
+
+        private void Start()
+        {
+            gun = GetComponent<ShipGun>();
+            launcher = GetComponent<MissileLauncher>();
+        }
 
         private void OnEnable() => LockCursor(true);
 
@@ -39,6 +63,7 @@ namespace SpaceAI2
         {
             LockCursor(false);
             motor.Input = default;
+            if (gun != null) gun.Trigger = false;
         }
 
         private void Update()
@@ -63,7 +88,51 @@ namespace SpaceAI2
                 Throttle = Axis(throttleDown, throttleUp),
                 Boost = UnityEngine.Input.GetKey(boost)
             };
+
+            UpdateWeapons();
         }
+
+        private void UpdateWeapons()
+        {
+            bool armed = Cursor.lockState == CursorLockMode.Locked;
+            if (gun != null) gun.Trigger = armed && UnityEngine.Input.GetKey(fire);
+            if (launcher == null || launcher.Missile == null) return;
+
+            if (Time.time >= nextTargetSearch)
+            {
+                nextTargetSearch = Time.time + 0.2f;
+                launcher.LockTarget = FindLockTarget(launcher.Missile);
+            }
+            if (armed && UnityEngine.Input.GetKeyDown(launchMissile)) launcher.Launch();
+        }
+
+        private SpaceShip FindLockTarget(MissileProfile missile)
+        {
+            if (!missile.IsGuided || ship == null || !SpaceAIWorld.TryGet(out SpaceAIWorld world)) return null;
+            float cone = missile.LockAngle * targetCone;
+            Vector3 position = ship.Position;
+            Vector3 forward = ship.Forward;
+
+            SpaceShip current = launcher.LockTarget;
+            if (IsCandidate(current, missile) && Vector3.Angle(forward, current.Position - position) <= cone) return current;
+
+            world.Registry.Query(position, missile.LockRange, nearby);
+            SpaceShip best = null;
+            float bestAngle = cone;
+            foreach (SpaceShip other in nearby)
+            {
+                if (!IsCandidate(other, missile)) continue;
+                float angle = Vector3.Angle(forward, other.Position - position);
+                if (angle > bestAngle) continue;
+                bestAngle = angle;
+                best = other;
+            }
+            return best;
+        }
+
+        private bool IsCandidate(SpaceShip other, MissileProfile missile) =>
+            other != null && other.isActiveAndEnabled && ship.IsEnemy(other) && other.Radius >= missile.MinTargetRadius &&
+            (other.Position - ship.Position).sqrMagnitude <= missile.LockRange * missile.LockRange;
 
         private void UpdateStick()
         {

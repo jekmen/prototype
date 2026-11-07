@@ -33,10 +33,44 @@ namespace SpaceAI2.Demo
                 $"Speed {speed:0} / {motor.TargetSpeed:0} m/s\n" +
                 $"Turn radius {profile.TurnRadius(speed):0} m, 180° in {profile.HalfTurnTime:0.0} s\n" +
                 $"Slip {slip:0}°\n" +
-                "Mouse stick · W/S throttle · Shift boost · A/D yaw · Q/E roll · Space center · Esc cursor";
-            GUI.Label(new Rect(16, 16, 700, 120), text, style);
+                "Mouse stick · W/S throttle · Shift boost · A/D yaw · Q/E roll · Space center · Esc cursor" +
+                (pilot != null ? "\nLMB guns · RMB missile · C cockpit" : "");
+            GUI.Label(new Rect(16, 16, 700, 140), text, style);
 
-            if (pilot != null) DrawStick(pilot);
+            if (pilot == null) return;
+            DrawStick(pilot);
+            DrawLock(pilot.Launcher);
+        }
+
+        private void DrawLock(MissileLauncher launcher)
+        {
+            if (launcher == null || launcher.Missile == null) return;
+            string state = launcher.IsLocked ? "LOCK" : launcher.LockTarget != null ? "seeking" : "no target";
+            GUI.Label(new Rect(Screen.width * 0.5f - 120f, Screen.height * 0.5f + stickRadius + 12f, 240f, 24f),
+                $"Missiles {(launcher.Ammo < 0 ? "∞" : launcher.Ammo.ToString())} · {state}", style);
+
+            SpaceShip target = launcher.LockTarget;
+            Camera view = Camera.main;
+            if (target == null || view == null) return;
+            Vector3 screen = view.WorldToScreenPoint(target.Position);
+            if (screen.z <= 0f) return;
+            Vector2 center = new Vector2(screen.x, Screen.height - screen.y);
+            float size = Mathf.Lerp(64f, 28f, launcher.LockProgress);
+            Color color = launcher.IsLocked ? new Color(1f, 0.25f, 0.2f, 0.9f) : new Color(1f, 0.85f, 0.2f, 0.8f);
+            DrawFrame(center, size, color);
+        }
+
+        private static void DrawFrame(Vector2 center, float size, Color color)
+        {
+            const float line = 2f;
+            float half = size * 0.5f;
+            Color previous = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture(new Rect(center.x - half, center.y - half, size, line), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(center.x - half, center.y + half - line, size, line), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(center.x - half, center.y - half, line, size), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(center.x + half - line, center.y - half, line, size), Texture2D.whiteTexture);
+            GUI.color = previous;
         }
 
         private void DrawStick(PlayerPilot playerPilot)

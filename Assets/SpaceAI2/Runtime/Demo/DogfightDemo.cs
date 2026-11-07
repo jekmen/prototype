@@ -11,6 +11,8 @@ namespace SpaceAI2.Demo
         [SerializeField] private Transform[] spawns;
         [SerializeField] private ChaseCamera chaseCamera;
         [SerializeField] private FlightHud hud;
+        [Tooltip("Optional ship flown by the player; the camera stays on it and Tab is off.")]
+        [SerializeField] private SpaceShip player;
         [SerializeField, Min(0f)] private float respawnDelay = 4f;
         [SerializeField, Min(0f)] private float spawnSpread = 150f;
 
@@ -46,6 +48,7 @@ namespace SpaceAI2.Demo
                     if (hit.Source != null) hits++;
                 };
             }
+            if (player != null) player.GetComponent<ShipHealth>().Destroyed += OnDestroyed;
             ShowView(0);
         }
 
@@ -57,6 +60,7 @@ namespace SpaceAI2.Demo
                 brain.BehaviorChanged -= OnBehaviorChanged;
                 brain.GetComponent<ShipHealth>().Destroyed -= OnDestroyed;
             }
+            if (player != null) player.GetComponent<ShipHealth>().Destroyed -= OnDestroyed;
         }
 
         private void OnBehaviorChanged(CombatBrain brain, CombatBehavior from, CombatBehavior to)
@@ -97,7 +101,7 @@ namespace SpaceAI2.Demo
         private void Update()
         {
             elapsed += Time.deltaTime;
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Tab)) ShowView((view + 1) % brains.Length);
+            if (player == null && UnityEngine.Input.GetKeyDown(KeyCode.Tab)) ShowView((view + 1) % brains.Length);
             if (UnityEngine.Input.GetKeyDown(KeyCode.R)) ResetStats();
 
             foreach (CombatBrain brain in brains)
@@ -116,6 +120,12 @@ namespace SpaceAI2.Demo
         private void ShowView(int index)
         {
             view = index;
+            if (player != null)
+            {
+                chaseCamera.Target = player.transform;
+                hud.Bind(player.Motor, player.GetComponent<PlayerPilot>());
+                return;
+            }
             SpaceShip ship = brains[view].Ship;
             chaseCamera.Target = ship.transform;
             hud.Bind(ship.Motor, null);
@@ -138,16 +148,23 @@ namespace SpaceAI2.Demo
             style ??= new GUIStyle(GUI.skin.label) { fontSize = 16 };
             text.Clear();
             float minutes = Mathf.Max(elapsed / 60f, 0.01f);
-            int alive = 0;
+            int total = brains.Length + (player != null ? 1 : 0);
+            int alive = player != null && player.isActiveAndEnabled ? 1 : 0;
             foreach (CombatBrain brain in brains)
                 if (brain.isActiveAndEnabled) alive++;
 
-            text.Append($"Dogfight {brains.Length / 2}v{brains.Length / 2} · {elapsed:0} s · kills blue {kills[0]} / red {kills[1]} · alive {alive}\n");
+            text.Append($"Dogfight {total / 2}v{total / 2} · {elapsed:0} s · kills blue {kills[0]} / red {kills[1]} · alive {alive}\n");
             double aiMs =SpaceAIWorld.TryGet(out SpaceAIWorld world) ? world.LastUpdateMs : 0f;
             int projectiles = ProjectileSystem.TryGet(out ProjectileSystem system) ? system.Count : 0;
             float accuracy = shots > 0 ? 100f * hits / shots : 0f;
             text.Append($"AI {aiMs:0.00} ms · projectiles {projectiles} · shots/s per ship {shots / Mathf.Max(elapsed, 0.01f) / brains.Length:0.0}, accuracy {accuracy:0}% · switches/min per ship {switches / minutes / brains.Length:0.0} · " +
                         $"longest behavior {longestBehavior:0.0} s ({longestBehaviorName}) · longest dry chase {longestDryChase:0.0} s\n");
+
+            if (player != null)
+            {
+                GUI.Label(new Rect(16, Screen.height - 70, 1400, 60), text.ToString(), style);
+                return;
+            }
 
             CombatBrain viewed = brains[view];
             CombatContext c = viewed.Context;
