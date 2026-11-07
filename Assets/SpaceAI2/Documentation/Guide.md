@@ -117,8 +117,8 @@ release build of the editor scripts.
 
 ### Combat effects
 
-Effects are plain Particle System prefabs on Unity's built-in **Particles/Standard Unlit** shader; there are
-no custom shaders or post effects. They live in `Content/Effects`:
+Effects are plain Particle System prefabs on Unity's built-in **Particles/Standard Unlit** shader, plus one
+custom shader for the shield bubble (`Shield.shader`); there are no post effects. They live in `Content/Effects`:
 
 | Prefab | Played for |
 |---|---|
@@ -139,10 +139,12 @@ blast spheres. Missile smoke stays a `TrailRenderer`; the effect builders set it
 
 Ships get `ShipEffects` at start when the scene has `CombatEffects` and the **Visual Effects** checkbox on
 `SpaceShip` is on. It puts an exhaust at each nozzle under `ShipBank.Visual`, scales it with throttle, boost
-and engine power, and plays hits and the death explosion. Add it by hand to set nozzle positions for another model.
+and engine power, and plays hits and the death explosion. A shield hit also draws the shield: an ellipsoid of
+**Shield Size** around the model where a patch of refracted, team-coloured energy ripples out from each of the last
+four hits and fades in about a second. It uses `CombatEffects`' **Shield Material** (`Shield.mat`). Add it by hand to set nozzle positions for another model.
 
 Edit the prefabs directly to change the look. **Tools > SpaceAI2 > Build Effect Prefabs** regenerates the muzzle
-flash, hits, exhaust, missile flame and trail material (overwriting edits to them); the explosion prefabs are hand-tuned and are never rebuilt.
+flash, hits, exhaust, missile flame, trail material and the shield material if missing (overwriting edits to them); the explosion prefabs are hand-tuned and are never rebuilt.
 Scene builders and the Create Ship wizard add `CombatEffects` to any scene with weapons.
 
 Open `EffectsShowcase` or rebuild it with **Tools > SpaceAI2 > Build Effects Showcase Scene**.

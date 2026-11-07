@@ -14,6 +14,7 @@ namespace SpaceAI2.Editor
         private const string AdditivePath = Folder + "/ParticleAdditive.mat";
         private const string AlphaPath = Folder + "/ParticleAlpha.mat";
         private const string TrailPath = Folder + "/MissileTrail.mat";
+        private const string ShieldPath = Folder + "/Shield.mat";
 
         private static readonly Color Orange = new Color(1f, 0.55f, 0.2f);
         private static readonly Color ShieldBlue = new Color(0.3f, 0.7f, 1f);
@@ -31,6 +32,8 @@ namespace SpaceAI2.Editor
             trail.mainTextureScale = new Vector2(0f, 1f);
             trail.mainTextureOffset = new Vector2(0.5f, 0f);
             EditorUtility.SetDirty(trail);
+            if (AssetDatabase.LoadAssetAtPath<Material>(ShieldPath) == null)
+                AssetDatabase.CreateAsset(new Material(AssetDatabase.LoadAssetAtPath<Shader>(Folder + "/Shield.shader")), ShieldPath);
             Save(MuzzleFlash(additive), "MuzzleFlash");
             Save(Hit("HitHull", additive, alpha, Orange, 4f, 16, true), "HitHull");
             Save(Hit("HitShield", additive, alpha, ShieldBlue, 7f, 8, false), "HitShield");
@@ -44,9 +47,10 @@ namespace SpaceAI2.Editor
         public static void Assign(CombatEffects effects)
         {
             if (Load("MuzzleFlash") == null || Load("EngineExhaust") == null || Load("MissileFlame") == null ||
-                AssetDatabase.LoadAssetAtPath<Material>(TrailPath) == null) Build();
+                AssetDatabase.LoadAssetAtPath<Material>(TrailPath) == null || AssetDatabase.LoadAssetAtPath<Material>(ShieldPath) == null) Build();
             effects.SetPrefabs(Load("MuzzleFlash"), Load("HitHull"), Load("HitShield"), Load("HitSurface"),
                 Load("ExplosionShip"), Load("ExplosionMissile"), Load("EngineExhaust"), Load("MissileFlame"));
+            effects.ShieldMaterial = AssetDatabase.LoadAssetAtPath<Material>(ShieldPath);
             EditorUtility.SetDirty(effects);
             // The soft edge keeps missile smoke from reading as a flat ribbon up close.
             var missiles = Object.FindObjectOfType<MissileSystem>(true);

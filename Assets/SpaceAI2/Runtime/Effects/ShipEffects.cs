@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace SpaceAI2
 {
     /// <summary>
-    /// Engine exhaust on the ship's nozzles, scaled by throttle, and the ship's hit and death effects from
-    /// <see cref="CombatEffects"/>. Added by <see cref="SpaceShip"/> when the scene has CombatEffects.
+    /// Engine exhaust on the ship's nozzles, scaled by throttle, the shield bubble that ripples out from shield
+    /// hits, and the ship's hit and death effects from <see cref="CombatEffects"/>. Added by <see cref="SpaceShip"/> when the scene has CombatEffects.
     /// </summary>
     [DisallowMultipleComponent, RequireComponent(typeof(SpaceShip))]
     public class ShipEffects : MonoBehaviour
@@ -14,6 +15,13 @@ namespace SpaceAI2
         [Tooltip("Exhaust length at idle, as a share of full throttle.")]
         [SerializeField, Range(0f, 1f)] private float idle = 0.35f;
         [SerializeField, Min(1f)] private float boost = 1.6f;
+        [Tooltip("Size of the shield ellipsoid in the model's local space. The default fits SM_Ship_Fighter_05.")]
+        [SerializeField] private Vector3 shieldSize = new Vector3(19f, 5f, 16.5f);
+
+        private const float ShieldFade = 1.25f;
+        private static readonly int HitsId = Shader.PropertyToID("_Hits");
+        private static readonly int ColorId = Shader.PropertyToID("_Color");
+        private static readonly Color[] ShieldColors = { new Color(0.08f, 0.5f, 1f), new Color(1f, 0.18f, 0.08f) };
 
         private SpaceShip ship;
         private ShipHealth health;
@@ -21,6 +29,12 @@ namespace SpaceAI2
         private ParticleSystem[] exhausts;
         private bool exhaustOn = true;
         private float baseLifetime, baseRate;
+        private Transform model;
+        // xyz: hit direction on the unit shield, w: hit time. The shader animates the last four.
+        private readonly Vector4[] shieldHits = new Vector4[4];
+        private int shieldHitIndex;
+        private float lastShieldHit = -100f;
+        private MaterialPropertyBlock shieldProperties;
 
         private void Awake()
         {
@@ -30,9 +44,10 @@ namespace SpaceAI2
 
         private void Start()
         {
-            if (!CombatEffects.TryGet(out effects) || effects.EngineExhaust == null) return;
+            if (!CombatEffects.TryGet(out effects)) return;
             var bank = GetComponent<ShipBank>();
-            Transform model = bank != null && bank.Visual != null ? bank.Visual : transform;
+            model = bank != null && bank.Visual != null ? bank.Visual : transform;
+            if (effects.EngineExhaust == null) return;
             ParticleSystem prefab = effects.EngineExhaust;
             exhausts = new ParticleSystem[nozzles.Length];
             for (int i = 0; i < nozzles.Length; i++)
@@ -50,6 +65,8 @@ namespace SpaceAI2
         private void OnEnable()
         {
             if (health == null) return;
+            lastShieldHit = -100f;
+            for (int i = 0; i < shieldHits.Length; i++) shieldHits[i] = new Vector4(0f, 0f, 1f, -100f);
             health.Damaged += OnDamaged;
             health.Destroyed += OnDestroyed;
         }
@@ -63,6 +80,7 @@ namespace SpaceAI2
 
         private void LateUpdate()
         {
+            DrawShield();
             if (exhausts == null) return;
             // Far ships stop simulating their exhaust: in big battles it is most of the particles on screen.
             bool on = effects.IsNear(ship.Position);
@@ -88,9 +106,30 @@ namespace SpaceAI2
         {
             if (effects == null) return;
             bool shield = source.LastShieldDamage > 0f;
+            if (shield && model != null) AddShieldHit(hit.Point);
             effects.Hit(hit.Point, hit.Normal, shield);
             // A hit that breaks through the shield also marks the hull.
             if (shield && hit.Damage > source.LastShieldDamage) effects.Hit(hit.Point, hit.Normal, false);
+        }
+
+        private void AddShieldHit(Vector3 point)
+        {
+            Vector3 local = model.InverseTransformPoint(point);
+            local = new Vector3(local.x / shieldSize.x, local.y / shieldSize.y, local.z / shieldSize.z).normalized;
+            if (local.sqrMagnitude < 0.01f) local = Vector3.forward;
+            shieldHits[shieldHitIndex++ % shieldHits.Length] = new Vector4(local.x, local.y, local.z, Time.time);
+            lastShieldHit = Time.time;
+        }
+
+        private void DrawShield()
+        {
+            if (Time.time - lastShieldHit > ShieldFade || effects == null || effects.ShieldMaterial == null ||
+                !effects.IsNear(ship.Position)) return;
+            shieldProperties ??= new MaterialPropertyBlock();
+            shieldProperties.SetVectorArray(HitsId, shieldHits);
+            shieldProperties.SetColor(ColorId, ShieldColors[ship.Team == 0 ? 0 : 1]);
+            Graphics.DrawMesh(effects.ShieldMesh, Matrix4x4.TRS(model.position, model.rotation, shieldSize), effects.ShieldMaterial,
+                gameObject.layer, null, 0, shieldProperties, ShadowCastingMode.Off, false);
         }
 
         private void OnDestroyed(ShipHealth source, HitInfo hit)

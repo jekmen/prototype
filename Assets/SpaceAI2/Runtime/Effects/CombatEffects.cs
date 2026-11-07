@@ -21,6 +21,8 @@ namespace SpaceAI2
         [SerializeField] private ParticleSystem engineExhaust;
         [Tooltip("Follows each missile and torpedo while its motor burns, scaled by the profile's width.")]
         [SerializeField] private ParticleSystem missileFlame;
+        [Tooltip("The SpaceAI2/Effects/Shield material ShipEffects draws around a ship when its shield is hit.")]
+        [SerializeField] private Material shieldMaterial;
 
         [Header("Limits")]
         [Tooltip("Small effects farther than this from the camera are skipped.")]
@@ -41,6 +43,15 @@ namespace SpaceAI2
         private Transform view;
 
         public ParticleSystem EngineExhaust => engineExhaust;
+
+        public Material ShieldMaterial
+        {
+            get => shieldMaterial;
+            set => shieldMaterial = value;
+        }
+
+        /// <summary>The unit sphere the shield is drawn on; the shader expects a radius of 0.5.</summary>
+        public Mesh ShieldMesh { get; private set; }
 
         public static bool TryGet(out CombatEffects effects)
         {
@@ -65,7 +76,11 @@ namespace SpaceAI2
             engineExhaust = exhaust;
         }
 
-        private void Awake() => instance = this;
+        private void Awake()
+        {
+            instance = this;
+            ShieldMesh = Resources.GetBuiltinResource<Mesh>("New-Sphere.fbx");
+        }
 
         private void OnEnable() => SpaceAI.OriginShifted += OnOriginShifted;
 
