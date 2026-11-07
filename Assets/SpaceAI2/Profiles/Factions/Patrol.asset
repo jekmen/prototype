@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3f600bfbd27e7048abb7eed0a6f59f1, type: 3}
+  m_Name: Patrol
+  m_EditorClassIdentifier: 
+  Color: {r: 0.08, g: 0.5, b: 1, a: 1}
+  DefaultStance: 1
+  Relations:
+  - Faction: {fileID: 11400000, guid: fd1d95bd811dd584b842dbc4cb3ba685, type: 2}
+    Stance: 0
+  - Faction: {fileID: 11400000, guid: 638cb513078f48f43ae0f598d94f1df4, type: 2}
+    Stance: 2
+  WhenAttacked: 1
+  RespondToFriendlyFire: 0

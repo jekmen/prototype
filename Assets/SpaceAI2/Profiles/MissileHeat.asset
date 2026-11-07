@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a31b8bf704ffbf64ba425fd82d3a1171, type: 3}
+  m_Name: MissileHeat
+  m_EditorClassIdentifier: 
+  Guidance: 1
+  EjectSpeed: 20
+  MaxSpeed: 300
+  Acceleration: 220
+  BurnTime: 4
+  Drag: 0.25
+  TurnDrag: 0.0006
+  Lifetime: 10
+  ArmTime: 0.3
+  Navigation: 4
+  MaxTurnAcceleration: 300
+  GuidanceLag: 0.5
+  SeekerAngle: 45
+  FlareSusceptibility: 0.6
+  LockTime: 0.6
+  LockAngle: 15
+  LockRange: 1600
+  MinRange: 200
+  MinTargetRadius: 0
+  Damage: 90
+  BlastRadius: 15
+  ProximityFuse: 6
+  Hull: 6
+  Salvo: 1
+  SalvoSpread: 10
+  Reload: 3
+  Model: {fileID: 3175972289894925177, guid: 2f8b2bc44c00bad43b1b0bdc8fb6b2da, type: 3}
+  ModelMaterial: {fileID: 2100000, guid: 086784b534168d04490978529724136e, type: 2}
+  BodyColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+  FlameColor: {r: 1, g: 0.6, b: 0.25, a: 1}
+  Length: 2.5
+  Width: 0.35
+  TrailColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.5}

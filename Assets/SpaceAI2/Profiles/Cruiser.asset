@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10554064381982146a39d48171f756e1, type: 3}
+  m_Name: Cruiser
+  m_EditorClassIdentifier: 
+  MinSpeed: 10
+  CruiseSpeed: 25
+  MaxSpeed: 35
+  BoostSpeed: 45
+  Acceleration: 8
+  Deceleration: 10
+  PitchRate: 8
+  YawRate: 8
+  RollRate: 15
+  TurnResponse: 0.25
+  BoostTurnFactor: 0.6
+  Grip: 3
+  Hull: 3000
+  Shield: 1000
+  Radius: 30
