@@ -115,11 +115,76 @@ release build of the editor scripts.
 
 ## Demo scenes
 
+### Combat effects
+
+Ships enable visual effects by default through the **Visual Effects** checkbox on `SpaceShip`.
+`ShipEffects` can also be added explicitly to tune nozzle positions, nozzle width and shield dimensions;
+the defaults fit the bundled fighter. Nozzles follow `ShipBank.Visual`, including its bank and pitch.
+Throttle, boost and subsystem power control the exhaust. The old root-level demo trail is hidden when
+`ShipEffects` initializes.
+
+`SpaceEffects` owns three shared particle systems, pooled explosion prefabs, instanced engine plumes and shared shield materials.
+It listens for muzzle flashes, flak bursts (including bursts in empty space), missile launches,
+detonations and interception. Ship damage supplies localized shield dissolve patches, armor sparks and death bursts.
+`ShipHealth.LastShieldDamage` reports the shield absorption for the current damage callback, including
+the hit that empties the shield. Respawning clears old shield impacts.
+
+The shield is invisible between hits. Each hit expands a local patch with animated 3D noise,
+an eroding luminous edge and screen-space refraction, then dissolves completely in 1.1 seconds.
+There is no full-shell grid or idle rim. Up to four impacts overlap; a named GrabPass shares one
+scene-color copy per camera between visible shields. The shield material's **Refraction (pixels)**
+controls distortion strength (12 by default, 0 to disable it).
+
+The Built-in renderer shaders live in `Runtime/Effects/Resources` so runtime-created materials also
+work in player builds. `SpaceBloom` is added to the main camera when effects initialize; disable it or
+adjust its intensity independently. It uses quarter-resolution buffers and requires no rendering package.
+Custom missile trail materials remain supported; the default sprite material is replaced by a soft trail shader.
+
+Explosions are editable native Particle System prefabs in `Runtime/Effects/Resources/VFX`:
+`ExplosionShip.prefab` and `ExplosionMissile.prefab`. The generated RGBA atlas is played by
+**Texture Sheet Animation > Grid > 8 x 8 > Whole Sheet**, with one cycle and a curved **Frame over Time**.
+The fire and smoke materials use Unity's **Particles/Standard Unlit**, **Fade**, and **Flip-Book Blending**.
+The renderer streams include UV, UV2 and AnimBlend. No custom shader selects the atlas frames.
+
+Each prefab separates the flash, fire/smoke, drifting smoke, embers and mesh fragments; the ship version
+also emits three delayed secondary fireballs. Size, color, rotation, noise, lifetime, shape and bursts
+are authored in the normal Particle System modules. The flash uses the Lights module for brief hull illumination.
+All explosion layers use **Main > Simulation Speed = 2** for double-speed playback.
+Edit these prefabs directly in Prefab Mode. Scene rebuilding preserves their settings.
+**Tools > SpaceAI2 > Rebuild Explosion Prefabs** explicitly restores the supplied factory settings.
+**Tools > SpaceAI2 > Upgrade Explosion Flipbooks to 64 Frames** updates existing 4x4 prefabs without resetting
+their particle modules; it remaps playback curves to keep the same animation timing and does not apply twice.
+`SpaceEffects` exposes both prefab references and only handles pooling, world placement, scale and inherited motion.
+
+The original source atlas is 1254 x 1254 with 16 generated frames. Playback uses `ExplosionGenerated64.png`,
+a 4096 x 4096 atlas of 64 interpolated frames, with 512 x 512 cells and transparent gutters.
+`Editor/Tools/bake_explosion_64.py` reconstructs intermediate motion with bidirectional optical flow,
+compensating overall expansion before tracking finer details. RGB and alpha are warped together in
+premultiplied linear color, then stored as straight-alpha sRGB for the standard particle material.
+All interpolation work happens offline; the runtime still uses native flipbook blending.
+Its light and shadow are painted into the source; it is not a six-way volume. See [ExplosionSource.md](ExplosionSource.md)
+for source details, prompts and regeneration. These are interpolated phases, not 64 independently simulated states;
+they smooth the existing motion without adding new source detail. The runtime atlas occupies approximately
+64 MiB uncompressed and is shared by both explosion types. Explosion pools prewarm four instances per type
+and cap at 16 ship plus 32 missile bursts, recycling the oldest at capacity.
+
+Shared particle buffers are bounded to 8,000 particles, with an emission cap of 900 per frame.
+Engine rendering supports up to 1,023 nozzles in a batch; distant plumes and impacts are culled at 1.8 km,
+explosions at 3.5 km, and engine motes at 300 m. These are visual limits only.
+World-space particles are shifted by `SpaceAI.ShiftOrigin` itself: do not subtract the offset a second time.
+Explosion particles simulate locally and follow their pooled root when the world origin shifts.
+Shield hit locations stay in model space.
+
+Open `EffectsShowcase` or rebuild it with **Tools > SpaceAI2 > Build Effects Showcase Scene**.
+Keys **1–6** select engines, shield, laser, missile, explosion and hull impacts. **Space** toggles automatic cycling.
+The showcase fires the actual projectile and missile systems at a stationary fighter.
+
 Every scene is built by a menu item under **Tools > SpaceAI2** and can be rebuilt at any time.
 
 | Scene | Shows | Keys |
 |---|---|---|
 | Quickstart | Ships set up by `SpaceShip` + profiles, UnityEvents, AI overlay | Tab, F3 |
+| EffectsShowcase | Engines, reactive shield, laser, missiles, explosions, hull sparks | 1–6, Space |
 | FlightTest | Player flight model and HUD | mouse, WASD, Shift boost |
 | PursuitTest | Lead/lag pursuit of a drone or the player | Tab, T, R |
 | ObstacleTest | Obstacle avoidance through an asteroid field | Tab, R |

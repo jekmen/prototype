@@ -19,6 +19,7 @@ namespace SpaceAI2
 
         public float Hull { get; private set; }
         public float Shield { get; private set; }
+        public float LastShieldDamage { get; private set; }
         public float MaxHull => ship.Motor.Profile != null ? ship.Motor.Profile.Hull : 100f;
         public float MaxShield => ship.Motor.Profile != null ? ship.Motor.Profile.Shield : 0f;
         public bool IsAlive => Hull > 0f;
@@ -27,6 +28,7 @@ namespace SpaceAI2
         {
             Hull = MaxHull;
             Shield = MaxShield;
+            LastShieldDamage = 0f;
         }
 
         private void Awake()
@@ -50,6 +52,7 @@ namespace SpaceAI2
             if (!IsAlive) return;
             lastHitTime = Time.time;
             float absorbed = Mathf.Min(Shield, hit.Damage);
+            LastShieldDamage = absorbed;
             Shield -= absorbed;
             Hull = Mathf.Max(0f, Hull - (hit.Damage - absorbed));
             Damaged?.Invoke(this, hit);
