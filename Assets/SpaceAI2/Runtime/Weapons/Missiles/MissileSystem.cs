@@ -13,6 +13,8 @@ namespace SpaceAI2
         public SpaceShip Owner;
         /// <summary>Null once the seeker lost the target or was decoyed.</summary>
         public SpaceShip Target;
+        /// <summary>Part of the target the missile homes on; null homes on the ship's centre.</summary>
+        public Subsystem TargetPart;
         public Vector3 Position;
         public Vector3 Velocity;
         public float Age;
@@ -126,7 +128,7 @@ namespace SpaceAI2
 
         public MissileTrack this[int index] => missiles[index].Track;
 
-        public int Launch(MissileProfile profile, SpaceShip owner, Vector3 origin, Vector3 direction, SpaceShip target)
+        public int Launch(MissileProfile profile, SpaceShip owner, Vector3 origin, Vector3 direction, SpaceShip target, Subsystem part = null)
         {
             if (profile == null) return 0;
             if (count == missiles.Length) Array.Resize(ref missiles, count * 2);
@@ -138,6 +140,7 @@ namespace SpaceAI2
                 Profile = profile,
                 Owner = owner,
                 Target = profile.IsGuided ? target : null,
+                TargetPart = profile.IsGuided && part != null && part.Ship == target ? part : null,
                 Position = origin,
                 Velocity = velocity
             };
@@ -385,7 +388,9 @@ namespace SpaceAI2
             bool armed = t.Age >= profile.ArmTime;
 
             if (t.Target != null && !t.Target.gameObject.activeInHierarchy) t.Target = null;
-            if (armed && t.Target != null && Vector3.Angle(t.Velocity, t.Target.Position - t.Position) > profile.SeekerAngle)
+            if (t.TargetPart != null && (t.TargetPart.IsDestroyed || t.TargetPart.Ship != t.Target)) t.TargetPart = null;
+            Vector3 aim = t.TargetPart != null ? t.TargetPart.AimPoint : t.Target != null ? t.Target.Position : t.Position;
+            if (armed && t.Target != null && Vector3.Angle(t.Velocity, aim - t.Position) > profile.SeekerAngle)
                 t.Target = null;
 
             float speed = t.Velocity.magnitude;
@@ -394,7 +399,7 @@ namespace SpaceAI2
             if (armed && t.Target != null)
             {
                 // Pure proportional navigation: turn the flight path at N times the line-of-sight rate.
-                Vector3 range = t.Target.Position - t.Position;
+                Vector3 range = aim - t.Position;
                 Vector3 relative = t.Target.Velocity - t.Velocity;
                 Vector3 losRate = Vector3.Cross(range, relative) / Mathf.Max(range.sqrMagnitude, 1f);
                 command = Vector3.ClampMagnitude(profile.Navigation * Vector3.Cross(losRate, t.Velocity), profile.MaxTurnAcceleration);
@@ -416,11 +421,12 @@ namespace SpaceAI2
             // Proximity fuse: closest approach to the target during this step.
             if (armed && t.Target != null)
             {
-                Vector3 offset = t.Target.Position - start;
+                Vector3 offset = aim - start;
                 Vector3 closing = t.Target.Velocity - velocity;
                 float when = Mathf.Clamp(-Vector3.Dot(offset, closing) / Mathf.Max(closing.sqrMagnitude, 0.001f), 0f, dt);
                 Vector3 miss = offset + closing * when;
-                if (miss.magnitude - t.Target.Radius <= profile.ProximityFuse)
+                float radius = t.TargetPart != null ? t.TargetPart.Radius : t.Target.Radius;
+                if (miss.magnitude - radius <= profile.ProximityFuse)
                 {
                     t.Velocity = velocity;
                     End(m, true, start + velocity * when);

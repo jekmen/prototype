@@ -19,6 +19,7 @@ namespace SpaceAI2
         private SpaceShip ship;
         private Vector3[] localHardpoints;
         private SpaceShip lockTarget;
+        private Subsystem lockSubsystem;
         private float cooldown;
         private float lockTime;
         private int rail;
@@ -60,8 +61,32 @@ namespace SpaceAI2
             {
                 if (lockTarget == value) return;
                 lockTarget = value;
+                lockSubsystem = null;
                 lockTime = 0f;
             }
+        }
+
+        /// <summary>Part of the lock target the missiles home on; null homes on the whole ship. Changing it restarts the lock.</summary>
+        public Subsystem LockSubsystem
+        {
+            get => lockSubsystem;
+            set
+            {
+                if (lockSubsystem == value) return;
+                lockSubsystem = value;
+                lockTime = 0f;
+            }
+        }
+
+        /// <summary>Where the seeker looks: the locked part while it works, otherwise the target's centre.</summary>
+        public Vector3 LockPoint => IsPartLocked ? lockSubsystem.AimPoint : lockTarget != null ? lockTarget.Position : ship.Position;
+
+        private bool IsPartLocked => lockSubsystem != null && !lockSubsystem.IsDestroyed && lockSubsystem.Ship == lockTarget;
+
+        public void Lock(SpaceShip target, Subsystem part)
+        {
+            LockTarget = target;
+            LockSubsystem = part;
         }
 
         public float LockProgress => missile == null || missile.LockTime <= 0f ? (IsInLockCone ? 1f : 0f) : Mathf.Clamp01(lockTime / missile.LockTime);
@@ -74,7 +99,7 @@ namespace SpaceAI2
             get
             {
                 if (lockTarget == null || !lockTarget.gameObject.activeInHierarchy) return false;
-                Vector3 offset = lockTarget.Position - ship.Position;
+                Vector3 offset = LockPoint - ship.Position;
                 return offset.sqrMagnitude <= missile.LockRange * missile.LockRange && Vector3.Angle(ship.Forward, offset) <= missile.LockAngle;
             }
         }
@@ -84,6 +109,7 @@ namespace SpaceAI2
             if (!CanLaunch) return false;
             Rigidbody body = ship.Motor.Body;
             SpaceShip target = missile.IsGuided ? lockTarget : null;
+            Subsystem part = target != null && IsPartLocked ? lockSubsystem : null;
             for (int i = 0; i < missile.Salvo; i++)
             {
                 Vector3 origin = body.position + body.rotation * localHardpoints[rail];
@@ -97,7 +123,7 @@ namespace SpaceAI2
                     Vector3 side = Quaternion.AngleAxis(around, Vector3.forward) * Vector3.up;
                     direction = body.rotation * Quaternion.AngleAxis(missile.SalvoSpread, Vector3.Cross(Vector3.forward, side)) * Vector3.forward;
                 }
-                MissileSystem.Instance.Launch(missile, ship, origin, direction, target);
+                MissileSystem.Instance.Launch(missile, ship, origin, direction, target, part);
             }
 
             cooldown = missile.Reload;
@@ -126,6 +152,7 @@ namespace SpaceAI2
         private void OnDisable()
         {
             lockTarget = null;
+            lockSubsystem = null;
             lockTime = 0f;
         }
 

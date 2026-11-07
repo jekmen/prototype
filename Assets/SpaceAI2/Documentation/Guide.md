@@ -75,6 +75,7 @@ brain.ForcedTarget = enemy;              // attack this ship while it lives
 brain.ForcedSubsystem = enemy.Subsystems[0];
 formation.Attack(capitalShip, TargetPriority.Engines);
 launcher.LockTarget = enemy; launcher.Launch();
+launcher.Lock(cruiser, cruiser.Subsystems[0]);  // missiles home on that part
 SpaceShip nearest = SpaceAIWorld.Instance.Registry.FindNearestEnemy(ship, 3000f);
 ```
 
@@ -216,7 +217,7 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 | Quickstart | Patrol, pirates and traders as three factions in an asteroid field, two freighters on a route with escorts, a cruiser on each side, UnityEvents and faction changes feeding an event log, respawns, AI overlay | Tab, F3 |
 | Turret Strike | Six aces ordered to destroy only a cruiser's turrets, attack runs close along the hull; switch the priority to turrets, point defense, engines or hull, repair the cruiser | 1–4, R, Tab |
 | Dogfight | 10 v 10 among 300 asteroids, aces with radar missiles and veterans with heat seekers, stats and cost overlay | Tab, R |
-| Dogfight Player | The same fight with you in one of the blue seats, starting in the cockpit | C, R |
+| Dogfight Player | The same fight with you in one of the blue seats, starting in the cockpit, and a red cruiser whose subsystems are marked on the HUD: point the nose at one to lock missiles on it | C, R |
 
 `PlayerPilot` flies with a mouse stick (W/S throttle, Shift boost, A/D yaw, Q/E roll, Space recenters, Esc frees
 the cursor), fires the guns on the left button and launches a missile on the right. The seeker picks the enemy

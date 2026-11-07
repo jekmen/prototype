@@ -103,33 +103,54 @@ namespace SpaceAI2
             if (Time.time >= nextTargetSearch)
             {
                 nextTargetSearch = Time.time + 0.2f;
-                launcher.LockTarget = FindLockTarget(launcher.Missile);
+                FindLockTarget(launcher.Missile);
             }
             if (armed && UnityEngine.Input.GetKeyDown(launchMissile)) launcher.Launch();
         }
 
-        private SpaceShip FindLockTarget(MissileProfile missile)
+        /// <summary>
+        /// Locks the ship or part closest to the nose. The current lock keeps a margin so the seeker doesn't hop
+        /// between parts a few degrees apart; a part destroyed under the lock gives way at once.
+        /// </summary>
+        private void FindLockTarget(MissileProfile missile)
         {
-            if (!missile.IsGuided || ship == null || !SpaceAIWorld.TryGet(out SpaceAIWorld world)) return null;
+            if (!missile.IsGuided || ship == null || !SpaceAIWorld.TryGet(out SpaceAIWorld world))
+            {
+                launcher.Lock(null, null);
+                return;
+            }
             float cone = missile.LockAngle * targetCone;
             Vector3 position = ship.Position;
             Vector3 forward = ship.Forward;
 
             SpaceShip current = launcher.LockTarget;
-            if (IsCandidate(current, missile) && Vector3.Angle(forward, current.Position - position) <= cone) return current;
+            Subsystem currentPart = launcher.LockSubsystem;
+            if (currentPart != null && currentPart.IsDestroyed) current = null;
+            float currentAngle = IsCandidate(current, missile) ? Vector3.Angle(forward, launcher.LockPoint - position) : float.MaxValue;
 
             world.Registry.Query(position, missile.LockRange, nearby);
             SpaceShip best = null;
-            float bestAngle = cone;
+            Subsystem bestPart = null;
+            float bestAngle = Mathf.Min(cone, currentAngle * 0.5f);
             foreach (SpaceShip other in nearby)
             {
                 if (!IsCandidate(other, missile)) continue;
-                float angle = Vector3.Angle(forward, other.Position - position);
-                if (angle > bestAngle) continue;
+                Consider(other, null, other.Position);
+                foreach (Subsystem part in other.Subsystems)
+                    if (!part.IsDestroyed) Consider(other, part, part.AimPoint);
+            }
+
+            if (best != null) launcher.Lock(best, bestPart);
+            else if (currentAngle > cone) launcher.Lock(null, null);
+
+            void Consider(SpaceShip other, Subsystem part, Vector3 point)
+            {
+                float angle = Vector3.Angle(forward, point - position);
+                if (angle >= bestAngle) return;
                 bestAngle = angle;
                 best = other;
+                bestPart = part;
             }
-            return best;
         }
 
         private bool IsCandidate(SpaceShip other, MissileProfile missile) =>

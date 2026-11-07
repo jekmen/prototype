@@ -13,6 +13,8 @@ namespace SpaceAI2.Demo
         [SerializeField] private FlightHud hud;
         [Tooltip("Optional ship flown by the player; the camera stays on it and Tab is off.")]
         [SerializeField] private SpaceShip player;
+        [Tooltip("Large ships that come back where they started, with their subsystems repaired.")]
+        [SerializeField] private SpaceShip[] capitalShips = new SpaceShip[0];
         [SerializeField, Min(0f)] private float respawnDelay = 4f;
         [SerializeField, Min(0f)] private float spawnSpread = 150f;
 
@@ -27,6 +29,7 @@ namespace SpaceAI2.Demo
         private float longestDryChase;
         private GUIStyle style;
         private readonly StringBuilder text = new StringBuilder();
+        private Pose[] capitalPoses;
 
         public void Setup(CombatBrain[] shipBrains, Transform[] teamSpawns, ChaseCamera cameraRig, FlightHud flightHud)
         {
@@ -49,6 +52,12 @@ namespace SpaceAI2.Demo
                 };
             }
             if (player != null) player.GetComponent<ShipHealth>().Destroyed += OnDestroyed;
+            capitalPoses = new Pose[capitalShips.Length];
+            for (int i = 0; i < capitalShips.Length; i++)
+            {
+                capitalPoses[i] = new Pose(capitalShips[i].transform.position, capitalShips[i].transform.rotation);
+                capitalShips[i].Health.Destroyed += OnDestroyed;
+            }
             ShowView(0);
         }
 
@@ -61,6 +70,8 @@ namespace SpaceAI2.Demo
                 brain.GetComponent<ShipHealth>().Destroyed -= OnDestroyed;
             }
             if (player != null) player.GetComponent<ShipHealth>().Destroyed -= OnDestroyed;
+            foreach (SpaceShip capital in capitalShips)
+                if (capital != null) capital.Health.Destroyed -= OnDestroyed;
         }
 
         private void OnBehaviorChanged(CombatBrain brain, CombatBehavior from, CombatBehavior to)
@@ -81,6 +92,13 @@ namespace SpaceAI2.Demo
             Transform spawn = spawns[Mathf.Clamp(ship.Team, 0, spawns.Length - 1)];
             Vector3 position = spawn.position + Random.insideUnitSphere * spawnSpread;
             Quaternion rotation = spawn.rotation;
+            int capital = System.Array.IndexOf(capitalShips, ship);
+            if (capital >= 0)
+            {
+                position = capitalPoses[capital].position;
+                rotation = capitalPoses[capital].rotation;
+                ship.RestoreSubsystems();
+            }
 
             health.Restore();
             if (ship.TryGetComponent(out MissileLauncher launcher)) launcher.Rearm();
@@ -90,7 +108,7 @@ namespace SpaceAI2.Demo
             {
                 body.position = position;
                 body.rotation = rotation;
-                body.velocity = rotation * Vector3.forward * ship.Motor.Profile.CruiseSpeed;
+                body.velocity = capital >= 0 ? Vector3.zero : rotation * Vector3.forward * ship.Motor.Profile.CruiseSpeed;
                 body.angularVelocity = Vector3.zero;
             }
             ship.gameObject.SetActive(true);
