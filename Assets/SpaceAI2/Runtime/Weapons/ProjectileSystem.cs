@@ -128,7 +128,17 @@ namespace SpaceAI2
             }
             instance = this;
             projectiles = new Projectile[initialCapacity];
-            mesh = Resources.GetBuiltinResource<Mesh>("Cube.fbx");
+            mesh = BuildQuad();
+        }
+
+        // The tracer shader turns this unit quad to face the camera, so its own orientation does not matter.
+        private static Mesh BuildQuad()
+        {
+            var quad = new Mesh { name = "Tracer Quad" };
+            quad.SetVertices(new[] { new Vector3(-0.5f, 0f, -0.5f), new Vector3(0.5f, 0f, -0.5f), new Vector3(0.5f, 0f, 0.5f), new Vector3(-0.5f, 0f, 0.5f) });
+            quad.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
+            quad.bounds = new Bounds(Vector3.zero, Vector3.one * 4f);
+            return quad;
         }
 
         private void OnEnable() => SpaceAI.OriginShifted += OnOriginShifted;
@@ -153,6 +163,7 @@ namespace SpaceAI2
             if (commands.IsCreated) commands.Dispose();
             if (results.IsCreated) results.Dispose();
             foreach (Material material in materials) Destroy(material);
+            if (mesh != null) Destroy(mesh);
         }
 
         private void FixedUpdate()
