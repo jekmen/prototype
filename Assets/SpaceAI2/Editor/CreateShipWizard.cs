@@ -45,7 +45,7 @@ namespace SpaceAI2.Editor
 
         private void LoadDefaults()
         {
-            const string profiles = SceneBuilderUtils.Root + "/Profiles/";
+            const string profiles = EditorAssets.Profiles;
             profile ??= AssetDatabase.LoadAssetAtPath<ShipProfile>(profiles + "Fighter.asset");
             pilot ??= AssetDatabase.LoadAssetAtPath<PilotProfile>(profiles + "PilotVeteran.asset");
             weapon ??= AssetDatabase.LoadAssetAtPath<WeaponProfile>(profiles + "Cannon.asset");
@@ -116,7 +116,7 @@ namespace SpaceAI2.Editor
             ship.Weapon = weapon;
             ship.Missile = missile;
             ship.ApplySetup();
-            SceneBuilderUtils.PaintTeam(ship);
+            EditorAssets.PaintTeam(ship);
             if (bank) root.AddComponent<ShipBank>().Visual = visual;
 
             if (weapon != null) root.GetComponent<ShipGun>().Muzzles = CreatePoints(root.transform, "Muzzle", muzzles, bounds, PointKind.Muzzle);
@@ -125,7 +125,7 @@ namespace SpaceAI2.Editor
 
             if (savePrefab)
             {
-                SceneBuilderUtils.EnsureFolder(prefabFolder);
+                EditorAssets.EnsureFolder(prefabFolder);
                 string path = AssetDatabase.GenerateUniqueAssetPath($"{prefabFolder}/{root.name}.prefab");
                 PrefabUtility.SaveAsPrefabAssetAndConnect(root, path, InteractionMode.UserAction);
             }
@@ -238,22 +238,30 @@ namespace SpaceAI2.Editor
 
         private static void EnsureSceneSystems()
         {
+            bool none = FindObjectOfType<SpaceAIWorld>() == null && FindObjectOfType<ProjectileSystem>() == null &&
+                        FindObjectOfType<MissileSystem>() == null && FindObjectOfType<CombatEffects>() == null;
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(EditorAssets.SystemsPrefab);
+            if (none && prefab != null)
+            {
+                Undo.RegisterCreatedObjectUndo(PrefabUtility.InstantiatePrefab(prefab), "Create ship");
+                return;
+            }
             if (FindObjectOfType<SpaceAIWorld>() == null)
                 Undo.RegisterCreatedObjectUndo(new GameObject(nameof(SpaceAIWorld), typeof(SpaceAIWorld)), "Create ship");
             if (FindObjectOfType<ProjectileSystem>() == null)
             {
                 var projectiles = new GameObject(nameof(ProjectileSystem)).AddComponent<ProjectileSystem>();
-                projectiles.TracerMaterial = GunneryTestSceneBuilder.LoadOrCreateTracerMaterial();
+                projectiles.TracerMaterial = AssetDatabase.LoadAssetAtPath<Material>(EditorAssets.Profiles + "Tracer.mat");
                 Undo.RegisterCreatedObjectUndo(projectiles.gameObject, "Create ship");
             }
             if (FindObjectOfType<MissileSystem>() == null)
-            {
-                var missiles = new GameObject(nameof(MissileSystem)).AddComponent<MissileSystem>();
-                missiles.TrailMaterial = AssetDatabase.GetBuiltinExtraResource<Material>("Sprites-Default.mat");
-                Undo.RegisterCreatedObjectUndo(missiles.gameObject, "Create ship");
-            }
+                Undo.RegisterCreatedObjectUndo(new GameObject(nameof(MissileSystem), typeof(MissileSystem)), "Create ship");
             if (FindObjectOfType<CombatEffects>() == null)
-                Undo.RegisterCreatedObjectUndo(SceneBuilderUtils.AddCombatEffects().gameObject, "Create ship");
+            {
+                var effects = new GameObject(nameof(CombatEffects)).AddComponent<CombatEffects>();
+                EffectPrefabBuilder.Assign(effects);
+                Undo.RegisterCreatedObjectUndo(effects.gameObject, "Create ship");
+            }
         }
     }
 }

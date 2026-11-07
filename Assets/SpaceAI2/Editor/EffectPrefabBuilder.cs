@@ -10,7 +10,7 @@ namespace SpaceAI2.Editor
     /// </summary>
     internal static class EffectPrefabBuilder
     {
-        public const string Folder = SceneBuilderUtils.Root + "/Content/Effects";
+        public const string Folder = EditorAssets.Root + "/Content/Effects";
         private const string AdditivePath = Folder + "/ParticleAdditive.mat";
         private const string AlphaPath = Folder + "/ParticleAlpha.mat";
         private const string TrailPath = Folder + "/MissileTrail.mat";
@@ -23,7 +23,7 @@ namespace SpaceAI2.Editor
         [MenuItem("Tools/SpaceAI2/Build Effect Prefabs")]
         public static void Build()
         {
-            SceneBuilderUtils.EnsureFolder(Folder);
+            EditorAssets.EnsureFolder(Folder);
             Material additive = ParticleMaterial(AdditivePath, true);
             Material alpha = ParticleMaterial(AlphaPath, false);
             // A trail stretches the texture over its whole length; sampling only the centre column keeps

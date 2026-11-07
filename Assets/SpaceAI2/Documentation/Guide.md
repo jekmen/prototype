@@ -7,7 +7,10 @@ defense, built to run hundreds of ships. Everything lives in the `SpaceAI2` name
 
 1. Open `Scenes/Quickstart` and press Play. Two wings of four fight; the feed at the top left comes from the ships'
    UnityEvents, F3 toggles the AI overlay, Tab switches the camera.
-2. To make your own ship, select a model and run **Tools > SpaceAI2 > Create Ship From Model**, or add one component
+2. Drop the prefabs from `Prefabs` into your own scene: `SpaceAI Systems` once per scene, then `Fighter`
+   (blue team), `Fighter Red`, `Player Fighter` or `Cruiser`. Change pilot, weapon, missile and team on the
+   instance's `SpaceShip`.
+3. To make your own ship, select a model and run **Tools > SpaceAI2 > Create Ship From Model**, or add one component
    by hand:
    - Add `SpaceShip` to an empty GameObject with your model as a child (nose along +Z).
    - Assign a **Ship profile**. With a profile assigned the ship adds and configures the rest itself:
@@ -15,11 +18,11 @@ defense, built to run hundreds of ships. Everything lives in the `SpaceAI2` name
      and `AIPilot` + `CombatBrain` or `PlayerPilot`, depending on **Control**.
    - Pick a **Pilot** (skill), **Weapon** and **Missile** profile. Empty weapon or missile = no gun or launcher.
    - Set **Team**. Ships on different teams fight each other.
-3. Press Play. The scene services (`SpaceAIWorld`, `ProjectileSystem`, `MissileSystem`) are created on demand; the
-   wizard and the scene builders add them up front so you can assign tracer and trail materials.
+4. Press Play. The scene services (`SpaceAIWorld`, `ProjectileSystem`, `MissileSystem`) are created on demand; the
+   `SpaceAI Systems` prefab and the wizard add them up front with tracer, trail and effect assets assigned.
 
 Setup never removes components: switching Control from AI to Player leaves the AI components for you to delete.
-A ship without a profile on `SpaceShip` is configured entirely by hand, as in the test scenes.
+A ship without a profile on `SpaceShip` is configured entirely by hand.
 
 ## Create Ship From Model
 
@@ -29,7 +32,7 @@ A ship without a profile on `SpaceShip` is configured entirely by hand, as in th
   faces +Z) and `ShipBank`, which leans the model in turns without touching physics;
 - a sphere, box or convex mesh collider fitted to the model's renderers (colliders on the model are removed);
 - gun muzzles at the nose and missile rails under the hull, as child transforms you can move;
-- the scene services if the scene has none, and optionally a prefab.
+- the `SpaceAI Systems` prefab if the scene has no services, and optionally a prefab of the ship.
 
 It warns when the model's size differs a lot from the profile's radius: the AI keeps distance and avoids traffic by
 the profile radius, so big ships need their own profile.
@@ -110,12 +113,11 @@ can also be called directly, e.g. by a networking layer.
 
 `SpaceAIWorld` updates all pilots from one `Update`, ships are read through per-frame snapshots, target scoring and
 traffic checks are cached and staggered, and projectiles and missiles are plain arrays stepped by one system each.
-In the `LoadTest200` scene (100 v 100 with 300 asteroids) the AI and projectiles cost about 3 ms per frame in a
-release build of the editor scripts.
+With 100 v 100 ships, 300 asteroids and half the fighters carrying missiles, the AI costs about 4 ms per frame and
+projectiles and missiles under 1 ms together in a release build of the editor scripts. `PerformanceOverlay` on the
+Dogfight camera shows the split.
 
-## Demo scenes
-
-### Combat effects
+## Combat effects
 
 Effects are plain Particle System prefabs on Unity's built-in **Particles/Standard Unlit** shader, plus one
 custom shader for the shield bubble (`Shield.shader`); there are no post effects. They live in `Content/Effects`:
@@ -134,7 +136,7 @@ and plays pooled copies. Effects beyond **Cull Distance** from the camera are sk
 longer distance); **Max Per Effect** caps each pool and reuses the oldest copy. World-space particles follow
 `SpaceAI.ShiftOrigin`. Call `CombatEffects.Hit` or `CombatEffects.Explosion` to play effects from your own code.
 With a `MissileFlame` prefab set, `CombatEffects` turns off `MissileSystem.DrawFlames`, the built-in flame and
-blast spheres. Missile smoke stays a `TrailRenderer`; the effect builders set its **Trail Material** to
+blast spheres. Missile smoke stays a `TrailRenderer`; the `SpaceAI Systems` prefab sets its **Trail Material** to
 `MissileTrail.mat`, a soft-edged particle material.
 
 Ships get `ShipEffects` at start when the scene has `CombatEffects` and the **Visual Effects** checkbox on
@@ -145,27 +147,20 @@ four hits and fades in about a second. It uses `CombatEffects`' **Shield Materia
 
 Edit the prefabs directly to change the look. **Tools > SpaceAI2 > Build Effect Prefabs** regenerates the muzzle
 flash, hits, exhaust, missile flame, trail material and the shield material if missing (overwriting edits to them); the explosion prefabs are hand-tuned and are never rebuilt.
-Scene builders and the Create Ship wizard add `CombatEffects` to any scene with weapons.
+`CombatEffects` is part of the `SpaceAI Systems` prefab; the Create Ship wizard adds it to any scene with weapons.
 
-Open `EffectsShowcase` or rebuild it with **Tools > SpaceAI2 > Build Effects Showcase Scene**.
-Keys **1–6** select engines, shield, laser, missile, explosion and hull impacts. **Space** toggles automatic cycling.
-The showcase fires the actual projectile and missile systems at a stationary fighter.
+## Prefabs and demo scenes
 
-Every scene is built by a menu item under **Tools > SpaceAI2** and can be rebuilt at any time.
+| Prefab | Contents |
+|---|---|
+| `SpaceAI Systems` | `SpaceAIWorld`, `ProjectileSystem`, `MissileSystem`, `CombatEffects`, one per scene |
+| `Fighter`, `Fighter Red` | AI fighter with a cannon, veteran pilot; the red variant is team 1 with the red livery |
+| `Player Fighter` | Fighter flown with `PlayerPilot` (mouse, WASD, Shift boost), cannon and heat seekers |
+| `Cruiser` | Capital ship with point defense, flak and main gun turrets and three engines, each a subsystem |
 
 | Scene | Shows | Keys |
 |---|---|---|
-| Quickstart | Ships set up by `SpaceShip` + profiles, UnityEvents, AI overlay | Tab, F3 |
-| EffectsShowcase | Engines, reactive shield, laser, missiles, explosions, hull sparks | 1–6, Space |
-| FlightTest | Player flight model and HUD | mouse, WASD, Shift boost |
-| PursuitTest | Lead/lag pursuit of a drone or the player | Tab, T, R |
-| ObstacleTest | Obstacle avoidance through an asteroid field | Tab, R |
-| GunneryTest | Aiming and firing solutions per weapon | 1–n, Tab, R |
-| Dogfight1v1, Dogfight10v10, Dogfight10v10Asteroids | Dogfighting behaviors and stats | Tab, R |
-| FormationTest | Squads, orders, break-up and rejoin | Tab, 1–4, E, R |
-| MissileTest | Missile types, lock, evasion, torpedoes | 1–n, Tab, R |
-| TurretTest | Capital ship turrets, flak, point defense, subsystems, attack runs | see on-screen help |
-| LoadTest200 | 200 ships and the cost overlay | Tab |
-| DogfightFar | 10 v 10 fought 50 km from the origin with a floating origin | Tab |
+| Quickstart | Two wings of four, UnityEvents feeding an event log, respawns, AI overlay | Tab, F3 |
+| Dogfight | 10 v 10 among 300 asteroids, aces with radar missiles and veterans with heat seekers, stats and cost overlay | Tab, R |
 
 Moving from SpaceAI 1.x? See [Migration.md](Migration.md).

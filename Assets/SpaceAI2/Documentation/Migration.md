@@ -49,7 +49,7 @@ SpaceAI 2 is a rewrite. Its API is not compatible with 1.x: the two can live in 
 | `ItemsStaf` (hit sounds, explosion, fire particle) | Your effects on `OnDamaged` / `OnDestroyed` |
 
 The 1.x values do not convert one to one (1.x turned by interpolation, 2.0 by rates in degrees per second), so start
-from `Profiles/Fighter` or `Profiles/Cruiser` and tune by flying the ship in `FlightTest`.
+from `Profiles/Fighter` or `Profiles/Cruiser` and tune by flying the ship (make it the `Player Fighter` prefab, or set **Control** to Player).
 
 ### Weapons
 
@@ -76,10 +76,10 @@ from `Profiles/Fighter` or `Profiles/Cruiser` and tune by flying the ship in `Fl
 
 | 1.x | 2.0 |
 |---|---|
-| `SA_Manager` (required) | Nothing required; add `SpaceAIWorld`, `ProjectileSystem`, `MissileSystem` to set materials |
+| `SA_Manager` (required) | Nothing required; drop in the `SpaceAI Systems` prefab to get materials and effects set up |
 | `SA_Manager` spawning (`shipPrefabs`, `shipCount`, `initTime`) | Instantiate prefabs yourself; a ship registers itself when enabled |
 | `SA_Camera` | `Demo/ChaseCamera` (minimal) or your own camera |
-| `SA_AsteroidsManager` | Any colliders work as obstacles; asteroid scenes are built by the scene builders |
+| `SA_AsteroidsManager` | Any colliders work as obstacles; see the asteroid field in the Dogfight scene |
 
 ## Steps
 
