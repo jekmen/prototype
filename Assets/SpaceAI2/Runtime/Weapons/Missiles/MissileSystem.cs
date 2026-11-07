@@ -69,6 +69,13 @@ namespace SpaceAI2
         private readonly Matrix4x4[] matrices = new Matrix4x4[BatchSize];
 
         private Missile[] missiles = new Missile[64];
+        private int[] sweepIndex = new int[64];
+        private Vector3[] sweepPosition = new Vector3[64];
+        private Vector3[] sweepVelocity = new Vector3[64];
+        private float[] sweepRadius = new float[64];
+        private float[] sweepSpeed = new float[64];
+        private int sweepCount;
+        private float sweepStep = -1f;
         private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
         private int count;
         private int nextId = 1;
@@ -188,22 +195,62 @@ namespace SpaceAI2
         {
             id = 0;
             time = float.MaxValue;
-            for (int i = 0; i < count; i++)
+            // Every shot in the step is tested against every missile, so this loop is plain floats over packed
+            // copies: Vector3 operators are not inlined by Mono and cost several times more.
+            if (sweepStep != Time.fixedTime || sweepCount > count) PackTargets();
+            float ox = origin.x, oy = origin.y, oz = origin.z;
+            float vx = velocity.x, vy = velocity.y, vz = velocity.z;
+            float shotReach = Mathf.Sqrt(vx * vx + vy * vy + vz * vz) * dt;
+            for (int i = 0; i < sweepCount; i++)
             {
-                Missile m = missiles[i];
-                MissileProfile profile = profiles[m.Profile];
-                if (m.Hull <= 0f || profile.Hull <= 0f) continue;
-                if (shooter != null && m.Track.Owner != null && !m.Track.Owner.IsEnemy(shooter)) continue;
+                Vector3 mp = sweepPosition[i], mv = sweepVelocity[i];
+                float sx = ox - mp.x, sy = oy - mp.y, sz = oz - mp.z;
+                float reach = shotReach + sweepSpeed[i] * dt * 2f + sweepRadius[i];
+                if (sx * sx + sy * sy + sz * sz > reach * reach) continue;
 
-                Vector3 start = origin - (m.Track.Position - m.Track.Velocity * dt);
-                Vector3 relative = velocity - m.Track.Velocity;
-                float speed = relative.sqrMagnitude;
-                float t = speed > 0f ? Mathf.Clamp(-Vector3.Dot(start, relative) / speed, 0f, dt) : 0f;
-                if (t >= time || (start + relative * t).sqrMagnitude > profile.HitRadius * profile.HitRadius) continue;
+                sx += mv.x * dt;
+                sy += mv.y * dt;
+                sz += mv.z * dt;
+                float rx = vx - mv.x, ry = vy - mv.y, rz = vz - mv.z;
+                float speed = rx * rx + ry * ry + rz * rz;
+                float t = speed > 0f ? Mathf.Clamp(-(sx * rx + sy * ry + sz * rz) / speed, 0f, dt) : 0f;
+                float cx = sx + rx * t, cy = sy + ry * t, cz = sz + rz * t;
+                if (t >= time || cx * cx + cy * cy + cz * cz > sweepRadius[i] * sweepRadius[i]) continue;
+                ref Missile m = ref missiles[sweepIndex[i]];
+                if (m.Hull <= 0f) continue;
+                if (shooter != null && m.Track.Owner != null && !m.Track.Owner.IsEnemy(shooter)) continue;
                 time = t;
                 id = m.Track.Id;
             }
             return time < float.MaxValue;
+        }
+
+        // Missiles keep their slots until the end of their own step, so the indices hold for the projectile step.
+        private void PackTargets()
+        {
+            sweepStep = Time.fixedTime;
+            if (sweepIndex.Length < count)
+            {
+                int size = Mathf.NextPowerOfTwo(count);
+                sweepIndex = new int[size];
+                sweepPosition = new Vector3[size];
+                sweepVelocity = new Vector3[size];
+                sweepRadius = new float[size];
+                sweepSpeed = new float[size];
+            }
+            sweepCount = 0;
+            for (int i = 0; i < count; i++)
+            {
+                ref Missile m = ref missiles[i];
+                MissileProfile profile = profiles[m.Profile];
+                if (m.Hull <= 0f || profile.Hull <= 0f) continue;
+                sweepIndex[sweepCount] = i;
+                sweepPosition[sweepCount] = m.Track.Position;
+                sweepVelocity[sweepCount] = m.Track.Velocity;
+                sweepRadius[sweepCount] = profile.HitRadius;
+                sweepSpeed[sweepCount] = m.Track.Velocity.magnitude;
+                sweepCount++;
+            }
         }
 
         /// <summary>Flak: damages every missile within the radius, falling off to zero at its edge.</summary>
