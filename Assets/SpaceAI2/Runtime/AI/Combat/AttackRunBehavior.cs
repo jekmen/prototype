@@ -10,8 +10,10 @@ namespace SpaceAI2
     {
         private enum Phase { Setup, Approach, Run, Breakaway }
 
-        private const float StartRangeFactor = 1.2f;
-        private const float BreakRangeFactor = 0.6f;
+        private const float StartRangeFactor = 0.55f;
+        private const float BreakRangeFactor = 0.1f;
+        private const float ReturnRangeFactor = 0.65f;
+        private const float TurnCost = 1f;
         private const float ApproachTolerance = 25f;
         private const float MaxApproachTime = 25f;
         private const float MaxRunTime = 12f;
@@ -69,14 +71,15 @@ namespace SpaceAI2
                     Vector3 from = c.Ship.Position - point;
                     float distance = from.magnitude;
                     float angle = Vector3.Angle(from, Direction);
-                    if (angle < ApproachTolerance && distance > start * 0.6f || phaseTime > MaxApproachTime)
+                    // Any line with room for a burst before the break will do.
+                    if (angle < ApproachTolerance && distance > BreakDistance(c) * 2.5f || phaseTime > MaxApproachTime)
                     {
                         SetPhase(Phase.Run);
                         goto case Phase.Run;
                     }
-                    // Swing around the target at the start range instead of cutting across its guns.
+                    // Swing around the target instead of cutting across its guns, no further out than it has to.
                     Vector3 around = Vector3.Slerp(from / Mathf.Max(distance, 0.01f), Direction, Mathf.Min(1f, 60f / Mathf.Max(angle, 1f)));
-                    Vector3 waypoint = point + around * start;
+                    Vector3 waypoint = point + around * Mathf.Clamp(distance, BreakDistance(c) * 2f, start);
                     c.Pilot.Direct(waypoint - c.Ship.Position, 1f, distance > start * 1.5f);
                     break;
                 }
@@ -84,7 +87,7 @@ namespace SpaceAI2
                 case Phase.Run:
                 {
                     Vector3 toPoint = c.TargetPoint - c.Ship.Position;
-                    // Point defense spread hits more the closer the fighter gets, so the pass ends well short of the hull.
+                    // The pass ends just outside the turn radius, close enough for guns to hit a part but not to ram the hull.
                     float breakDistance = BreakDistance(c);
                     bool passed = Vector3.Dot(toPoint, c.Ship.Forward) < 0f;
                     if (toPoint.magnitude < breakDistance || passed || c.Subsystem == null && target.Subsystems.Count > 0 && phaseTime > 2f ||
@@ -93,14 +96,16 @@ namespace SpaceAI2
                         BeginBreakaway(c);
                         goto case Phase.Breakaway;
                     }
-                    c.Pilot.Pursue(target, PursuitMode.Lead);
+                    // The guns gimbal only a little, so the nose follows the lead on the part rather than on the hull's centre.
+                    if (c.Subsystem != null && c.Pilot.HasFiringSolution) c.Pilot.Direct(c.Pilot.FiringDirection);
+                    else c.Pilot.Pursue(target, PursuitMode.Lead);
                     break;
                 }
 
                 case Phase.Breakaway:
                 {
                     float distance = Vector3.Distance(c.Ship.Position, target.Position);
-                    if (distance > start * 0.8f || phaseTime > MaxBreakTime)
+                    if (distance > start * ReturnRangeFactor || phaseTime > MaxBreakTime)
                     {
                         SetPhase(Phase.Setup);
                         break;
@@ -197,7 +202,7 @@ namespace SpaceAI2
                 }
                 float total = (approach + exitExposure) / Samples.Length;
 
-                float cost = total + 0.5f * Vector3.Angle(from, direction) / 180f + Random.value * 0.15f;
+                float cost = total + TurnCost * Vector3.Angle(from, direction) / 180f + Random.value * 0.15f;
                 foreach (CombatBrain brain in CombatBrain.Active)
                 {
                     if (brain == c.Brain || brain.Target != target || brain.Current is not AttackRunBehavior run) continue;
@@ -227,7 +232,10 @@ namespace SpaceAI2
         private static bool Hidden(Collider hull, Vector3 point, Vector3 direction, float start, float radius)
         {
             var ray = new Ray(point + direction * start, -direction);
-            return hull.Raycast(ray, out RaycastHit hit, start) && hit.distance < start - radius * 1.5f;
+            // Hitboxes sit inside a hull collider that encloses them; shots carry that far in (SpaceShip.BuriedSubsystem).
+            Vector3 extents = hull.bounds.extents;
+            float buried = Mathf.Min(extents.x, Mathf.Min(extents.y, extents.z));
+            return hull.Raycast(ray, out RaycastHit hit, start) && hit.distance < start - Mathf.Max(radius * 1.5f, buried);
         }
 
         /// <summary>Weighted count of the target's working turrets that can fire at this point.</summary>

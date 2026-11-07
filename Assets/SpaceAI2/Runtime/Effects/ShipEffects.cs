@@ -5,7 +5,7 @@ namespace SpaceAI2
 {
     /// <summary>
     /// Engine exhaust on the ship's nozzles, scaled by throttle, the shield bubble that ripples out from shield
-    /// hits, and the ship's hit and death effects from <see cref="CombatEffects"/>. Added by <see cref="SpaceShip"/> when the scene has CombatEffects.
+    /// hits, and the ship's hit and death effects from <see cref="CombatEffects"/>; a destroyed subsystem explodes and stays charred until restored. Added by <see cref="SpaceShip"/> when the scene has CombatEffects.
     /// </summary>
     [DisallowMultipleComponent, RequireComponent(typeof(SpaceShip))]
     public class ShipEffects : MonoBehaviour
@@ -23,6 +23,8 @@ namespace SpaceAI2
         private const float ShieldFade = 1.25f;
         private static readonly int HitsId = Shader.PropertyToID("_Hits");
         private static readonly int ColorId = Shader.PropertyToID("_Color");
+        private static readonly Color CharColor = new Color(0.12f, 0.1f, 0.09f);
+        private static MaterialPropertyBlock charProperties;
         private static readonly Color[] ShieldColors = { new Color(0.08f, 0.5f, 1f), new Color(1f, 0.18f, 0.08f) };
 
         private SpaceShip ship;
@@ -58,6 +60,11 @@ namespace SpaceAI2
 
         private void Start()
         {
+            foreach (Subsystem part in ship.Subsystems)
+            {
+                part.Destroyed += OnSubsystemDestroyed;
+                part.Restored += OnSubsystemRestored;
+            }
             if (!CombatEffects.TryGet(out effects)) return;
             var bank = GetComponent<ShipBank>();
             model = bank != null && bank.Visual != null ? bank.Visual : transform;
@@ -155,6 +162,31 @@ namespace SpaceAI2
             shieldProperties.SetColor(ColorId, ship.Faction != null ? ship.Faction.Color : ShieldColors[ship.Team == 0 ? 0 : 1]);
             Graphics.DrawMesh(effects.ShieldMesh, Matrix4x4.TRS(model.position, model.rotation, shieldSize), effects.ShieldMaterial,
                 gameObject.layer, null, 0, shieldProperties, ShadowCastingMode.Off, false);
+        }
+
+        private void OnSubsystemDestroyed(Subsystem part, HitInfo hit)
+        {
+            if (effects != null) effects.Explosion(part.AimPoint, Mathf.Max(part.Radius * 1.5f, 3f), true);
+            Char(part, true);
+        }
+
+        private void OnSubsystemRestored(Subsystem part) => Char(part, false);
+
+        private static void Char(Subsystem part, bool charred)
+        {
+            charProperties ??= new MaterialPropertyBlock();
+            charProperties.SetColor(ColorId, CharColor);
+            foreach (Renderer renderer in part.GetComponentsInChildren<Renderer>(true))
+                renderer.SetPropertyBlock(charred ? charProperties : null);
+        }
+
+        private void OnDestroy()
+        {
+            foreach (Subsystem part in ship.Subsystems)
+            {
+                part.Destroyed -= OnSubsystemDestroyed;
+                part.Restored -= OnSubsystemRestored;
+            }
         }
 
         private void OnDestroyed(ShipHealth source, HitInfo hit)

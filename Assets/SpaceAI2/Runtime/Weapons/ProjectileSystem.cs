@@ -209,7 +209,7 @@ namespace SpaceAI2
                 {
                     WeaponProfile weapon = weapons[p.Weapon];
                     if (weapon.Kind == WeaponKind.Flak) Detonate(weapon, p.Owner, hit.point, registry);
-                    else Resolve(weapon, p.Owner, ship, hit.collider, hit.point, hit.normal, weapon.Damage);
+                    else Resolve(weapon, p.Owner, ship, hit.collider, hit.point, hit.normal, weapon.Damage, direction: p.Velocity.normalized);
                     continue;
                 }
 
@@ -277,7 +277,7 @@ namespace SpaceAI2
             {
                 RaycastHit hit = laserHits[nearest];
                 end = hit.point;
-                Resolve(weapon, owner, nearestShip, hit.collider, hit.point, hit.normal, weapon.Damage);
+                Resolve(weapon, owner, nearestShip, hit.collider, hit.point, hit.normal, weapon.Damage, direction: direction);
             }
             beams.Add(new Beam { From = origin, To = end, Life = weapon.BeamTime, Weapon = index });
         }
@@ -299,7 +299,8 @@ namespace SpaceAI2
                 missiles.DamageInRadius(point, weapon.BlastRadius, weapon.Damage, owner);
         }
 
-        private void Resolve(WeaponProfile weapon, SpaceShip owner, SpaceShip ship, Collider collider, Vector3 point, Vector3 normal, float damage, float blastRadius = 0f)
+        private void Resolve(WeaponProfile weapon, SpaceShip owner, SpaceShip ship, Collider collider, Vector3 point, Vector3 normal, float damage, float blastRadius = 0f,
+            Vector3 direction = default)
         {
             var info = new HitInfo
             {
@@ -309,6 +310,7 @@ namespace SpaceAI2
                 Weapon = weapon,
                 Point = point,
                 Normal = normal,
+                Direction = direction,
                 Damage = damage,
                 BlastRadius = blastRadius
             };

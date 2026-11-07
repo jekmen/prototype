@@ -441,6 +441,7 @@ namespace SpaceAI2
             WeaponProfile weapon = gun != null ? gun.Weapon : null;
             if (weapon == null) return;
             gun.AimDirection = Vector3.zero;
+            gun.ConvergeDistance = 0f;
             if (!IsValid(fireTarget) || !ship.IsEnemy(fireTarget)) return;
 
             Vector3 toTarget = FirePoint(out _) - transform.position;
@@ -465,6 +466,7 @@ namespace SpaceAI2
             HasFiringSolution = true;
             GunAimAngle = Vector3.Angle(transform.forward, solutionDirection);
             gun.AimDirection = solutionDirection;
+            gun.ConvergeDistance = weapon.IsInstant ? distance : weapon.MuzzleSpeed * time;
             gun.FuseTime = weapon.Kind == WeaponKind.Flak ? time : 0f;
         }
 
@@ -482,7 +484,9 @@ namespace SpaceAI2
             Vector3 fireDirection = gun.FireDirection;
             float angle = Vector3.Angle(fireDirection, solutionDirection);
             float miss = angle < 90f ? Mathf.Sin(angle * Mathf.Deg2Rad) * travel : float.MaxValue;
-            float tolerance = radius * FireTolerance + travel * Mathf.Tan(SprayAngle * Mathf.Deg2Rad) +
+            // Spraying across a fighter's path pays off, but on a subsystem it only spends rounds on the hull around it.
+            float spray = AimsAtSubsystem ? 0f : SprayAngle;
+            float tolerance = radius * FireTolerance + travel * Mathf.Tan(spray * Mathf.Deg2Rad) +
                               (weapon.Kind == WeaponKind.Flak ? weapon.BlastRadius * 0.5f : 0f);
             if (miss > tolerance) return;
             if (checkFriendlyFire && AllyInLineOfFire(fireDirection, travel)) return;
@@ -490,13 +494,14 @@ namespace SpaceAI2
             gun.Trigger = true;
         }
 
+        private bool AimsAtSubsystem => FireSubsystem != null && !FireSubsystem.IsDestroyed && FireSubsystem.Ship == fireTarget;
+
         private Vector3 FirePoint(out float radius)
         {
-            Subsystem part = FireSubsystem;
-            if (part != null && !part.IsDestroyed && part.Ship == fireTarget)
+            if (AimsAtSubsystem)
             {
-                radius = part.Radius;
-                return part.AimPoint;
+                radius = FireSubsystem.Radius;
+                return FireSubsystem.AimPoint;
             }
             radius = fireTarget.Radius;
             return fireTarget.Position;

@@ -42,6 +42,8 @@ namespace SpaceAI2
         public bool Trigger { get; set; }
         /// <summary>World direction the gun should fire along; zero means straight along the nose.</summary>
         public Vector3 AimDirection { get; set; }
+        /// <summary>Distance at which the muzzles' shots converge on the aim line; zero fires them parallel.</summary>
+        public float ConvergeDistance { get; set; }
         /// <summary>Flak fuse in seconds; zero detonates at full range.</summary>
         public float FuseTime { get; set; }
 
@@ -91,6 +93,8 @@ namespace SpaceAI2
             barrel = (barrel + 1) % localMuzzles.Length;
 
             Vector3 direction = FireDirection;
+            // Wing guns sit metres off the centre line: parallel shots straddle anything as small as a turret.
+            if (ConvergeDistance > 0f) direction = (body.position + direction * ConvergeDistance - origin).normalized;
             if (weapon.Spread > 0f)
             {
                 Vector2 jitter = UnityEngine.Random.insideUnitCircle * Mathf.Tan(weapon.Spread * Mathf.Deg2Rad);

@@ -15,6 +15,8 @@ namespace SpaceAI2
         public MissileProfile Missile;
         public Vector3 Point;
         public Vector3 Normal;
+        /// <summary>Direction of a shot's travel; zero for blasts.</summary>
+        public Vector3 Direction;
         public float Damage;
         /// <summary>Blasts only: the radius, so subsystems near the point take their share.</summary>
         public float BlastRadius;

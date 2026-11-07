@@ -177,7 +177,10 @@ namespace SpaceAI2
         public void ReceiveHit(in HitInfo hit)
         {
             HitInfo routed = hit;
-            if (hit.Collider != null && subsystemColliders.TryGetValue(hit.Collider.GetInstanceID(), out Subsystem struck) && !struck.IsDestroyed)
+            Subsystem struck = null;
+            if (hit.Collider != null && !subsystemColliders.TryGetValue(hit.Collider.GetInstanceID(), out struck) && hit.Direction != Vector3.zero)
+                struck = BuriedSubsystem(hit);
+            if (struck != null && !struck.IsDestroyed)
             {
                 routed.Subsystem = struck;
                 routed.Damage = struck.Absorb(hit, hit.Damage);
@@ -194,6 +197,36 @@ namespace SpaceAI2
             }
             if (hit.Damage > 0f) Factions.ReportAttack(this, hit.Source);
             Hit?.Invoke(routed);
+        }
+
+        /// <summary>
+        /// A hull collider that encloses the subsystems' hitboxes would take every shot meant for them, so a shot on
+        /// the hull carries on inward and strikes the first intact hitbox on its path, no deeper than the hull's
+        /// thinnest half so it never reaches the far side.
+        /// </summary>
+        private Subsystem BuriedSubsystem(in HitInfo hit)
+        {
+            Vector3 extents = hit.Collider.bounds.extents;
+            float depth = Mathf.Min(extents.x, Mathf.Min(extents.y, extents.z));
+            var ray = new Ray(hit.Point - hit.Direction * 0.05f, hit.Direction);
+            Subsystem best = null;
+            foreach (Subsystem subsystem in subsystems)
+            {
+                if (subsystem.IsDestroyed) continue;
+                foreach (Collider hitbox in subsystem.Colliders)
+                {
+                    if (!hitbox.enabled) continue;
+                    float distance;
+                    // A ray that starts inside a collider misses it.
+                    if ((hitbox.ClosestPoint(ray.origin) - ray.origin).sqrMagnitude < 1e-6f) distance = 0f;
+                    else if (hitbox.Raycast(ray, out RaycastHit inner, depth)) distance = inner.distance;
+                    else continue;
+                    if (best != null && distance >= depth) continue;
+                    depth = distance;
+                    best = subsystem;
+                }
+            }
+            return best;
         }
 
         public void RestoreSubsystems()

@@ -59,7 +59,11 @@ All tuning lives in ScriptableObjects (**Create > SpaceAI2 > …**). Examples ar
 - `Formation` leads a squad: wingmen hold slots, break off to engage and rejoin. Orders: `HoldFormation()`,
   `Cover()`, `Attack(target)`, `Attack(target, priority)`, `Return()`.
 - Large ships carry `ShipTurret`s (guns, flak, point defense against missiles) and `Subsystem`s (engines, weapons,
-  shields) that fighters target by the pilot's or the wing's priority.
+  shields) that fighters target by the pilot's or the wing's priority. Set `CombatBrain.PriorityOverride` (for
+  example `TargetPriority.Turrets`) to make a pilot hit only that kind of part; it moves on to the next one as each
+  is destroyed. A subsystem's hitbox may sit inside the hull collider: shots that hit the hull carry inward as far
+  as the hull's thinnest half and damage the first hitbox on their line. Pilots aiming at a part don't spray, and
+  their wing guns converge at the target's range.
 
 ## Scripting
 
@@ -189,7 +193,7 @@ blast spheres. Missile smoke stays a `TrailRenderer`; the `SpaceAI Systems` pref
 
 Ships get `ShipEffects` at start when the scene has `CombatEffects` and the **Visual Effects** checkbox on
 `SpaceShip` is on. It puts an exhaust at each nozzle under `ShipBank.Visual`, scales it with throttle, boost
-and engine power, and plays hits and the death explosion. A shield hit also draws the shield: an ellipsoid of
+and engine power, and plays hits and the death explosion. A destroyed subsystem explodes and its model stays charred until `Subsystem.Restore()`. A shield hit also draws the shield: an ellipsoid of
 **Shield Size** around the model where a patch of refracted, team-coloured energy ripples out from each of the last
 four hits and fades in about a second. It uses `CombatEffects`' **Shield Material** (`Shield.mat`). Add it by hand to set nozzle positions for another model, and raise **Exhaust Scale** for a large ship.
 
@@ -210,6 +214,7 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 | Scene | Shows | Keys |
 |---|---|---|
 | Quickstart | Patrol, pirates and traders as three factions in an asteroid field, two freighters on a route with escorts, a cruiser on each side, UnityEvents and faction changes feeding an event log, respawns, AI overlay | Tab, F3 |
+| Turret Strike | Six aces ordered to destroy only a cruiser's turrets, attack runs close along the hull; switch the priority to turrets, point defense, engines or hull, repair the cruiser | 1–4, R, Tab |
 | Dogfight | 10 v 10 among 300 asteroids, aces with radar missiles and veterans with heat seekers, stats and cost overlay | Tab, R |
 | Dogfight Player | The same fight with you in one of the blue seats, starting in the cockpit | C, R |
 

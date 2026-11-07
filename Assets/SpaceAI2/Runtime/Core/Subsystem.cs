@@ -23,6 +23,7 @@ namespace SpaceAI2
 
         public event Action<Subsystem, HitInfo> Damaged;
         public event Action<Subsystem, HitInfo> Destroyed;
+        public event Action<Subsystem> Restored;
 
         public SubsystemKind Kind
         {
@@ -81,7 +82,11 @@ namespace SpaceAI2
             }
         }
 
-        public void Restore() => Health = maxHealth;
+        public void Restore()
+        {
+            Health = maxHealth;
+            Restored?.Invoke(this);
+        }
 
         private void Awake()
         {
