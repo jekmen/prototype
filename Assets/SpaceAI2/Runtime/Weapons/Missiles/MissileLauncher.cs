@@ -22,6 +22,7 @@ namespace SpaceAI2
         private float cooldown;
         private float lockTime;
         private int rail;
+        private int startAmmo;
 
         public event Action<MissileLauncher, int> Launched;
 
@@ -105,9 +106,13 @@ namespace SpaceAI2
             return true;
         }
 
+        /// <summary>Refills the ammo to what the launcher started with.</summary>
+        public void Rearm() => ammo = startAmmo;
+
         private void Awake()
         {
             ship = GetComponent<SpaceShip>();
+            startAmmo = ammo;
             if (hardpoints == null || hardpoints.Length == 0)
             {
                 float r = ship.Radius;

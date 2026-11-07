@@ -13,6 +13,7 @@ namespace SpaceAI2.Editor
         private const float WingSpacing = 60f;
         private const float ArenaRadius = 1500f;
         private const int AsteroidCount = 300;
+        private const int MissileAmmo = 4;
         private const float SpawnClearance = 300f;
 
         private static readonly Color[] TeamColors = { new Color(0.4f, 0.8f, 1f), new Color(1f, 0.35f, 0.3f) };
@@ -32,7 +33,7 @@ namespace SpaceAI2.Editor
         public static void Build10v10Asteroids()
         {
             string[] wing = { "Ace", "Ace", "Veteran", "Veteran", "Veteran", "Veteran", "Rookie", "Rookie", "Rookie", "Rookie" };
-            Build("Dogfight10v10Asteroids", wing, wing, AsteroidCount);
+            Build("Dogfight10v10Asteroids", wing, wing, AsteroidCount, missiles: true);
         }
 
         [MenuItem("Tools/SpaceAI2/Build Load Test 200 Scene")]
@@ -40,7 +41,7 @@ namespace SpaceAI2.Editor
         {
             var wing = new string[100];
             for (int i = 0; i < wing.Length; i++) wing[i] = i % 10 < 2 ? "Ace" : i % 10 < 6 ? "Veteran" : "Rookie";
-            Build("LoadTest200", wing, wing, AsteroidCount);
+            Build("LoadTest200", wing, wing, AsteroidCount, missiles: true);
         }
 
         /// <summary>The 10v10 fight 50 km from the origin, with a floating origin on the camera.</summary>
@@ -48,10 +49,11 @@ namespace SpaceAI2.Editor
         public static void BuildFar()
         {
             string[] wing = { "Ace", "Ace", "Veteran", "Veteran", "Veteran", "Veteran", "Rookie", "Rookie", "Rookie", "Rookie" };
-            Build("DogfightFar", wing, wing, 0, new Vector3(30000f, 10000f, 38730f));
+            Build("DogfightFar", wing, wing, 0, new Vector3(30000f, 10000f, 38730f), missiles: true);
         }
 
-        /// <param name="missiles">Aces carry radar missiles and the next three ships heat seekers.</param>
+        /// <param name="missiles">In every ten ships, the aces carry radar missiles and the next three heat seekers,
+        /// <see cref="MissileAmmo"/> per sortie.</param>
         private static void Build(string sceneName, string[] blue, string[] red, int asteroids = 0, Vector3 offset = default,
             bool missiles = false)
         {
@@ -84,7 +86,12 @@ namespace SpaceAI2.Editor
                     ShipGun gun = ship.AddComponent<ShipGun>();
                     gun.Weapon = cannon;
                     gun.GimbalAngle = 6f;
-                    if (missiles && i < 5) ship.AddComponent<MissileLauncher>().Missile = wing[i] == "Ace" ? radar : heat;
+                    if (missiles && i % 10 < 5)
+                    {
+                        var launcher = ship.AddComponent<MissileLauncher>();
+                        launcher.Missile = wing[i] == "Ace" ? radar : heat;
+                        launcher.Ammo = MissileAmmo;
+                    }
                     ship.AddComponent<AIPilot>().Profile = profiles[wing[i]];
                     CombatBrain brain = ship.AddComponent<CombatBrain>();
                     brain.PatrolArea = arena;

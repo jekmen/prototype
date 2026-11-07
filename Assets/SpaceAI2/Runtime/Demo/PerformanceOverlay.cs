@@ -22,6 +22,7 @@ namespace SpaceAI2.Demo
         private int frames;
         private float window;
         private GUIStyle style;
+        private FlightHud hud;
         private readonly StringBuilder text = new StringBuilder();
 
         /// <summary>AI, projectiles and missiles per frame, averaged over the last second.</summary>
@@ -36,6 +37,7 @@ namespace SpaceAI2.Demo
 
         private void OnEnable()
         {
+            hud = FindObjectOfType<FlightHud>();
             scriptsUpdate = ProfilerRecorder.StartNew(ProfilerCategory.Scripts, "Update.ScriptRunBehaviourUpdate");
             scriptsFixed = ProfilerRecorder.StartNew(ProfilerCategory.Scripts, "FixedUpdate.ScriptRunBehaviourFixedUpdate");
             physics = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "FixedUpdate.PhysicsFixedUpdate");
@@ -95,7 +97,9 @@ namespace SpaceAI2.Demo
             text.Append($"Pilots {ships} · projectiles {shots} · missiles {missiles} · origin offset {SpaceAI.OriginOffset.magnitude / 1000f:0.0} km\n");
             text.Append($"SpaceAI {AssetMs:0.00} ms/frame (peak {PeakMs:0.00}): AI {AiMs:0.00} · projectiles {ProjectilesMs:0.00} · missiles {MissilesMs:0.00}\n");
             text.Append($"All scripts {ScriptsMs:0.00} ms · physics {PhysicsMs:0.00} ms · frame {FrameMs:0.0} ms");
-            GUI.Label(area, text.ToString(), style);
+            Rect rect = area;
+            if (hud != null && hud.Visible && rect.y < FlightHud.TextHeight) rect.y += FlightHud.TextHeight;
+            GUI.Label(rect, text.ToString(), style);
         }
     }
 }

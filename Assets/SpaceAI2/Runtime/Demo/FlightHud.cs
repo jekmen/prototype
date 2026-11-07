@@ -10,6 +10,11 @@ namespace SpaceAI2.Demo
 
         private GUIStyle style;
 
+        /// <summary>Height of the text block in the top-left corner, for other overlays to sit below it.</summary>
+        public const float TextHeight = 96f;
+
+        public bool Visible => isActiveAndEnabled && motor != null && motor.Profile != null;
+
         public void Bind(ShipMotor shipMotor, PlayerPilot playerPilot)
         {
             motor = shipMotor;

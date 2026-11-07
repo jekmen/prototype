@@ -79,6 +79,7 @@ namespace SpaceAI2.Demo
             Quaternion rotation = spawn.rotation;
 
             health.Restore();
+            if (ship.TryGetComponent(out MissileLauncher launcher)) launcher.Rearm();
             ship.transform.SetPositionAndRotation(position, rotation);
             Rigidbody body = ship.Motor.Body;
             if (body != null)

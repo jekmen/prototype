@@ -82,6 +82,7 @@ namespace SpaceAI2.Demo
                 if (spawns.TryGetValue(ship, out Pose pose)) ship.transform.SetPositionAndRotation(pose.position, pose.rotation);
                 if (ship.Health != null) ship.Health.Restore();
                 ship.RestoreSubsystems();
+                if (ship.TryGetComponent(out MissileLauncher launcher)) launcher.Rearm();
                 ship.gameObject.SetActive(true);
             }
         }
