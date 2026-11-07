@@ -295,7 +295,7 @@ namespace SpaceAI2
                 for (int i = 0; i < missiles.Count; i++)
                 {
                     MissileTrack track = missiles[i];
-                    if (!MissileSystem.Threatens(track, ship.Team)) continue;
+                    if (!MissileSystem.Threatens(track, ship)) continue;
                     var candidate = new Aim { MissileId = track.Id, Position = track.Position, Velocity = track.Velocity, Radius = track.Profile.HitRadius };
                     float threat = (role == TurretRole.PointDefense ? 10f : 3f) * Mathf.Max(0.5f, track.Profile.Damage / 100f);
                     if (track.Target == ship) threat *= 2f;

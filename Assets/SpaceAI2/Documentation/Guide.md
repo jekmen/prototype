@@ -74,6 +74,31 @@ launcher.LockTarget = enemy; launcher.Launch();
 SpaceShip nearest = SpaceAIWorld.Instance.Registry.FindNearestEnemy(ship, 3000f);
 ```
 
+### Factions
+
+A `Faction` asset (**Create > SpaceAI2 > Faction**) names a side. Put it in the ship's **Faction** field. Ships of
+one faction never fight each other; toward other factions each asset sets a **Default Stance** and per-faction
+**Relations** (hostile, neutral or friendly). When two factions list each other differently, the less friendly
+stance wins. AI ships attack only hostile ships, guard friendly ones and leave neutrals alone, so a neutral
+faction with `CombatBrain` just patrols until something attacks it. Ships without a faction use **Team**: different
+teams fight.
+
+**When Attacked** decides what a faction does when a ship that is not its enemy damages one of its ships:
+`AttackerShip` makes that one ship an enemy of the whole faction until it is disabled (or `Factions.Forgive`),
+`AttackerFaction` turns the faction hostile to the attacker's faction, `Ignore` lets it pass. Friendly fire from
+allies is ignored unless **Respond To Friendly Fire** is on.
+
+At runtime relations are a reputation from -100 to 100 per pair of factions: hostile at -30 or less, friendly at 30
+or more. Examples are in `Profiles/Factions` (patrol, pirates, traders).
+
+```csharp
+Factions.SetStance(pirates, traders, Stance.Neutral);   // a truce
+Factions.AddReputation(player, traders, 10f);           // a delivered cargo
+Factions.MarkHostile(playerShip, patrol);               // wanted by the patrol
+Factions.RelationChanged += (a, b, stance) => Debug.Log($"{a.name} and {b.name} are now {stance}");
+bool fight = ship.IsEnemy(other), ally = ship.IsAlly(other);
+```
+
 ### Events
 
 On `SpaceShip`, as UnityEvents in the inspector (**Events** foldout) and as properties for code:

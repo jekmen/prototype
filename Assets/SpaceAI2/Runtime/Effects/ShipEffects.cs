@@ -127,7 +127,7 @@ namespace SpaceAI2
                 !effects.IsNear(ship.Position)) return;
             shieldProperties ??= new MaterialPropertyBlock();
             shieldProperties.SetVectorArray(HitsId, shieldHits);
-            shieldProperties.SetColor(ColorId, ShieldColors[ship.Team == 0 ? 0 : 1]);
+            shieldProperties.SetColor(ColorId, ship.Faction != null ? ship.Faction.Color : ShieldColors[ship.Team == 0 ? 0 : 1]);
             Graphics.DrawMesh(effects.ShieldMesh, Matrix4x4.TRS(model.position, model.rotation, shieldSize), effects.ShieldMaterial,
                 gameObject.layer, null, 0, shieldProperties, ShadowCastingMode.Off, false);
         }

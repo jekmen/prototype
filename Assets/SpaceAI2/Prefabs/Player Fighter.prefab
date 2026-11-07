@@ -991,6 +991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae944107a4d19ab4aa27d19d531a13b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: {fileID: 11400000, guid: 20c9e3c588674824596e1823a2d044ff, type: 2}
   team: 0
   profile: {fileID: 11400000, guid: a7bbb6cc4a39ef547a8165cc882f8ca9, type: 2}
   control: 2

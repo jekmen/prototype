@@ -21,6 +21,7 @@ namespace SpaceAI2.Editor
         private GameObject model;
         private string shipName = "Ship";
         private Vector3 modelRotation;
+        private Faction faction;
         private int team;
         private ShipControl control = ShipControl.AI;
         private ShipProfile profile;
@@ -67,6 +68,7 @@ namespace SpaceAI2.Editor
             modelRotation = EditorGUILayout.Vector3Field(new GUIContent("Model rotation", "Turns the model so its nose points along +Z."), modelRotation);
 
             EditorGUILayout.Space();
+            faction = (Faction)EditorGUILayout.ObjectField(new GUIContent("Faction", "Who the ship fights. Empty falls back to Team."), faction, typeof(Faction), false);
             team = EditorGUILayout.IntField("Team", team);
             control = (ShipControl)EditorGUILayout.EnumPopup("Control", control);
             profile = (ShipProfile)EditorGUILayout.ObjectField("Ship profile", profile, typeof(ShipProfile), false);
@@ -109,6 +111,7 @@ namespace SpaceAI2.Editor
             AddCollider(root, visual, bounds);
 
             var ship = root.AddComponent<SpaceShip>();
+            ship.Faction = faction;
             ship.Team = team;
             ship.Profile = profile;
             ship.Control = control;

@@ -429,7 +429,7 @@ namespace SpaceAI2
                 Vector3 away = missDistance > 0.01f ? -miss / missDistance : transform.up;
                 float urgency = (1f - missDistance / safe) * (1f - time / trafficTime);
                 push += away * urgency;
-                if (other.Team == ship.Team && Vector3.Dot(offset, forward) > 0f) trafficAhead = Mathf.Max(trafficAhead, urgency);
+                if (ship.IsAlly(other) && Vector3.Dot(offset, forward) > 0f) trafficAhead = Mathf.Max(trafficAhead, urgency);
             }
             trafficPush = push;
         }

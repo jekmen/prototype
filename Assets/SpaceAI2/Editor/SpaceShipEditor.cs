@@ -13,6 +13,7 @@ namespace SpaceAI2.Editor
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("faction"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("team"));
 
             EditorGUILayout.Space();

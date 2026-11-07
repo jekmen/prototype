@@ -30,6 +30,9 @@ namespace SpaceAI2
     [RequireComponent(typeof(ShipMotor))]
     public class SpaceShip : MonoBehaviour
     {
+        [Tooltip("Who the ship fights and protects. Empty falls back to Team.")]
+        [SerializeField] private Faction faction;
+        [Tooltip("Used only between ships without a faction: different teams fight.")]
         [SerializeField] private int team;
 
         [Tooltip("Assigning a profile turns on setup: the ship adds and configures the components below.")]
@@ -108,11 +111,20 @@ namespace SpaceAI2
             set => destructible = value;
         }
 
+        public Faction Faction
+        {
+            get => faction;
+            set => faction = value;
+        }
+
         public int Team
         {
             get => team;
             set => team = value;
         }
+
+        /// <summary>Identifies the ship's side for bookkeeping: its faction, or its team without one.</summary>
+        public int Side => faction != null ? faction.GetInstanceID() : team;
 
         // Other components may ask for the motor from their own Awake, before ours has run.
         public ShipMotor Motor => motor != null ? motor : motor = GetComponent<ShipMotor>();
@@ -153,7 +165,10 @@ namespace SpaceAI2
 
         public IReadOnlyList<Subsystem> Subsystems => subsystems;
 
-        public bool IsEnemy(SpaceShip other) => other != null && other.team != team;
+        public bool IsEnemy(SpaceShip other) => Factions.AreHostile(this, other);
+
+        /// <summary>True for ships on this ship's side: its faction, friendly factions, or its team without factions.</summary>
+        public bool IsAlly(SpaceShip other) => Factions.AreAllied(this, other);
 
         /// <summary>
         /// Routes a hit through the subsystem whose hitbox it struck; a blast damages every subsystem in its radius
@@ -177,6 +192,7 @@ namespace SpaceAI2
                     subsystem.Absorb(hit, hit.Damage * (1f - distance / hit.BlastRadius));
                 }
             }
+            if (hit.Damage > 0f) Factions.ReportAttack(this, hit.Source);
             Hit?.Invoke(routed);
         }
 
@@ -265,6 +281,7 @@ namespace SpaceAI2
         private void OnDisable()
         {
             if (SpaceAIWorld.TryGet(out SpaceAIWorld world)) world.Registry.Remove(this);
+            Factions.Forgive(this);
             if (Health != null)
             {
                 Health.Damaged -= OnHealthDamaged;

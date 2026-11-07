@@ -80,7 +80,7 @@ namespace SpaceAI2
             text.Append(brain.Current != null ? brain.Current.Name : "-");
             if (pilot != null && pilot.Maneuver != ManeuverKind.None) text.Append(" · ").Append(pilot.Maneuver);
             if (brain.Target != null) text.Append("\n→ ").Append(brain.Target.name);
-            GUI.color = TeamColors[Mathf.Abs(brain.Ship.Team) % TeamColors.Length];
+            GUI.color = brain.Ship.Faction != null ? brain.Ship.Faction.Color : TeamColors[Mathf.Abs(brain.Ship.Team) % TeamColors.Length];
             GUI.Label(new Rect(point.x - 120f, point.y - 52f, 240f, 40f), text.ToString(), label);
             GUI.color = Color.white;
         }

@@ -34,7 +34,7 @@ namespace SpaceAI2
 
         private static readonly List<CombatBrain> active = new List<CombatBrain>();
         // Who is on whom, gathered once per frame so target selection does not loop over every brain per enemy.
-        private static readonly Dictionary<(int team, SpaceShip target), int> engaged = new Dictionary<(int, SpaceShip), int>();
+        private static readonly Dictionary<(int side, SpaceShip target), int> engaged = new Dictionary<(int, SpaceShip), int>();
         private static readonly Dictionary<SpaceShip, CombatBrain> brainOf = new Dictionary<SpaceShip, CombatBrain>();
         private static int engagedFrame = -1;
         private static PilotProfile fallbackProfile;
@@ -457,7 +457,7 @@ namespace SpaceAI2
         /// <summary>Bonus for an enemy attacking an ally, penalty for one allies are already on, so a wing spreads out.</summary>
         private float AlliesInvolved(SpaceShip enemy)
         {
-            engaged.TryGetValue((ship.Team, enemy), out int allies);
+            engaged.TryGetValue((ship.Side, enemy), out int allies);
             if (ReferenceEquals(context.Target, enemy)) allies--;
             float score = -0.25f * allies;
             SpaceShip victim = brainOf.TryGetValue(enemy, out CombatBrain enemyBrain) && enemyBrain != null ? enemyBrain.Target : null;
@@ -476,8 +476,8 @@ namespace SpaceAI2
                 brainOf[brain.ship] = brain;
                 SpaceShip target = brain.Target;
                 if (target == null) continue;
-                engaged.TryGetValue((brain.ship.Team, target), out int count);
-                engaged[(brain.ship.Team, target)] = count + 1;
+                engaged.TryGetValue((brain.ship.Side, target), out int count);
+                engaged[(brain.ship.Side, target)] = count + 1;
             }
         }
 

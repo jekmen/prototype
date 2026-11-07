@@ -183,9 +183,9 @@ namespace SpaceAI2
             return false;
         }
 
-        /// <summary>True when the missile is a threat to the team: aimed at one of its ships by someone else.</summary>
-        public static bool Threatens(in MissileTrack track, int team) =>
-            track.Target != null && track.Target.Team == team && (track.Owner == null || track.Owner.Team != team);
+        /// <summary>True when the missile threatens the defender's side: aimed at it or an ally by someone not on its side.</summary>
+        public static bool Threatens(in MissileTrack track, SpaceShip defender) =>
+            track.Target != null && defender.IsAlly(track.Target) && (track.Owner == null || !defender.IsAlly(track.Owner));
 
         /// <summary>
         /// The first enemy missile a projectile meets during this step, by relative motion. Missiles have already
