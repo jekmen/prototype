@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a31b8bf704ffbf64ba425fd82d3a1171, type: 3}
+  m_Name: Torpedo
+  m_EditorClassIdentifier: 
+  Guidance: 2
+  EjectSpeed: 10
+  MaxSpeed: 90
+  Acceleration: 30
+  BurnTime: 40
+  Drag: 0
+  TurnDrag: 0
+  Lifetime: 40
+  ArmTime: 1
+  Navigation: 3
+  MaxTurnAcceleration: 25
+  GuidanceLag: 1
+  SeekerAngle: 90
+  FlareSusceptibility: 0
+  LockTime: 2.5
+  LockAngle: 20
+  LockRange: 3000
+  MinRange: 300
+  MinTargetRadius: 15
+  Damage: 600
+  BlastRadius: 40
+  ProximityFuse: 5
+  Hull: 60
+  Salvo: 1
+  SalvoSpread: 10
+  Reload: 10
+  BodyColor: {r: 0.5, g: 0.55, b: 0.6, a: 1}
+  FlameColor: {r: 0.4, g: 1, b: 0.7, a: 1}
+  Length: 7
+  Width: 1.2
+  TrailColor: {r: 0.6, g: 0.9, b: 0.8, a: 0.4}

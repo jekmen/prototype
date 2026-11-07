@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a31b8bf704ffbf64ba425fd82d3a1171, type: 3}
+  m_Name: MissileRadar
+  m_EditorClassIdentifier: 
+  Guidance: 2
+  EjectSpeed: 20
+  MaxSpeed: 340
+  Acceleration: 200
+  BurnTime: 6
+  Drag: 0.25
+  TurnDrag: 0.0006
+  Lifetime: 14
+  ArmTime: 0.3
+  Navigation: 3.5
+  MaxTurnAcceleration: 300
+  GuidanceLag: 0.45
+  SeekerAngle: 60
+  FlareSusceptibility: 0.6
+  LockTime: 1.5
+  LockAngle: 10
+  LockRange: 2500
+  MinRange: 400
+  MinTargetRadius: 0
+  Damage: 110
+  BlastRadius: 18
+  ProximityFuse: 6
+  Hull: 5
+  Salvo: 1
+  SalvoSpread: 10
+  Reload: 5
+  BodyColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+  FlameColor: {r: 0.5, g: 0.7, b: 1, a: 1}
+  Length: 3.2
+  Width: 0.4
+  TrailColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.5}
