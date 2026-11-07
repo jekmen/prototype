@@ -5,7 +5,7 @@ defense, built to run hundreds of ships. Everything lives in the `SpaceAI2` name
 
 ## Quick start
 
-1. Open `Scenes/Quickstart` and press Play. A patrol wing and a pirate wing of four fight over three traders (see Factions); the feed at the top left comes from the ships'
+1. Open `Scenes/Quickstart` and press Play. A patrol wing and a pirate wing of four fight over a freighter on a trade route, escorted by a patrol cruiser and a fighter (see Factions); the feed at the top left comes from the ships'
    UnityEvents, F3 toggles the AI overlay, Tab switches the camera.
 2. Drop the prefabs from `Prefabs` into your own scene: `SpaceAI Systems` once per scene, then `Fighter`
    (blue team), `Fighter Red`, `Player Fighter` or `Cruiser`. Change pilot, weapon, missile and team on the
@@ -109,7 +109,8 @@ ships). An **Escort** keeps station behind its charge. Combat interrupts an orde
 **Engagement** decides when the ship fights. `Attack` takes on any enemy (an escort only those near its charge or
 attacking it). `Defend` fights only ships that attack it or its charge. `Flee` never fights: it runs at full boost
 from enemies hunting it inside the **Flee Range** (or any enemy at close range), weaving under fire, and returns to
-its route once clear. The traders in Quickstart fly a loop with `Flee`, and one patrol fighter escorts a trader.
+its route once clear. `Passive` ignores enemies and keeps to its order, leaving them to its turrets; it suits large
+ships. The freighter in Quickstart flies a loop with `Passive`, and the patrol cruiser and one fighter escort it.
 
 ```csharp
 brain.FollowRoute(tradeRoute);          // from the nearest waypoint
@@ -190,7 +191,7 @@ Ships get `ShipEffects` at start when the scene has `CombatEffects` and the **Vi
 `SpaceShip` is on. It puts an exhaust at each nozzle under `ShipBank.Visual`, scales it with throttle, boost
 and engine power, and plays hits and the death explosion. A shield hit also draws the shield: an ellipsoid of
 **Shield Size** around the model where a patch of refracted, team-coloured energy ripples out from each of the last
-four hits and fades in about a second. It uses `CombatEffects`' **Shield Material** (`Shield.mat`). Add it by hand to set nozzle positions for another model.
+four hits and fades in about a second. It uses `CombatEffects`' **Shield Material** (`Shield.mat`). Add it by hand to set nozzle positions for another model, and raise **Exhaust Scale** for a large ship.
 
 Edit the prefabs directly to change the look. **Tools > SpaceAI2 > Build Effect Prefabs** regenerates the muzzle
 flash, hits, exhaust, missile flame, trail material and the shield material if missing (overwriting edits to them); the explosion prefabs are hand-tuned and are never rebuilt.
@@ -203,11 +204,12 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 | `SpaceAI Systems` | `SpaceAIWorld`, `ProjectileSystem`, `MissileSystem`, `CombatEffects`, one per scene |
 | `Fighter`, `Fighter Red` | AI fighter with a cannon, veteran pilot; the red variant is team 1 with the red livery |
 | `Player Fighter` | Fighter flown with `PlayerPilot`, cannon and heat seekers; the model has a cockpit interior and a `Cockpit Eye` point for the camera |
-| `Cruiser` | Capital ship with point defense, flak and main gun turrets and three engines, each a subsystem |
+| `Cruiser` | 52 m cruiser with point defense, flak and main gun turrets and three engines, each a subsystem |
+| `Transport` | 137 m freighter of the traders faction with four point defense turrets and an engine subsystem, `Passive` |
 
 | Scene | Shows | Keys |
 |---|---|---|
-| Quickstart | Patrol, pirates and traders as three factions, traders on a route that flee, an escort, UnityEvents and faction changes feeding an event log, respawns, AI overlay | Tab, F3 |
+| Quickstart | Patrol, pirates and traders as three factions, a freighter on a route with two escorts, UnityEvents and faction changes feeding an event log, respawns, AI overlay | Tab, F3 |
 | Dogfight | 10 v 10 among 300 asteroids, aces with radar missiles and veterans with heat seekers, stats and cost overlay | Tab, R |
 | Dogfight Player | The same fight with you in one of the blue seats, starting in the cockpit | C, R |
 

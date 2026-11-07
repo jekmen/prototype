@@ -250,7 +250,7 @@ namespace SpaceAI2
         private void SenseMissiles()
         {
             context.HasMissile = false;
-            if (!MissileSystem.TryGet(out MissileSystem system)) return;
+            if (engagement == Engagement.Passive || !MissileSystem.TryGet(out MissileSystem system)) return;
             system.GetIncoming(ship, incoming);
             float soonest = float.PositiveInfinity;
             foreach (MissileTrack missile in incoming)
@@ -334,7 +334,7 @@ namespace SpaceAI2
 
         private void SelectTarget()
         {
-            if (engagement == Engagement.Flee)
+            if (engagement == Engagement.Flee || engagement == Engagement.Passive)
             {
                 context.Target = null;
                 return;
@@ -504,7 +504,7 @@ namespace SpaceAI2
         {
             context.Threat = null;
             context.ThreatLevel = 0f;
-            if (!SpaceAIWorld.TryGet(out SpaceAIWorld world)) return;
+            if (engagement == Engagement.Passive || !SpaceAIWorld.TryGet(out SpaceAIWorld world)) return;
 
             float range = WeaponRange() * 1.3f;
             Vector3 position = ship.Position;

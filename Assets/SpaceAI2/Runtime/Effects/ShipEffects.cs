@@ -12,6 +12,8 @@ namespace SpaceAI2
     {
         [Tooltip("Nozzle positions in the model's local space. The defaults fit SM_Ship_Fighter_05.")]
         [SerializeField] private Vector3[] nozzles = { new Vector3(-0.583f, 0.357f, -6.595f), new Vector3(0.583f, 0.357f, -6.595f) };
+        [Tooltip("Size of the exhaust; the effect is made for a fighter's nozzles.")]
+        [SerializeField, Min(0.1f)] private float exhaustScale = 1f;
         [Tooltip("Exhaust length at idle, as a share of full throttle.")]
         [SerializeField, Range(0f, 1f)] private float idle = 0.35f;
         [SerializeField, Min(1f)] private float boost = 1.6f;
@@ -36,6 +38,18 @@ namespace SpaceAI2
         private float lastShieldHit = -100f;
         private MaterialPropertyBlock shieldProperties;
 
+        public Vector3[] Nozzles
+        {
+            get => nozzles;
+            set => nozzles = value;
+        }
+
+        public float ExhaustScale
+        {
+            get => exhaustScale;
+            set => exhaustScale = Mathf.Max(0.1f, value);
+        }
+
         private void Awake()
         {
             ship = GetComponent<SpaceShip>();
@@ -55,6 +69,7 @@ namespace SpaceAI2
                 // The prefab emits along its +Z, so it faces backwards out of the nozzle.
                 exhausts[i] = Instantiate(prefab, model.TransformPoint(nozzles[i]), model.rotation * Quaternion.Euler(0f, 180f, 0f), model);
                 exhausts[i].name = prefab.name;
+                if (!Mathf.Approximately(exhaustScale, 1f)) ScaleExhaust(exhausts[i]);
             }
             baseLifetime = prefab.main.startLifetimeMultiplier;
             baseRate = prefab.emission.rateOverTimeMultiplier;
@@ -76,6 +91,16 @@ namespace SpaceAI2
             if (health == null) return;
             health.Damaged -= OnDamaged;
             health.Destroyed -= OnDestroyed;
+        }
+
+        private void ScaleExhaust(ParticleSystem exhaust)
+        {
+            exhaust.transform.localScale = Vector3.one * exhaustScale;
+            foreach (ParticleSystem system in exhaust.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                ParticleSystem.MainModule main = system.main;
+                main.scalingMode = ParticleSystemScalingMode.Hierarchy;
+            }
         }
 
         private void LateUpdate()

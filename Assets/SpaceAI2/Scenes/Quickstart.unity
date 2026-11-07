@@ -335,176 +335,6 @@ Transform:
   - {fileID: 822881399}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &411452000
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2064686260767741417, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: route
-      value: 
-      objectReference: {fileID: 322787086}
-    - target: {fileID: 2064686260767741417, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: engagement
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -40
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4846599191305269544, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_Name
-      value: Trader 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: team
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: pilot
-      value: 
-      objectReference: {fileID: 11400000, guid: f188879eb93fae44fb701679023019b8,
-        type: 2}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: faction
-      value: 
-      objectReference: {fileID: 11400000, guid: 638cb513078f48f43ae0f598d94f1df4,
-        type: 2}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 799281263}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ShipDestroyed
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 799281263}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 799281263}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TargetAcquired
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: MissileLaunched
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 76268af31b18282409760c6a33918ca4, type: 3}
 --- !u!1 &606098793
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,176 +450,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 322787087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &823476658
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2064686260767741417, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: route
-      value: 
-      objectReference: {fileID: 322787086}
-    - target: {fileID: 2064686260767741417, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: engagement
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4846599191305269544, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_Name
-      value: Trader 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: team
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: pilot
-      value: 
-      objectReference: {fileID: 11400000, guid: f188879eb93fae44fb701679023019b8,
-        type: 2}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: faction
-      value: 
-      objectReference: {fileID: 11400000, guid: 638cb513078f48f43ae0f598d94f1df4,
-        type: 2}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 799281263}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ShipDestroyed
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 799281263}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 799281263}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TargetAcquired
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: MissileLaunched
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 76268af31b18282409760c6a33918ca4, type: 3}
 --- !u!1001 &851972648
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1379,7 +1039,12 @@ PrefabInstance:
         type: 3}
       propertyPath: escort
       value: 
-      objectReference: {fileID: 1433877294}
+      objectReference: {fileID: 2048267377}
+    - target: {fileID: 2064686260767741417, guid: 76268af31b18282409760c6a33918ca4,
+        type: 3}
+      propertyPath: engagement
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1807,188 +1472,6 @@ MonoBehaviour:
   missile: {fileID: 11400000, guid: ca29dc5d35c62fa469238bc36d007f41, type: 2}
   hardpoints: []
   ammo: -1
---- !u!114 &1433877294 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-    type: 3}
-  m_PrefabInstance: {fileID: 1503732380}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae944107a4d19ab4aa27d19d531a13b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1001 &1503732380
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2064686260767741417, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: route
-      value: 
-      objectReference: {fileID: 322787086}
-    - target: {fileID: 2064686260767741417, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: engagement
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4615151948090705400, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4846599191305269544, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: m_Name
-      value: Trader 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: team
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: pilot
-      value: 
-      objectReference: {fileID: 11400000, guid: f188879eb93fae44fb701679023019b8,
-        type: 2}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: faction
-      value: 
-      objectReference: {fileID: 11400000, guid: 638cb513078f48f43ae0f598d94f1df4,
-        type: 2}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 799281263}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ShipDestroyed
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 799281263}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 799281263}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TargetAcquired
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: MissileLaunched
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618202607077423159, guid: 76268af31b18282409760c6a33918ca4,
-        type: 3}
-      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 76268af31b18282409760c6a33918ca4, type: 3}
 --- !u!1 &1566369008
 GameObject:
   m_ObjectHideFlags: 0
@@ -2337,6 +1820,354 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 76268af31b18282409760c6a33918ca4, type: 3}
+--- !u!1001 &2048267376
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2537840622617724551, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4405362936742222263, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: route
+      value: 
+      objectReference: {fileID: 322787086}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 799281263}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ShipDestroyed
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 799281263}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 799281263}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TargetAcquired
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MissileLaunched
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5274452534771789388, guid: e1221cb84defe3442abe57234c7cd9b0,
+        type: 3}
+      propertyPath: m_Name
+      value: Freighter
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e1221cb84defe3442abe57234c7cd9b0, type: 3}
+--- !u!114 &2048267377 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4689251164496087111, guid: e1221cb84defe3442abe57234c7cd9b0,
+    type: 3}
+  m_PrefabInstance: {fileID: 2048267376}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae944107a4d19ab4aa27d19d531a13b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &2107923648
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1131938048105514953, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_Name
+      value: Patrol Cruiser
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: control
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: faction
+      value: 
+      objectReference: {fileID: 11400000, guid: 20c9e3c588674824596e1823a2d044ff,
+        type: 2}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 799281263}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ShipDestroyed
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 799281263}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 799281263}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TargetAcquired
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MissileLaunched
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onDestroyed.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onTargetAcquired.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369093581517824412, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: onMissileLaunched.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SpaceAI2.Demo.ShipEventLog, SpaceAI2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -180
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010674912552890771, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1131938048105514953, guid: 70c3ba830f9f0b34897ecfad966a486d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2107923650}
+  m_SourcePrefab: {fileID: 100100000, guid: 70c3ba830f9f0b34897ecfad966a486d, type: 3}
+--- !u!1 &2107923649 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1131938048105514953, guid: 70c3ba830f9f0b34897ecfad966a486d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2107923648}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2107923650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107923649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05d731e3792cc2345ba4c48d51d71c03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensorRange: 4000
+  targetInterval: 1
+  targetCommitTime: 5
+  targetSwitchMargin: 0.4
+  patrolCenter: {fileID: 0}
+  patrolRadius: 800
+  useAttackRuns: 1
+  engagement: 3
+  route: {fileID: 0}
+  escort: {fileID: 2048267377}
+  fleeRange: 1500
+  escortRadius: 1500
 --- !u!1001 &2116114235
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2507,8 +2338,7 @@ SceneRoots:
   - {fileID: 1008869614}
   - {fileID: 1115590015}
   - {fileID: 2116114235}
-  - {fileID: 823476658}
-  - {fileID: 1503732380}
-  - {fileID: 411452000}
   - {fileID: 1012420441}
   - {fileID: 322787087}
+  - {fileID: 2048267376}
+  - {fileID: 2107923648}

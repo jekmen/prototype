@@ -11,7 +11,9 @@ namespace SpaceAI2
         /// <summary>Fights only enemies that attack it or the ship it escorts.</summary>
         Defend,
         /// <summary>Never picks a fight: runs from enemies inside the flee range and resumes its order once clear.</summary>
-        Flee
+        Flee,
+        /// <summary>Ignores enemies and keeps to its order, leaving them to its turrets. Meant for large ships.</summary>
+        Passive
     }
 
     /// <summary>What a pilot does when it is not fighting.</summary>
@@ -92,7 +94,8 @@ namespace SpaceAI2
                     case ShipOrder.MoveTo: return movePoint;
                     case ShipOrder.Escort:
                         Transform charge = escort.transform;
-                        return charge.position + charge.rotation * new Vector3(escortSide * 80f, 30f, -150f);
+                        float spacing = escort.Radius + ship.Radius;
+                        return charge.position + charge.rotation * new Vector3(escortSide * (spacing + 60f), 20f, -(spacing + 100f));
                     default: return PatrolCenter;
                 }
             }
