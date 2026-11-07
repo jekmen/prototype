@@ -13,6 +13,7 @@ namespace SpaceAI2.Editor
         public const string Folder = SceneBuilderUtils.Root + "/Content/Effects";
         private const string AdditivePath = Folder + "/ParticleAdditive.mat";
         private const string AlphaPath = Folder + "/ParticleAlpha.mat";
+        private const string TrailPath = Folder + "/MissileTrail.mat";
 
         private static readonly Color Orange = new Color(1f, 0.55f, 0.2f);
         private static readonly Color ShieldBlue = new Color(0.3f, 0.7f, 1f);
@@ -24,21 +25,36 @@ namespace SpaceAI2.Editor
             SceneBuilderUtils.EnsureFolder(Folder);
             Material additive = ParticleMaterial(AdditivePath, true);
             Material alpha = ParticleMaterial(AlphaPath, false);
+            // A trail stretches the texture over its whole length; sampling only the centre column keeps
+            // the soft edge across the width without fading the ends.
+            Material trail = ParticleMaterial(TrailPath, false);
+            trail.mainTextureScale = new Vector2(0f, 1f);
+            trail.mainTextureOffset = new Vector2(0.5f, 0f);
+            EditorUtility.SetDirty(trail);
             Save(MuzzleFlash(additive), "MuzzleFlash");
             Save(Hit("HitHull", additive, alpha, Orange, 4f, 16, true), "HitHull");
             Save(Hit("HitShield", additive, alpha, ShieldBlue, 7f, 8, false), "HitShield");
             Save(Hit("HitSurface", additive, alpha, new Color(1f, 0.8f, 0.55f), 3f, 12, true), "HitSurface");
             Save(Exhaust(additive), "EngineExhaust");
+            Save(MissileFlame(additive), "MissileFlame");
             AssetDatabase.SaveAssets();
         }
 
         /// <summary>Points CombatEffects at the prefabs, building any that are missing.</summary>
         public static void Assign(CombatEffects effects)
         {
-            if (Load("MuzzleFlash") == null || Load("EngineExhaust") == null) Build();
+            if (Load("MuzzleFlash") == null || Load("EngineExhaust") == null || Load("MissileFlame") == null ||
+                AssetDatabase.LoadAssetAtPath<Material>(TrailPath) == null) Build();
             effects.SetPrefabs(Load("MuzzleFlash"), Load("HitHull"), Load("HitShield"), Load("HitSurface"),
-                Load("ExplosionShip"), Load("ExplosionMissile"), Load("EngineExhaust"));
+                Load("ExplosionShip"), Load("ExplosionMissile"), Load("EngineExhaust"), Load("MissileFlame"));
             EditorUtility.SetDirty(effects);
+            // The soft edge keeps missile smoke from reading as a flat ribbon up close.
+            var missiles = Object.FindObjectOfType<MissileSystem>(true);
+            if (missiles != null)
+            {
+                missiles.TrailMaterial = AssetDatabase.LoadAssetAtPath<Material>(TrailPath);
+                EditorUtility.SetDirty(missiles);
+            }
         }
 
         private static ParticleSystem Load(string name) => AssetDatabase.LoadAssetAtPath<ParticleSystem>($"{Folder}/{name}.prefab");
@@ -174,6 +190,43 @@ namespace SpaceAI2.Editor
             main.startSpeed = 0f;
             main.startSize = 1.6f;
             main.startColor = new Color(EngineTeal.r, EngineTeal.g, EngineTeal.b, 0.7f);
+            main.maxParticles = 4;
+            emission = glow.emission;
+            emission.rateOverTime = 30f;
+            return jet.gameObject;
+        }
+
+        /// <summary>
+        /// Sized for a 1 m wide missile; CombatEffects scales it by the profile's width and tints the core with its flame
+        /// colour. World-space smoke would duplicate the missile's trail, so this is only the motor flame.
+        /// </summary>
+        private static GameObject MissileFlame(Material additive)
+        {
+            ParticleSystem jet = System("MissileFlame", null, additive, ParticleSystemSimulationSpace.Local);
+            var main = jet.main;
+            main.loop = true;
+            main.duration = 1f;
+            main.startLifetime = 0.12f;
+            main.startSpeed = 40f;
+            main.startSize = new ParticleSystem.MinMaxCurve(2.4f, 3f);
+            main.maxParticles = 24;
+            var emission = jet.emission;
+            emission.rateOverTime = 160f;
+            Cone(jet, 2f, 0.1f);
+            Stretch(jet, 0.08f, 1.2f);
+            Fade(jet, Color.white, Color.white, 0.6f);
+            var size = jet.sizeOverLifetime;
+            size.enabled = true;
+            size.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 1f, 1f, 0.2f));
+
+            ParticleSystem glow = System("Glow", jet.transform, additive, ParticleSystemSimulationSpace.Local);
+            main = glow.main;
+            main.loop = true;
+            main.duration = 1f;
+            main.startLifetime = 0.1f;
+            main.startSpeed = 0f;
+            main.startSize = new ParticleSystem.MinMaxCurve(2.5f, 3.5f);
+            main.startColor = new Color(1f, 1f, 1f, 0.6f);
             main.maxParticles = 4;
             emission = glow.emission;
             emission.rateOverTime = 30f;

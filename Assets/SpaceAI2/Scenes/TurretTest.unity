@@ -4084,7 +4084,7 @@ MonoBehaviour:
   hitMask:
     serializedVersion: 2
     m_Bits: 4294967291
-  trailMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  trailMaterial: {fileID: 2100000, guid: 7ba46de47bbe8424f889eccad0a2ccae, type: 2}
   trailTime: 2.5
 --- !u!4 &340589051
 Transform:
@@ -16158,6 +16158,8 @@ MonoBehaviour:
   missileExplosion: {fileID: 1092997223378604669, guid: 07650a0bc492fc944ae2198c3a2c89ce,
     type: 3}
   engineExhaust: {fileID: 4549307601741196583, guid: dd586dd13ddb7a9449d7fa9feb90dbea,
+    type: 3}
+  missileFlame: {fileID: 488301046685049795, guid: 8a2d12a4e06805246beab02c4bc14020,
     type: 3}
   cullDistance: 1500
   explosionCullDistance: 4000

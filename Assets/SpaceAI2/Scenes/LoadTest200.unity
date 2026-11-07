@@ -51715,6 +51715,8 @@ MonoBehaviour:
     type: 3}
   engineExhaust: {fileID: 4549307601741196583, guid: dd586dd13ddb7a9449d7fa9feb90dbea,
     type: 3}
+  missileFlame: {fileID: 488301046685049795, guid: 8a2d12a4e06805246beab02c4bc14020,
+    type: 3}
   cullDistance: 1500
   explosionCullDistance: 4000
   maxPerEffect: 48

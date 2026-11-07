@@ -102,6 +102,8 @@ namespace SpaceAI2
         }
 
         public int Count => count;
+        /// <summary>Draw the built-in motor flames and blast flashes. CombatEffects turns this off when it has its own.</summary>
+        public bool DrawFlames { get; set; } = true;
         /// <summary>Main-thread time of the last physics step, in milliseconds.</summary>
         public double LastUpdateMs { get; private set; }
 
@@ -486,6 +488,7 @@ namespace SpaceAI2
                     if (batch == BatchSize) batch = Flush(bodyMesh, visuals[p].Body, batch);
                 }
                 Flush(bodyMesh, visuals[p].Body, batch);
+                if (!DrawFlames) continue;
 
                 for (int i = 0; i < count; i++)
                 {

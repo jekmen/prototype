@@ -19,6 +19,8 @@ namespace SpaceAI2
         [SerializeField] private ParticleSystem missileExplosion;
         [Tooltip("Attached to every ship nozzle by ShipEffects.")]
         [SerializeField] private ParticleSystem engineExhaust;
+        [Tooltip("Follows each missile and torpedo while its motor burns, scaled by the profile's width.")]
+        [SerializeField] private ParticleSystem missileFlame;
 
         [Header("Limits")]
         [Tooltip("Small effects farther than this from the camera are skipped.")]
@@ -30,6 +32,9 @@ namespace SpaceAI2
         private static CombatEffects instance;
 
         private readonly Dictionary<ParticleSystem, Pool> pools = new Dictionary<ParticleSystem, Pool>();
+        private readonly Dictionary<int, ParticleSystem> flames = new Dictionary<int, ParticleSystem>();
+        private readonly HashSet<int> liveIds = new HashSet<int>();
+        private readonly List<int> staleIds = new List<int>();
         private ParticleSystem.Particle[] shiftBuffer = new ParticleSystem.Particle[256];
         private ProjectileSystem projectiles;
         private MissileSystem missiles;
@@ -48,8 +53,9 @@ namespace SpaceAI2
         private static void ResetStatics() => instance = null;
 
         public void SetPrefabs(ParticleSystem muzzle, ParticleSystem hull, ParticleSystem shield, ParticleSystem surface,
-            ParticleSystem ship, ParticleSystem missile, ParticleSystem exhaust)
+            ParticleSystem ship, ParticleSystem missile, ParticleSystem exhaust, ParticleSystem flame)
         {
+            missileFlame = flame;
             muzzleFlash = muzzle;
             hullHit = hull;
             shieldHit = shield;
@@ -74,8 +80,10 @@ namespace SpaceAI2
             }
             if (missiles == null && MissileSystem.TryGet(out missiles))
             {
+                missiles.Launched += OnMissileLaunched;
                 missiles.Detonated += OnMissileDetonated;
-                missiles.ShotDown += OnMissileShotDown;
+                missiles.Expired += OnMissileExpired;
+                if (missileFlame != null) missiles.DrawFlames = false;
             }
         }
 
@@ -92,8 +100,10 @@ namespace SpaceAI2
             }
             if (missiles != null)
             {
+                missiles.Launched -= OnMissileLaunched;
                 missiles.Detonated -= OnMissileDetonated;
-                missiles.ShotDown -= OnMissileShotDown;
+                missiles.Expired -= OnMissileExpired;
+                missiles.DrawFlames = true;
             }
         }
 
@@ -103,6 +113,52 @@ namespace SpaceAI2
         {
             Connect();
             view = Camera.main != null ? Camera.main.transform : null;
+            if (missileFlame != null && missiles != null && (missiles.Count > 0 || flames.Count > 0)) MoveFlames();
+        }
+
+        // Missiles are drawn one physics step behind, like the ships, so the flames use the same timeline.
+        private void MoveFlames()
+        {
+            float behind = Time.time - Time.fixedTime - Time.fixedDeltaTime;
+            int moved = 0;
+            for (int i = 0; i < missiles.Count; i++)
+            {
+                MissileTrack track = missiles[i];
+                bool burning = track.Age < track.Profile.BurnTime;
+                if (!flames.TryGetValue(track.Id, out ParticleSystem flame))
+                {
+                    // Missiles launched out of range get their flame once they come close.
+                    if (!burning || !IsNear(track.Position) || !StartFlame(track, out flame)) continue;
+                }
+                moved++;
+                if (!burning || flame == null)
+                {
+                    StopFlame(track.Id);
+                    continue;
+                }
+                Vector3 direction = track.Velocity.sqrMagnitude > 0.01f ? track.Velocity.normalized : Vector3.forward;
+                Vector3 tail = track.Position + track.Velocity * behind - direction * (track.Profile.Length * 0.5f);
+                flame.transform.SetPositionAndRotation(tail, Quaternion.LookRotation(-direction));
+            }
+            if (moved < flames.Count) DropStaleFlames();
+        }
+
+        // MissileSystem.Clear removes missiles without events; their flames would otherwise burn on.
+        private void DropStaleFlames()
+        {
+            liveIds.Clear();
+            for (int i = 0; i < missiles.Count; i++) liveIds.Add(missiles[i].Id);
+            staleIds.Clear();
+            foreach (int id in flames.Keys)
+                if (!liveIds.Contains(id)) staleIds.Add(id);
+            foreach (int id in staleIds) StopFlame(id);
+        }
+
+        private void StopFlame(int id)
+        {
+            if (!flames.TryGetValue(id, out ParticleSystem flame)) return;
+            flames.Remove(id);
+            if (flame != null) flame.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         }
 
         /// <summary>True when small effects at the point are close enough to the camera to be worth playing.</summary>
@@ -132,20 +188,57 @@ namespace SpaceAI2
 
         private void OnBurst(WeaponProfile weapon, Vector3 point) => Explosion(point, Mathf.Max(weapon.BlastRadius * 0.25f, 1f), false);
 
-        private void OnMissileDetonated(MissileTrack track, Vector3 point) => Explosion(point, Mathf.Max(track.Profile.BlastRadius * 0.24f, 1f), false);
+        private void OnMissileLaunched(MissileTrack track)
+        {
+            if (missileFlame != null) StartFlame(track, out _);
+        }
 
-        private void OnMissileShotDown(MissileTrack track, SpaceShip source) => Explosion(track.Position, 1f, false);
+        private bool StartFlame(MissileTrack track, out ParticleSystem flame)
+        {
+            // Flames outlive the small-effect pool limit: each one is held for the whole burn.
+            flame = Play(missileFlame, track.Position, Rotation(-track.Velocity), track.Profile.Width,
+                cullDistance, maxPerEffect * 4);
+            if (flame == null) return false;
+            // The pool may hand back a flame still held by an older missile when it is full.
+            int stolen = 0;
+            foreach (KeyValuePair<int, ParticleSystem> pair in flames)
+                if (pair.Value == flame) stolen = pair.Key;
+            if (stolen != 0) flames.Remove(stolen);
+            Color color = track.Profile.FlameColor;
+            ParticleSystem.MainModule main = flame.main;
+            main.startColor = Color.Lerp(color, Color.white, 0.3f);
+            if (flame.transform.childCount > 0 && flame.transform.GetChild(0).TryGetComponent(out ParticleSystem glow))
+            {
+                main = glow.main;
+                main.startColor = new Color(color.r, color.g, color.b, 0.6f);
+            }
+            flames[track.Id] = flame;
+            return true;
+        }
+
+        private void OnMissileDetonated(MissileTrack track, Vector3 point)
+        {
+            StopFlame(track.Id);
+            Explosion(point, Mathf.Max(track.Profile.BlastRadius * 0.24f, 1f), false);
+        }
+
+        // Fuel out, hit before arming or shot down: a small pop instead of the warhead.
+        private void OnMissileExpired(MissileTrack track)
+        {
+            StopFlame(track.Id);
+            Explosion(track.Position, Mathf.Max(track.Profile.Width * 2f, 0.6f), false);
+        }
 
         private static Quaternion Rotation(Vector3 forward) =>
             forward.sqrMagnitude > 1e-6f ? Quaternion.LookRotation(forward) : Quaternion.identity;
 
-        private ParticleSystem Play(ParticleSystem prefab, Vector3 point, Quaternion rotation, float scale, float distance)
+        private ParticleSystem Play(ParticleSystem prefab, Vector3 point, Quaternion rotation, float scale, float distance, int max = 0)
         {
             if (prefab == null) return null;
             if (view != null && (view.position - point).sqrMagnitude > distance * distance) return null;
             if (!pools.TryGetValue(prefab, out Pool pool)) pools[prefab] = pool = new Pool(prefab, transform);
 
-            ParticleSystem effect = pool.Take(maxPerEffect);
+            ParticleSystem effect = pool.Take(max > 0 ? max : maxPerEffect);
             Transform t = effect.transform;
             if (t.parent != transform) t.SetParent(transform, false);
             effect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);

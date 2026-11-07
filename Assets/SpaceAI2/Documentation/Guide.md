@@ -125,20 +125,24 @@ no custom shaders or post effects. They live in `Content/Effects`:
 | `MuzzleFlash` | Every gun shot, tinted with the weapon's tracer colour |
 | `HitHull`, `HitShield` | Damage to a ship, split by `ShipHealth.LastShieldDamage` |
 | `HitSurface` | Shots hitting rocks and other colliders |
-| `ExplosionShip`, `ExplosionMissile` | Ship deaths, missile and flak detonations, missiles shot down |
+| `ExplosionShip`, `ExplosionMissile` | Ship deaths, missile and flak detonations; a small pop for missiles shot down, out of fuel or hitting before arming |
 | `EngineExhaust` | One per nozzle, looping |
+| `MissileFlame` | Each missile and torpedo while its motor burns, scaled by the profile's **Width** and tinted with **Flame Color** |
 
 `CombatEffects` (one per scene) holds the prefab references, listens to `ProjectileSystem` and `MissileSystem`,
 and plays pooled copies. Effects beyond **Cull Distance** from the camera are skipped (explosions use their own,
 longer distance); **Max Per Effect** caps each pool and reuses the oldest copy. World-space particles follow
 `SpaceAI.ShiftOrigin`. Call `CombatEffects.Hit` or `CombatEffects.Explosion` to play effects from your own code.
+With a `MissileFlame` prefab set, `CombatEffects` turns off `MissileSystem.DrawFlames`, the built-in flame and
+blast spheres. Missile smoke stays a `TrailRenderer`; the effect builders set its **Trail Material** to
+`MissileTrail.mat`, a soft-edged particle material.
 
 Ships get `ShipEffects` at start when the scene has `CombatEffects` and the **Visual Effects** checkbox on
 `SpaceShip` is on. It puts an exhaust at each nozzle under `ShipBank.Visual`, scales it with throttle, boost
 and engine power, and plays hits and the death explosion. Add it by hand to set nozzle positions for another model.
 
 Edit the prefabs directly to change the look. **Tools > SpaceAI2 > Build Effect Prefabs** regenerates the muzzle
-flash, hits and exhaust (overwriting edits to them); the explosion prefabs are hand-tuned and are never rebuilt.
+flash, hits, exhaust, missile flame and trail material (overwriting edits to them); the explosion prefabs are hand-tuned and are never rebuilt.
 Scene builders and the Create Ship wizard add `CombatEffects` to any scene with weapons.
 
 Open `EffectsShowcase` or rebuild it with **Tools > SpaceAI2 > Build Effects Showcase Scene**.
