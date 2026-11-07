@@ -25,7 +25,7 @@ namespace SpaceAI2.Editor
         public static void Build10v10()
         {
             string[] wing = { "Ace", "Ace", "Veteran", "Veteran", "Veteran", "Veteran", "Rookie", "Rookie", "Rookie", "Rookie" };
-            Build("Dogfight10v10", wing, wing);
+            Build("Dogfight10v10", wing, wing, missiles: true);
         }
 
         [MenuItem("Tools/SpaceAI2/Build Dogfight 10v10 Asteroids Scene")]
@@ -51,12 +51,16 @@ namespace SpaceAI2.Editor
             Build("DogfightFar", wing, wing, 0, new Vector3(30000f, 10000f, 38730f));
         }
 
-        private static void Build(string sceneName, string[] blue, string[] red, int asteroids = 0, Vector3 offset = default)
+        /// <param name="missiles">Aces carry radar missiles and the next three ships heat seekers.</param>
+        private static void Build(string sceneName, string[] blue, string[] red, int asteroids = 0, Vector3 offset = default,
+            bool missiles = false)
         {
             if (!NewScene()) return;
             ShipProfile shipProfile = LoadOrCreateProfile();
             WeaponProfile cannon = GunneryTestSceneBuilder.LoadOrCreateWeapon("Cannon", _ => { });
             Dictionary<string, PilotProfile> profiles = LoadPilots();
+            MissileProfile[] loadout = missiles ? MissileTestSceneBuilder.LoadMissiles() : null;
+            MissileProfile heat = loadout?[0], radar = loadout?[1];
 
             var arena = new GameObject("Arena").transform;
             var spawns = new Transform[2];
@@ -80,6 +84,7 @@ namespace SpaceAI2.Editor
                     ShipGun gun = ship.AddComponent<ShipGun>();
                     gun.Weapon = cannon;
                     gun.GimbalAngle = 6f;
+                    if (missiles && i < 5) ship.AddComponent<MissileLauncher>().Missile = wing[i] == "Ace" ? radar : heat;
                     ship.AddComponent<AIPilot>().Profile = profiles[wing[i]];
                     CombatBrain brain = ship.AddComponent<CombatBrain>();
                     brain.PatrolArea = arena;
@@ -96,6 +101,8 @@ namespace SpaceAI2.Editor
             new GameObject(nameof(SpaceAIWorld)).AddComponent<SpaceAIWorld>();
             new GameObject(nameof(ProjectileSystem)).AddComponent<ProjectileSystem>().TracerMaterial =
                 GunneryTestSceneBuilder.LoadOrCreateTracerMaterial();
+            // Saving adds CombatEffects, which gives the missile system its trail material.
+            if (missiles) new GameObject(nameof(MissileSystem)).AddComponent<MissileSystem>();
             new GameObject("DogfightDemo").AddComponent<DogfightDemo>().Setup(brains.ToArray(), spawns, chase, hud);
             chase.gameObject.AddComponent<PerformanceOverlay>();
             if (offset != Vector3.zero)
