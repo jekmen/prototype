@@ -31,7 +31,7 @@ namespace SpaceAI2
             set => gimbalAngle = Mathf.Clamp(value, 0f, 30f);
         }
 
-        /// <summary>Barrel points, fired in turn; empty fires from the nose. Read in Awake.</summary>
+        /// <summary>Barrel points, fired in turn; empty fires from the nose. The list is read in Awake; positions are read per shot.</summary>
         public Transform[] Muzzles
         {
             get => muzzles;
@@ -84,7 +84,10 @@ namespace SpaceAI2
         private void Fire()
         {
             Rigidbody body = ship.Motor.Body;
-            Vector3 origin = body.position + body.rotation * localMuzzles[barrel];
+            // Muzzles may sit on the banking model, so their offset is read per shot rather than fixed at Awake.
+            Transform muzzle = muzzles != null && barrel < muzzles.Length ? muzzles[barrel] : null;
+            Vector3 local = muzzle != null ? transform.InverseTransformPoint(muzzle.position) : localMuzzles[barrel];
+            Vector3 origin = body.position + body.rotation * local;
             barrel = (barrel + 1) % localMuzzles.Length;
 
             Vector3 direction = FireDirection;
