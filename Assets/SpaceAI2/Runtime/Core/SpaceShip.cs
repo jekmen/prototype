@@ -43,7 +43,7 @@ namespace SpaceAI2
         [SerializeField] private MissileProfile missile;
         [Tooltip("Adds hull and shield from the profile; the ship is disabled when the hull runs out.")]
         [SerializeField] private bool destructible = true;
-        [Tooltip("Adds pooled combat effects, engine plumes and impact shields at runtime.")]
+        [Tooltip("Adds engine exhaust, hit and death effects at runtime when the scene has CombatEffects.")]
         [SerializeField] private bool visualEffects = true;
 
         [SerializeField] private UnityEvent<SpaceShip> onDestroyed = new UnityEvent<SpaceShip>();
@@ -245,7 +245,7 @@ namespace SpaceAI2
 
         private void Start()
         {
-            if (visualEffects && GetComponent<ShipEffects>() == null) gameObject.AddComponent<ShipEffects>();
+            if (visualEffects && CombatEffects.TryGet(out _) && GetComponent<ShipEffects>() == null) gameObject.AddComponent<ShipEffects>();
         }
 
         private void OnEnable()

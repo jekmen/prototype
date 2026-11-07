@@ -57,7 +57,9 @@ namespace SpaceAI2
         private Mesh mesh;
 
         public event Action<HitInfo> Impact;
-        public event Action<WeaponProfile, Vector3, Vector3> Fired;
+        /// <summary>Raised for every shot, from the muzzle, before the shot travels.</summary>
+        public event Action<WeaponProfile, SpaceShip, Vector3, Vector3> Fired;
+        /// <summary>Raised where a fused shot bursts, whether or not it damages anything.</summary>
         public event Action<WeaponProfile, Vector3> Detonated;
 
         public static ProjectileSystem Instance
@@ -91,7 +93,7 @@ namespace SpaceAI2
         {
             if (weapon == null) return;
             int index = IndexOf(weapon);
-            Fired?.Invoke(weapon, origin, direction);
+            Fired?.Invoke(weapon, owner, origin, direction);
 
             if (weapon.IsInstant)
             {
@@ -125,7 +127,7 @@ namespace SpaceAI2
             }
             instance = this;
             projectiles = new Projectile[initialCapacity];
-            mesh = EffectsMeshes.Sphere(8, 6);
+            mesh = Resources.GetBuiltinResource<Mesh>("Cube.fbx");
         }
 
         private void OnEnable() => SpaceAI.OriginShifted += OnOriginShifted;
@@ -150,7 +152,6 @@ namespace SpaceAI2
             if (commands.IsCreated) commands.Dispose();
             if (results.IsCreated) results.Dispose();
             foreach (Material material in materials) Destroy(material);
-            if (mesh != null) Destroy(mesh);
         }
 
         private void FixedUpdate()

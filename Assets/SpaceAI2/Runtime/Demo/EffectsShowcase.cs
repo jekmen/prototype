@@ -11,11 +11,11 @@ namespace SpaceAI2.Demo
         public bool AutoCycle = true;
         private float nextEffect, nextMode;
         private GUIStyle title, caption, small;
-        private readonly string[] names = { "ION DRIVE", "REACTIVE SHIELD", "PULSE LASER", "GUIDED MISSILE", "REACTOR BURST", "HULL IMPACT" };
+        private readonly string[] names = { "ENGINES", "SHIELD HIT", "PULSE LASER", "GUIDED MISSILE", "EXPLOSION", "HULL IMPACT" };
         private readonly string[] descriptions = {
-            "Twin plasma jets / throttle and afterburner", "Local refraction / turbulent dissolve / luminous impact edge",
-            "White-hot core / colored falloff / impact flash", "Powered exhaust / persistent wake / proximity detonation",
-            "Rolling fire / cooling smoke / incandescent fragments", "Directional sparks / molten debris / armor flash" };
+            "Twin jets / throttle and afterburner", "Shield flash and sparks",
+            "Muzzle flash / beam / impact", "Exhaust trail / detonation",
+            "Fire / smoke / embers / fragments", "Sparks / smoke / armor flash" };
         private void Start()
         {
             Ship.Motor.enabled = false;
@@ -55,7 +55,7 @@ namespace SpaceAI2.Demo
                 Vector3 origin = Ship.Position + new Vector3(-35, 8, 25);
                 MissileSystem.Instance.Launch(Missile, null, origin, (Ship.Position - origin).normalized, Ship);
             }
-            if (Mode == 4) SpaceEffects.Instance.Explosion(Ship.Position + new Vector3(15, 0, 0), 7, Vector3.zero, true);
+            if (Mode == 4 && CombatEffects.TryGet(out CombatEffects effects)) effects.Explosion(Ship.Position + new Vector3(15, 0, 0), 7, true);
             if (Mode == 5)
             {
                 // One hit crosses the shield boundary; the next demonstrates bare armor.
@@ -83,7 +83,7 @@ namespace SpaceAI2.Demo
             GUI.Label(new Rect(30, 48, 700, 50), names[Mode], title);
             GUI.Label(new Rect(32, 98, 800, 25), descriptions[Mode], caption);
             GUI.Label(new Rect(32, Screen.height - 58, 1000, 25), "1  Engines     2  Shield     3  Laser     4  Missile     5  Explosion     6  Hull", caption);
-            GUI.Label(new Rect(32, Screen.height - 32, 1000, 22), "SPACE  Auto-cycle: " + (AutoCycle ? "ON" : "OFF") + "     /     Real combat systems • Built-in renderer", small);
+            GUI.Label(new Rect(32, Screen.height - 32, 1000, 22), "SPACE  Auto-cycle: " + (AutoCycle ? "ON" : "OFF") + "     /     Plain particle system prefabs in Content/Effects", small);
         }
     }
 }

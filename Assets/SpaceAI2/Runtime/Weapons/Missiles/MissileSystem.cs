@@ -74,7 +74,6 @@ namespace SpaceAI2
         private int nextId = 1;
         private Mesh bodyMesh;
         private Mesh flashMesh;
-        private Material effectTrailMaterial;
 
         public event Action<MissileTrack> Launched;
         /// <summary>The warhead went off at this point, whether or not anything was in the blast.</summary>
@@ -276,7 +275,6 @@ namespace SpaceAI2
                 Destroy(visual.Body);
                 Destroy(visual.Flame);
             }
-            if (effectTrailMaterial != null) Destroy(effectTrailMaterial);
         }
 
         private void FixedUpdate()
@@ -496,8 +494,8 @@ namespace SpaceAI2
                     Vector3 direction = t.Velocity.sqrMagnitude > 0.01f ? t.Velocity.normalized : Vector3.forward;
                     Vector3 position = t.Position + t.Velocity * behind - direction * (profile.Length * 0.75f);
                     float flicker = profile.Width * UnityEngine.Random.Range(1.4f, 2f);
-                    matrices[batch++] = Matrix4x4.TRS(position, Quaternion.LookRotation(-direction), new Vector3(flicker, flicker, profile.Length * 0.9f));
-                    if (batch == BatchSize) batch = Flush(SpaceEffects.TryGet(out SpaceEffects effectBatch) ? effectBatch.ExhaustMesh : flashMesh, visuals[p].Flame, batch);
+                    matrices[batch++] = Matrix4x4.TRS(position, Quaternion.LookRotation(direction), new Vector3(flicker, flicker, profile.Length * 0.6f));
+                    if (batch == BatchSize) batch = Flush(flashMesh, visuals[p].Flame, batch);
                 }
                 foreach (Flash flash in flashes)
                 {
@@ -506,7 +504,7 @@ namespace SpaceAI2
                     matrices[batch++] = Matrix4x4.TRS(flash.Position, Quaternion.identity, Vector3.one * size);
                     if (batch == BatchSize) batch = Flush(flashMesh, visuals[p].Flame, batch);
                 }
-                Flush(SpaceEffects.TryGet(out SpaceEffects effects) ? effects.ExhaustMesh : flashMesh, visuals[p].Flame, batch);
+                Flush(flashMesh, visuals[p].Flame, batch);
             }
         }
 
@@ -516,11 +514,8 @@ namespace SpaceAI2
             return 0;
         }
 
-        private void AddFlash(Vector3 position, float size, float duration, int profile)
-        {
-            if (!SpaceEffects.TryGet(out _))
-                flashes.Add(new Flash { Position = position, Size = size, Life = duration, Duration = duration, Profile = profile });
-        }
+        private void AddFlash(Vector3 position, float size, float duration, int profile) =>
+            flashes.Add(new Flash { Position = position, Size = size, Life = duration, Duration = duration, Profile = profile });
 
         private int IndexOf(MissileProfile profile)
         {
@@ -531,7 +526,7 @@ namespace SpaceAI2
             visuals.Add(new ProfileVisual
             {
                 Body = new Material(Shader.Find("Standard")) { color = profile.BodyColor, enableInstancing = true },
-                Flame = new Material(Shader.Find("SpaceAI2/Effects/Exhaust")) { color = profile.FlameColor, enableInstancing = true }
+                Flame = new Material(Shader.Find("SpaceAI2/Tracer")) { color = profile.FlameColor * 3f, enableInstancing = true }
             });
             return index;
         }
@@ -545,17 +540,17 @@ namespace SpaceAI2
             {
                 trail = new GameObject("MissileTrail").AddComponent<TrailRenderer>();
                 trail.transform.SetParent(transform, false);
-                if (effectTrailMaterial == null) effectTrailMaterial = new Material(Shader.Find("SpaceAI2/Effects/Trail"));
-                trail.sharedMaterial = trailMaterial != null && trailMaterial.shader.name != "Sprites/Default" ? trailMaterial : effectTrailMaterial;
+                if (trailMaterial == null) trailMaterial = new Material(Shader.Find("Sprites/Default"));
+                trail.sharedMaterial = trailMaterial;
                 trail.shadowCastingMode = ShadowCastingMode.Off;
                 trail.receiveShadows = false;
-                trail.minVertexDistance = 0.5f;
+                trail.minVertexDistance = 2f;
             }
             trail.transform.position = position;
             trail.Clear();
             trail.time = trailTime;
-            trail.widthMultiplier = profile.Width * 4f;
-            trail.widthCurve = AnimationCurve.EaseInOut(0f, 0.3f, 1f, 1.5f);
+            trail.widthMultiplier = profile.Width * 3f;
+            trail.widthCurve = AnimationCurve.Linear(0f, 0.4f, 1f, 1.5f);
             Color end = profile.TrailColor;
             end.a = 0f;
             trail.startColor = profile.TrailColor;

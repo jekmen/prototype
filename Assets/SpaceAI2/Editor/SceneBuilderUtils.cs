@@ -24,6 +24,8 @@ namespace SpaceAI2.Editor
         {
             EnsureFolder(Root + "/Scenes");
             foreach (SpaceShip ship in Object.FindObjectsOfType<SpaceShip>(true)) PaintTeam(ship);
+            bool armed = Object.FindObjectOfType<ProjectileSystem>(true) != null || Object.FindObjectOfType<MissileSystem>(true) != null;
+            if (armed && Object.FindObjectOfType<CombatEffects>(true) == null) AddCombatEffects();
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), $"{Root}/Scenes/{name}.unity");
         }
 
@@ -79,6 +81,13 @@ namespace SpaceAI2.Editor
                 }
                 if (changed) renderer.sharedMaterials = materials;
             }
+        }
+
+        public static CombatEffects AddCombatEffects()
+        {
+            var effects = new GameObject(nameof(CombatEffects)).AddComponent<CombatEffects>();
+            EffectPrefabBuilder.Assign(effects);
+            return effects;
         }
 
         public static void AddTrail(GameObject ship, Color color)

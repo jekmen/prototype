@@ -252,6 +252,8 @@ namespace SpaceAI2.Editor
                 missiles.TrailMaterial = AssetDatabase.GetBuiltinExtraResource<Material>("Sprites-Default.mat");
                 Undo.RegisterCreatedObjectUndo(missiles.gameObject, "Create ship");
             }
+            if (FindObjectOfType<CombatEffects>() == null)
+                Undo.RegisterCreatedObjectUndo(SceneBuilderUtils.AddCombatEffects().gameObject, "Create ship");
         }
     }
 }

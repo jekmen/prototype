@@ -36,7 +36,6 @@ namespace SpaceAI2.Editor
             camera.fieldOfView = 45;
             camera.transform.position = new Vector3(20, 10, -28);
             camera.transform.LookAt(Vector3.zero);
-            camera.gameObject.AddComponent<SpaceBloom>();
             Light key = Object.FindObjectOfType<Light>();
             key.transform.rotation = Quaternion.Euler(35, -35, 0);
             key.intensity = 1.4f;
@@ -47,13 +46,9 @@ namespace SpaceAI2.Editor
             fill.color = new Color(1f, 0.48f, 0.22f);
             fill.intensity = 0.8f;
             RenderSettings.ambientLight = new Color(0.15f, 0.2f, 0.3f);
-            var effects = new GameObject(nameof(SpaceEffects)).AddComponent<SpaceEffects>();
-            var settings = new SerializedObject(effects);
-            settings.FindProperty("shipExplosionPrefab").objectReferenceValue = AssetDatabase.LoadAssetAtPath<ParticleSystem>(
-                Root + "/Runtime/Effects/Resources/VFX/ExplosionShip.prefab");
-            settings.FindProperty("missileExplosionPrefab").objectReferenceValue = AssetDatabase.LoadAssetAtPath<ParticleSystem>(
-                Root + "/Runtime/Effects/Resources/VFX/ExplosionMissile.prefab");
-            settings.ApplyModifiedPropertiesWithoutUndo();
+            new GameObject(nameof(ProjectileSystem)).AddComponent<ProjectileSystem>().TracerMaterial = GunneryTestSceneBuilder.LoadOrCreateTracerMaterial();
+            new GameObject(nameof(MissileSystem)).AddComponent<MissileSystem>().TrailMaterial = AssetDatabase.GetBuiltinExtraResource<Material>("Sprites-Default.mat");
+            AddCombatEffects();
             SaveScene("EffectsShowcase");
         }
     }
