@@ -5,7 +5,7 @@ defense, built to run hundreds of ships. Everything lives in the `SpaceAI2` name
 
 ## Quick start
 
-1. Open `Scenes/Quickstart` and press Play. A patrol wing and a pirate wing of four fight over a freighter on a trade route, escorted by a patrol cruiser and a fighter (see Factions); the feed at the top left comes from the ships'
+1. Open `Scenes/Quickstart` and press Play. In an asteroid field, a patrol wing and a pirate wing of six fight over two freighters on a trade route; a patrol cruiser with three fighters escorts the convoy and a pirate cruiser hunts it (see Factions). The feed at the top left comes from the ships'
    UnityEvents, F3 toggles the AI overlay, Tab switches the camera.
 2. Drop the prefabs from `Prefabs` into your own scene: `SpaceAI Systems` once per scene, then `Fighter`
    (blue team), `Fighter Red`, `Player Fighter` or `Cruiser`. Change pilot, weapon, missile and team on the
@@ -110,7 +110,7 @@ ships). An **Escort** keeps station behind its charge. Combat interrupts an orde
 attacking it). `Defend` fights only ships that attack it or its charge. `Flee` never fights: it runs at full boost
 from enemies hunting it inside the **Flee Range** (or any enemy at close range), weaving under fire, and returns to
 its route once clear. `Passive` ignores enemies and keeps to its order, leaving them to its turrets; it suits large
-ships. The freighter in Quickstart flies a loop with `Passive`, and the patrol cruiser and one fighter escort it.
+ships. The freighters in Quickstart fly a loop with `Passive`; the patrol cruiser escorts the first one, and three fighters escort the cruiser or the freighter.
 
 ```csharp
 brain.FollowRoute(tradeRoute);          // from the nearest waypoint
@@ -209,7 +209,7 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 
 | Scene | Shows | Keys |
 |---|---|---|
-| Quickstart | Patrol, pirates and traders as three factions, a freighter on a route with two escorts, UnityEvents and faction changes feeding an event log, respawns, AI overlay | Tab, F3 |
+| Quickstart | Patrol, pirates and traders as three factions in an asteroid field, two freighters on a route with escorts, a cruiser on each side, UnityEvents and faction changes feeding an event log, respawns, AI overlay | Tab, F3 |
 | Dogfight | 10 v 10 among 300 asteroids, aces with radar missiles and veterans with heat seekers, stats and cost overlay | Tab, R |
 | Dogfight Player | The same fight with you in one of the blue seats, starting in the cockpit | C, R |
 
