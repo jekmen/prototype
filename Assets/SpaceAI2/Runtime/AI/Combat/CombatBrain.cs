@@ -13,6 +13,10 @@ namespace SpaceAI2
     {
         [SerializeField, Min(100f)] private float sensorRange = 4000f;
         [SerializeField, Min(0.1f)] private float targetInterval = 1f;
+        [Tooltip("Seconds a pilot stays on a target before it considers another one.")]
+        [SerializeField, Min(0f)] private float targetCommitTime = 5f;
+        [Tooltip("How much better another target must score to take the pilot off the current one.")]
+        [SerializeField, Min(0f)] private float targetSwitchMargin = 0.4f;
         [Tooltip("Area to patrol when there is nothing to fight. Defaults to the spawn point.")]
         [SerializeField] private Transform patrolCenter;
         [SerializeField, Min(10f)] private float patrolRadius = 800f;
@@ -51,6 +55,7 @@ namespace SpaceAI2
 
         private float decisionTimer;
         private float targetTimer;
+        private float targetSince;
         private float lastDamageTime = float.NegativeInfinity;
         private SpaceShip lastAttacker;
         private SpaceShip noticedThreat;
@@ -67,6 +72,8 @@ namespace SpaceAI2
         public SpaceShip Target => context.Target;
         public SpaceShip Ship => ship;
         public int Switches { get; private set; }
+        /// <summary>Times the pilot dropped a living target for another one.</summary>
+        public int TargetSwitches { get; private set; }
 
         /// <summary>Squad this ship flies in as a wingman, set by the formation.</summary>
         public Formation Formation { get; internal set; }
@@ -189,7 +196,12 @@ namespace SpaceAI2
                 SelectTarget();
                 SelectSubsystem();
                 targetTimer = targetInterval;
-                if (context.Target != previous) TargetChanged?.Invoke(this, context.Target);
+                if (context.Target != previous)
+                {
+                    targetSince = Time.time;
+                    if (IsAlive(previous) && context.Target != null) TargetSwitches++;
+                    TargetChanged?.Invoke(this, context.Target);
+                }
             }
             else if (context.Subsystem != null && (context.Subsystem.IsDestroyed || context.Subsystem.Ship != context.Target))
             {
@@ -325,6 +337,8 @@ namespace SpaceAI2
             }
 
             SpaceShip best = null;
+            SpaceShip held = IsAlive(context.Target) ? context.Target : null;
+            float heldScore = float.MinValue;
             if (SpaceAIWorld.TryGet(out SpaceAIWorld world))
             {
                 Vector3 position = ship.Position;
@@ -343,18 +357,28 @@ namespace SpaceAI2
 
                     float score = 1f - distance / sensorRange;
                     score += 0.3f * Vector3.Dot(forward, offset / distance);
-                    if (distance < weaponRange * 1.3f && Vector3.Angle(state.Forward, -offset) < 30f) score += 0.8f;
+                    // Graded, not a step: a crowd sweeps noses across the pilot all the time.
+                    if (distance < weaponRange * 1.3f) score += 0.8f * Mathf.Clamp01(1f - Vector3.Angle(state.Forward, -offset) / 30f);
                     if (enemy == lastAttacker && Time.time - lastDamageTime < RecentDamageTime * 2f) score += 0.5f;
                     ShipHealth enemyHealth = enemy.Health;
                     if (enemyHealth != null) score += 0.3f * (1f - enemyHealth.Hull / enemyHealth.MaxHull);
-                    if (enemy == context.Target) score += 0.3f;
+                    if (enemy == held) score += 0.3f;
                     score += AlliesInvolved(enemy);
 
+                    if (enemy == held) heldScore = score;
                     if (score > bestScore)
                     {
                         best = enemy;
                         bestScore = score;
                     }
+                }
+
+                // Every brain re-scores the same crowd on its own beat, so without commitment wings herd from one enemy to the next.
+                if (held != null && heldScore > float.MinValue && best != held)
+                {
+                    bool committed = Time.time - targetSince < targetCommitTime &&
+                                     context.TimeSinceFiringChance < context.Profile.Patience;
+                    if (committed || bestScore < heldScore + targetSwitchMargin) best = held;
                 }
             }
             context.Target = best;
