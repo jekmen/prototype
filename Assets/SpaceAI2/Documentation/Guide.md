@@ -168,7 +168,10 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 the cursor), fires the guns on the left button and launches a missile on the right. The seeker picks the enemy
 closest to the nose within twice the missile's lock angle and locks once it is inside the lock cone for the lock
 time; `FlightHud` frames that target, yellow while locking and red when locked, and draws a lead ring ahead of every enemy within 1.5 gun ranges: put it on the crosshair and the guns hit (the ring turns red there; it is dim beyond gun range). `ChaseCamera` switches to the view
-from its **Cockpit** transform with C.
+from its **Cockpit** transform with C. In the cockpit, `CockpitDisplays` drives the three screens: speed, shield
+and hull bars, an attitude horizon, missile and lock state, and a top-down radar with the distance to the target.
+The interior is one merged mesh (`Content/Models/Cockpit_Interior_Merged.asset`); only the moving screen parts are
+separate objects.
 
 The asteroids use six low-poly rock meshes and three materials from `Content/Asteroids`. The sky is `Content/Skybox/SpaceSky.mat`: a
 nebula panorama with stars drawn by its shader (`SpaceAI2/Skybox/Space`), so they stay one pixel sharp at any
