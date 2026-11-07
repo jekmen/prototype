@@ -167,7 +167,7 @@ flash, hits, exhaust, missile flame, trail material and the shield material if m
 `PlayerPilot` flies with a mouse stick (W/S throttle, Shift boost, A/D yaw, Q/E roll, Space recenters, Esc frees
 the cursor), fires the guns on the left button and launches a missile on the right. The seeker picks the enemy
 closest to the nose within twice the missile's lock angle and locks once it is inside the lock cone for the lock
-time; `FlightHud` frames that target, yellow while locking and red when locked. `ChaseCamera` switches to the view
+time; `FlightHud` frames that target, yellow while locking and red when locked, and draws a lead ring ahead of every enemy within 1.5 gun ranges: put it on the crosshair and the guns hit (the ring turns red there; it is dim beyond gun range). `ChaseCamera` switches to the view
 from its **Cockpit** transform with C.
 
 The asteroids use six low-poly rock meshes and three materials from `Content/Asteroids`. The sky is `Content/Skybox/SpaceSky.mat`: a

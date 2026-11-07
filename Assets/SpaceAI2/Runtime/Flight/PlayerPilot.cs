@@ -44,6 +44,8 @@ namespace SpaceAI2
         public float DeadZone => deadZone;
 
         public MissileLauncher Launcher => launcher;
+        public ShipGun Gun => gun;
+        public SpaceShip Ship => ship;
 
         private void Awake()
         {
