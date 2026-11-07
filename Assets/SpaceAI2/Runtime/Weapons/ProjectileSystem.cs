@@ -19,6 +19,7 @@ namespace SpaceAI2
             public Vector3 Position;
             public Vector3 Velocity;
             public float Fuse;
+            public float Age;
             public int Weapon;
             public SpaceShip Owner;
         }
@@ -203,6 +204,7 @@ namespace SpaceAI2
 
                 p.Position += p.Velocity * Mathf.Min(dt, p.Fuse);
                 p.Fuse -= dt;
+                p.Age += dt;
                 if (p.Fuse <= 0f)
                 {
                     WeaponProfile weapon = weapons[p.Weapon];
@@ -341,8 +343,11 @@ namespace SpaceAI2
                     Vector3 velocity = projectiles[i].Velocity;
                     Vector3 head = projectiles[i].Position + velocity * behind;
                     Vector3 direction = velocity.normalized;
-                    matrices[batch++] = Matrix4x4.TRS(head - direction * (weapon.TracerLength * 0.5f), Quaternion.LookRotation(direction),
-                        new Vector3(weapon.TracerWidth, weapon.TracerWidth, weapon.TracerLength));
+                    // A fresh tracer grows out of the muzzle instead of reaching back through the ship that fired it.
+                    float length = Mathf.Min(weapon.TracerLength, weapon.MuzzleSpeed * (projectiles[i].Age + behind));
+                    if (length <= 0.01f) continue;
+                    matrices[batch++] = Matrix4x4.TRS(head - direction * (length * 0.5f), Quaternion.LookRotation(direction),
+                        new Vector3(weapon.TracerWidth, weapon.TracerWidth, length));
                     if (batch == BatchSize) batch = Flush(w, batch);
                 }
 
